@@ -1,23 +1,22 @@
 import type { ReactNode } from 'react'
 import square from '../../assets/img/common/square.svg'
 import heroPoster from '../../assets/img/home/hero-bg.jpg'
+import globeVideo from '../../assets/video/globe.mp4'
 
 interface VideoHeroProps {
-  /**
-   * MEDIA: the Figma hero uses a video fill (rotating digital globe) that can't be exported
-   * from Figma. Drop the MP4 into /public (e.g. /videos/globe.mp4) and pass its path here;
-   * until then the exported still frame is shown.
-   */
+  /** Background video (rotating digital globe by default). The still poster shows while it loads. */
   videoSrc?: string
   children?: ReactNode
   className?: string
 }
 
 /** Dark globe hero with the glassy 3×3 Bluehost "grid" mark in the centre. */
-export function VideoHero({ videoSrc, children, className = 'h-[640px] md:h-[826px]' }: VideoHeroProps) {
+export function VideoHero({ videoSrc = globeVideo, children, className = 'h-[640px] md:h-[826px]' }: VideoHeroProps) {
+  // Respect the visitor's reduced-motion setting: show the still frame instead.
+  const reduceMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   return (
     <section className={`relative overflow-hidden bg-[#0b2d6b] ${className}`}>
-      {videoSrc ? (
+      {videoSrc && !reduceMotion ? (
         <video className="absolute inset-0 size-full object-cover" src={videoSrc} poster={heroPoster} autoPlay muted loop playsInline aria-hidden />
       ) : (
         <img src={heroPoster} alt="" className="absolute inset-0 size-full object-cover" />

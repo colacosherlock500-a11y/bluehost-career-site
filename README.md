@@ -128,11 +128,12 @@ Adding a team or country is a data change only: add an entry to `src/data/teams.
 
 These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the code.
 
-- **Hero video** (`VideoHero`): Figma uses a video fill that can't be exported. Pass `videoSrc`
-  once the MP4 is available; until then the exported still frame is shown.
 - **Brand video** (`VideoSection` on the home page): Figma only has a placeholder.
 - **Employee counts per country** (`src/data/countries.ts`): Figma uses placeholder numbers; only
   US / Argentina / Philippines are filled in.
+- **Affinity group descriptions** (`src/data/affinityGroups.ts`): Figma only has text for *Able*;
+  the others are drafts to confirm, and Influencers, PRISM, Mixed, James and PowerServe have none yet
+  (their cards show no description on hover).
 - **Quotes for UK, Italy, Spain**: Figma reuses other countries' quotes as placeholders, so these
   are left empty.
 - **Benefits for Italy & Spain** (`src/data/benefits.ts`): not in Figma yet.
