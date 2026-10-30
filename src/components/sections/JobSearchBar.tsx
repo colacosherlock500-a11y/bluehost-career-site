@@ -69,7 +69,7 @@ export function JobSearchBar({ initial, onSearch, className = '' }: JobSearchBar
         />
         <Button type="submit" className="h-14 sm:absolute sm:right-0 sm:top-0 sm:w-[189px]">Search Roles</Button>
       </div>
-      <div className="flex flex-wrap gap-5">
+      <div className="flex flex-wrap justify-center gap-5 sm:justify-start">
         <FilterSelect
           label="Location"
           value={values.country}
