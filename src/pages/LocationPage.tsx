@@ -13,7 +13,7 @@ export default function LocationPage() {
 
   return (
     <>
-      <section className="px-4 pt-[108px]">
+      <section className="px-4 pt-[30px]">
         <div className="mx-auto flex max-w-[1346px] justify-center rounded-xl px-6 py-[50px] md:px-[73px]" style={{ backgroundImage: 'linear-gradient(189.7deg, #e6f3ff 15%, #d1e7ff 86%)' }}>
           <CountryDetail country={country} headingLevel="h1" />
         </div>
