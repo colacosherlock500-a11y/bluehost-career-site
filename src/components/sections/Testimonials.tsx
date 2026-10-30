@@ -60,7 +60,7 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
         body="Hear from colleagues around the world about what it means to belong, build, grow, and shine here."
       />
       <div className="relative w-full py-10">
-        <Marquee gap={29} duration={50}>
+        <Marquee gap={29} scrollLinked>
           {items.map(t => (
             <ReviewCard key={t.name} {...t} />
           ))}

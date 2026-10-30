@@ -15,14 +15,14 @@ function Tile({ slug, name, tile }: { slug: string; name: string; tile: string }
   )
 }
 
-/** Two counter-scrolling rows of country name + photo tiles. */
+/** Two rows of country name + photo tiles that slide in opposite directions as the page scrolls. */
 export function CountryTiles() {
   const half = Math.ceil(countries.length / 2)
   const rows = [countries.slice(0, half), countries.slice(half)]
   return (
     <section aria-label="Our countries" className="flex flex-col gap-[18px] py-6">
       {rows.map((row, i) => (
-        <Marquee key={i} gap={18} duration={45} reverse={i === 1}>
+        <Marquee key={i} gap={18} reverse={i === 1} scrollLinked>
           {row.map(c => (
             <Tile key={c.slug} {...c} />
           ))}

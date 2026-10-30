@@ -52,10 +52,10 @@ export function AffinityGroups({ id }: { id?: string }) {
         </div>
       </div>
       <div className="mt-10 flex flex-col gap-[33px]">
-        <Marquee gap={25} duration={90}>
+        <Marquee gap={25} scrollLinked>
           {affinityGroups.slice(0, half).map(g => <AffinityCard key={g.name} group={g} />)}
         </Marquee>
-        <Marquee gap={25} duration={90} reverse>
+        <Marquee gap={25} reverse scrollLinked>
           {affinityGroups.slice(half).map(g => <AffinityCard key={g.name} group={g} />)}
         </Marquee>
       </div>
