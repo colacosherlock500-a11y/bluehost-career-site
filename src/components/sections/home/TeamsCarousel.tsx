@@ -27,8 +27,9 @@ export function TeamsCarousel() {
       />
 
       <div className="flex w-full flex-col items-center gap-[37px] py-[19px]">
-        <div className="relative flex h-[clamp(260px,32vw,512px)] w-full items-center justify-center gap-[67px]">
-          {/* side cards */}
+        {/* --card-w = width of the active card (94% of the row height at its 820:481 ratio). */}
+        <div className="relative flex h-[clamp(260px,32vw,512px)] w-full items-center justify-center [--card-w:calc(clamp(260px,32vw,512px)*0.94*820/481)]">
+          {/* side cards: fill the space between the screen edge and the active card (67px gap) */}
           {[-1, 1].map(d => {
             const t = at(d)
             return (
@@ -36,14 +37,19 @@ export function TeamsCarousel() {
                 key={`${t.slug}-${d}`}
                 onClick={() => go(d)}
                 aria-label={d < 0 ? 'Previous team' : 'Next team'}
-                className={`absolute top-1/2 hidden h-[87%] w-[47.5%] -translate-y-1/2 overflow-hidden rounded-[10px] md:block ${d < 0 ? 'right-[calc(50%+29.8vw)]' : 'left-[calc(50%+29.8vw)]'}`}
+                className={`absolute top-1/2 hidden h-[87%] w-[calc(50%-var(--card-w)/2-67px)] -translate-y-1/2 overflow-hidden md:block ${d < 0 ? 'left-0 rounded-r-[10px]' : 'right-0 rounded-l-[10px]'}`}
               >
-                <img src={t.image} alt="" className="absolute inset-0 size-full object-cover" />
+                <img src={t.image} alt="" className={`absolute inset-0 size-full object-cover ${d < 0 ? 'object-right' : 'object-left'}`} />
                 <span
-                  className={`absolute inset-y-0 w-[246px] ${d < 0 ? 'right-0 -scale-x-100' : 'left-0'}`}
+                  className={`absolute inset-y-0 w-[min(246px,100%)] ${d < 0 ? 'right-0 -scale-x-100' : 'left-0'}`}
                   style={{ backgroundImage: 'linear-gradient(269.6deg, rgba(25,108,223,0.82) 17%, rgba(0,67,133,0) 99%)' }}
                 />
-                <img src={d < 0 ? prev : next} alt="" className={`absolute top-1/2 size-16 -translate-y-1/2 ${d < 0 ? 'right-[160px] rotate-90 -scale-y-100' : 'left-[160px] rotate-90'}`} />
+                {/* 160px in from the inner edge, as in Figma, but never closer than 32px to the screen edge */}
+                <img
+                  src={d < 0 ? prev : next}
+                  alt=""
+                  className={`absolute top-1/2 size-16 -translate-y-1/2 ${d < 0 ? 'right-[clamp(0px,calc(100%-96px),160px)] rotate-90 -scale-y-100' : 'left-[clamp(0px,calc(100%-96px),160px)] rotate-90'}`}
+                />
               </button>
             )
           })}
