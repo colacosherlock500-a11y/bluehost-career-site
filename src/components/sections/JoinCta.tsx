@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import instagram from '../../assets/img/social/instagram.svg'
 import igWhite from '../../assets/img/social/ig-white.svg'
 import linkedin from '../../assets/img/social/linkedin.svg'
@@ -53,10 +53,12 @@ export function SocialCards() {
     <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" aria-label="Follow Bluehost on Instagram" className="group relative block h-[clamp(320px,40vw,558px)] w-full max-w-[1199px] overflow-hidden">
       <div className="absolute left-1/2 top-1/2 h-[558px] w-[1199px] -translate-x-1/2 -translate-y-1/2 max-xl:scale-90 max-lg:scale-75 max-md:scale-[0.6] max-sm:scale-[0.42]">
         {posts.map(([src, x, w, h, z]) => (
+          // Hover (Figma "Cards" variants): the card comes to the front and grows to the
+          // featured size (343 × 466) around its own centre; the others stay in place.
           <div
             key={src}
-            className="absolute top-1/2 overflow-hidden rounded-[12.6px] shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-transform duration-500"
-            style={{ width: w, height: h, zIndex: z, left: `calc(50% + ${x}px)`, transform: `translate(-50%, -50%)` }}
+            className="absolute top-1/2 z-[var(--z)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[12.6px] shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-[scale,box-shadow] duration-300 ease-out hover:z-10 hover:scale-[var(--hover-scale)] hover:shadow-[0_24px_50px_rgba(0,42,102,0.28)]"
+            style={{ width: w, height: h, left: `calc(50% + ${x}px)`, '--z': z, '--hover-scale': 343 / w } as CSSProperties}
           >
             <img src={src} alt="" className="size-full object-cover" />
             <img src={igWhite} alt="" className="absolute bottom-[4.5%] right-[5.8%] w-[6.8%]" />
