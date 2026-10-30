@@ -33,10 +33,10 @@ export function Footer() {
   return (
     <footer className="font-montserrat text-white">
       <div className="bg-bh-blue-1000">
-        <div className="mx-auto flex max-w-[1326px] flex-col gap-10 px-4 py-[50px] md:px-6 lg:flex-row lg:justify-between">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:flex lg:gap-0">
+        <div className="mx-auto flex max-w-[1326px] flex-col gap-10 px-4 py-[50px] md:px-6 xl:flex-row xl:justify-between">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 xl:flex xl:gap-0">
             {columns.map(col => (
-              <div key={col.title} className="lg:w-[190px] lg:first:w-[216px] lg:[&:nth-child(2)]:w-[239px]">
+              <div key={col.title} className="xl:w-[190px] xl:first:w-[216px] xl:[&:nth-child(2)]:w-[239px]">
                 <h3 className="mb-[26px] text-[20px] font-medium leading-[26px]">{col.title}</h3>
                 <ul>
                   {col.links.map(l => (
@@ -48,7 +48,7 @@ export function Footer() {
               </div>
             ))}
           </div>
-          <img src={logo} alt="Bluehost" className="h-6 w-[136px] lg:mt-[26px]" />
+          <img src={logo} alt="Bluehost" className="h-6 w-[136px] xl:mt-[26px]" />
         </div>
       </div>
       <div className="bg-bh-blue-900">

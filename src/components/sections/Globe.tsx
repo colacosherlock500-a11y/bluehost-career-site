@@ -1,10 +1,9 @@
 import { geoOrthographic, geoPath, geoGraticule10, type GeoPermissibleObjects } from 'd3-geo'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { feature } from 'topojson-client'
 import type { FeatureCollection, Geometry } from 'geojson'
 import type { GeometryCollection, Topology } from 'topojson-specification'
-import world from 'world-atlas/countries-110m.json'
 import check from '../../assets/img/common/check.svg'
 import closeIcon from '../../assets/img/common/close.svg'
 import { getBenefits } from '../../data/benefits'
@@ -26,10 +25,24 @@ const isoBySlug: Record<string, string> = {
 }
 const slugByIso = Object.fromEntries(Object.entries(isoBySlug).map(([s, iso]) => [iso, s]))
 
-const topo = world as unknown as Topology<{ countries: GeometryCollection }>
-const land = feature(topo, topo.objects.countries) as FeatureCollection<Geometry, { name: string }>
+type Land = FeatureCollection<Geometry, { name: string }>
+// The world map (~100 kB) is code-split and loaded once on first use.
+let landPromise: Promise<Land> | null = null
+const loadLand = () =>
+  (landPromise ??= import('world-atlas/countries-110m.json').then(m => {
+    const topo = m.default as unknown as Topology<{ countries: GeometryCollection }>
+    return feature(topo, topo.objects.countries) as Land
+  }))
 
 type Rotation = [number, number]
+/** Whether a [lon, lat] point faces the viewer for the given rotation. */
+const visible = (lonlat: [number, number], [l, p]: Rotation) => {
+  const toRad = Math.PI / 180
+  const lambda = (lonlat[0] + l) * toRad
+  const phi = lonlat[1] * toRad
+  const phi0 = -p * toRad
+  return Math.sin(phi0) * Math.sin(phi) + Math.cos(phi0) * Math.cos(phi) * Math.cos(lambda) > 0
+}
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2)
 
 interface GlobeProps {
@@ -55,17 +68,53 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
   const size = 460
   const rotation = useRef<Rotation>([100, -10])
   const autoRotate = useRef(true)
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [, force] = useState(0)
+  const [land, setLand] = useState<Land | null>(null)
+  useEffect(() => {
+    loadLand().then(setLand)
+  }, [])
 
   const projection = useMemo(() => geoOrthographic().scale(size / 2 - 8).translate([size / 2, size / 2]).clipAngle(90), [])
   const path = useMemo(() => geoPath(projection), [projection])
   const graticule = useMemo(() => geoGraticule10(), [])
+  const sel = countries.find(c => c.slug === selected)
+
+  // The globe is redrawn imperatively (no React state per frame) so the
+  // animation never competes with route transitions or other renders.
+  const graticuleRef = useRef<SVGPathElement>(null)
+  const landRef = useRef<SVGGElement>(null)
+  const markersRef = useRef<SVGGElement>(null)
+  const labelRef = useRef<SVGGElement>(null)
+  const draw = () => {
+    projection.rotate(rotation.current)
+    graticuleRef.current?.setAttribute('d', path(graticule) ?? '')
+    if (land && landRef.current) {
+      const els = landRef.current.children
+      land.features.forEach((f, i) => els[i]?.setAttribute('d', path(f) ?? ''))
+    }
+    markersRef.current?.querySelectorAll<SVGGElement>('[data-lat]').forEach(g => {
+      const lonlat: [number, number] = [Number(g.dataset.lon), Number(g.dataset.lat)]
+      const xy = projection(lonlat)
+      const show = !!xy && visible(lonlat, rotation.current)
+      g.style.display = show ? '' : 'none'
+      if (show) g.setAttribute('transform', `translate(${xy![0]} ${xy![1]})`)
+    })
+    if (sel && labelRef.current) {
+      const lonlat: [number, number] = [sel.center[1], sel.center[0]]
+      const xy = projection(lonlat)
+      const show = !!xy && visible(lonlat, rotation.current)
+      labelRef.current.style.display = show ? '' : 'none'
+      if (show) labelRef.current.setAttribute('transform', `translate(${xy![0] + 12} ${xy![1] - 12})`)
+    }
+  }
+  const drawRef = useRef(draw)
+  drawRef.current = draw
+  useLayoutEffect(() => drawRef.current())
 
   // Animation loop: auto-rotation and tweening to the selected country.
   const tween = useRef<{ from: Rotation; to: Rotation; start: number } | null>(null)
   useEffect(() => {
     let raf = 0
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     const tick = (now: number) => {
       if (tween.current) {
         const { from, to, start } = tween.current
@@ -73,10 +122,10 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
         const e = easeInOut(t)
         rotation.current = [from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e]
         if (t === 1) tween.current = null
-        force(n => n + 1)
-      } else if (autoRotate.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        drawRef.current()
+      } else if (autoRotate.current && !reduceMotion.matches) {
         rotation.current = [rotation.current[0] + 0.12, rotation.current[1]]
-        force(n => n + 1)
+        drawRef.current()
       }
       raf = requestAnimationFrame(tick)
     }
@@ -120,7 +169,7 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
     }
     if (d.moved) {
       rotation.current = [d.r[0] + dx * 0.35, Math.max(-60, Math.min(60, d.r[1] - dy * 0.35))]
-      force(n => n + 1)
+      draw()
     }
   }
   const onPointerUp = (e: React.PointerEvent) => {
@@ -136,19 +185,7 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
     }
   }
 
-  projection.rotate(rotation.current)
-  const sel = countries.find(c => c.slug === selected)
-  const markers = countries.flatMap(c => c.offices.filter(o => o.coords).map(o => ({ country: c, office: o, xy: projection([o.coords![1], o.coords![0]]) })))
-  // Hide markers on the back side of the globe.
-  const visible = (lonlat: [number, number]) => {
-    const [l, p] = rotation.current
-    const toRad = Math.PI / 180
-    const lambda = (lonlat[0] + l) * toRad
-    const phi = lonlat[1] * toRad
-    const phi0 = -p * toRad
-    return Math.sin(phi0) * Math.sin(phi) + Math.cos(phi0) * Math.cos(phi) * Math.cos(lambda) > 0
-  }
-  const labelXY = sel ? projection([sel.center[1], sel.center[0]]) : null
+  const markers = countries.flatMap(c => c.offices.filter(o => o.coords).map(o => ({ country: c, office: o, coords: o.coords! })))
 
   return (
     <div className="relative mx-auto flex w-full max-w-[1212px] flex-col items-center">
@@ -162,7 +199,6 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
         {sel && showDetails && <CountryPhotoCard country={sel} />}
 
         <svg
-          ref={svgRef}
           viewBox={`0 0 ${size} ${size}`}
           className="mx-auto w-full max-w-[460px] cursor-grab touch-none select-none active:cursor-grabbing"
           onPointerDown={onPointerDown}
@@ -180,14 +216,14 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
           </defs>
           <circle cx={size / 2} cy={size / 2} r={size / 2 - 4} fill="#e9f1ff" opacity={0.6} />
           <path d={path({ type: 'Sphere' } as GeoPermissibleObjects) ?? undefined} fill="url(#globe-sphere)" />
-          <path d={path(graticule) ?? undefined} fill="none" stroke="#dbe7ff" strokeWidth={0.5} opacity={0.6} />
-          {land.features.map(f => {
+          <path ref={graticuleRef} fill="none" stroke="#dbe7ff" strokeWidth={0.5} opacity={0.6} />
+          <g ref={landRef}>
+          {land?.features.map(f => {
             const slug = slugByIso[String(f.id)]
             const isSel = slug && slug === selected
             return (
               <path
                 key={String(f.id) + f.properties.name}
-                d={path(f) ?? undefined}
                 data-slug={slug}
                 fill={isSel ? '#196cdf' : slug ? '#9dbcf7' : '#b4cdfa'}
                 stroke="#eef4ff"
@@ -198,17 +234,18 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
               </path>
             )
           })}
-          {markers.map(({ country, office, xy }) =>
-            xy && visible([office.coords![1], office.coords![0]]) ? (
-              <g key={country.slug + office.city} transform={`translate(${xy[0]} ${xy[1]})`} className="pointer-events-none">
+          </g>
+          <g ref={markersRef}>
+            {markers.map(({ country, office, coords }) => (
+              <g key={country.slug + office.city} data-lat={coords[0]} data-lon={coords[1]} className="pointer-events-none">
                 <circle r={9} fill="#196cdf" opacity={0.18} />
                 <circle r={4.5} fill="white" />
                 <circle r={3} fill="#3b6fe0" />
               </g>
-            ) : null,
-          )}
-          {sel && labelXY && visible([sel.center[1], sel.center[0]]) && (
-            <g transform={`translate(${labelXY[0] + 12} ${labelXY[1] - 12})`} className="pointer-events-none">
+            ))}
+          </g>
+          {sel && (
+            <g ref={labelRef} className="pointer-events-none">
               <rect x={0} y={-11} rx={6} width={sel.name.length * 6.6 + 18} height={22} fill="white" stroke="#dbe7ff" />
               <text x={9} y={4} fontSize={11} fontWeight={600} fill="#041d33">{sel.name}</text>
             </g>
