@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
+  /** "browser" (default, real URLs) or "memory" (in-page navigation for embedded previews). */
+  readonly VITE_ROUTER?: 'browser' | 'memory'
   /** "mock" (default) or "workday". */
   readonly VITE_JOBS_PROVIDER?: 'mock' | 'workday'
   /** Base URL of the jobs API / Workday proxy. */

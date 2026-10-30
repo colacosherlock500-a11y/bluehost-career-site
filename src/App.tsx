@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
 import HomePage from './pages/HomePage'
 
@@ -12,9 +12,13 @@ const JobSearchPage = lazy(() => import('./pages/JobSearchPage'))
 const RolePage = lazy(() => import('./pages/RolePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
+// VITE_ROUTER=memory keeps navigation inside the page (for embedded previews
+// such as a shared artifact, where the page URL can't change).
+const Router = import.meta.env.VITE_ROUTER === 'memory' ? MemoryRouter : BrowserRouter
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Suspense fallback={<div className="min-h-screen" />}>
         <Routes>
           <Route element={<Layout />}>
@@ -30,6 +34,6 @@ export default function App() {
           </Route>
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </Router>
   )
 }
