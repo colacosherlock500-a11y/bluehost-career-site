@@ -1,0 +1,15 @@
+# Netlify: connect this GitHub repo (Add new site → Import from Git) and it deploys on every push.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Sample jobs until the Workday API server is hosted; set to "workday" + VITE_JOBS_API_URL then.
+  VITE_JOBS_PROVIDER = "mock"
+
+# Single-page app: every route serves index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
