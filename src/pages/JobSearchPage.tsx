@@ -89,6 +89,22 @@ function JobAlertCard({ search }: { search: JobSearchParams }) {
   )
 }
 
+/** Closest office (or country centre, for remote-only countries) to a point, in miles. */
+function nearestOffice(lat: number, lon: number) {
+  const rad = Math.PI / 180
+  const miles = (a: [number, number]) => {
+    const dLat = (a[0] - lat) * rad
+    const dLon = (a[1] - lon) * rad
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat * rad) * Math.cos(a[0] * rad) * Math.sin(dLon / 2) ** 2
+    return 3958.8 * 2 * Math.asin(Math.sqrt(h))
+  }
+  const candidates = countries.flatMap(country => {
+    const offices = country.offices.filter(o => o.coords).map(o => ({ country, city: o.city, miles: miles(o.coords!) }))
+    return offices.length ? offices : [{ country, city: country.name, miles: miles(country.center) }]
+  })
+  return candidates.sort((a, b) => a.miles - b.miles)[0]
+}
+
 export default function JobSearchPage() {
   const [sp, setSp] = useSearchParams()
   const params = readParams(sp)
@@ -111,11 +127,37 @@ export default function JobSearchPage() {
     setSp(q)
   }
 
+  // "Use my location": matches the visitor to the nearest Bluehost office and shows that
+  // country's roles. INTEGRATION: once jobs carry coordinates (Workday distance search),
+  // pass lat/lng + radius to the jobs API instead.
+  const [locating, setLocating] = useState<{ state: 'idle' | 'busy' | 'done' | 'error'; message?: string }>({ state: 'idle' })
   const useMyLocation = () => {
-    // INTEGRATION: reverse-geocode coordinates to a city/ZIP (or pass lat/lng to Workday's distance search).
-    navigator.geolocation?.getCurrentPosition(
-      pos => setForm(f => ({ ...f, location: `${pos.coords.latitude.toFixed(3)}, ${pos.coords.longitude.toFixed(3)}` })),
-      () => undefined,
+    if (!('geolocation' in navigator) || !window.isSecureContext) {
+      setLocating({ state: 'error', message: 'Your browser can\'t share your location here. Type a city instead.' })
+      return
+    }
+    setLocating({ state: 'busy', message: 'Finding your location…' })
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const nearest = nearestOffice(pos.coords.latitude, pos.coords.longitude)
+        if (!nearest) return setLocating({ state: 'error', message: 'We couldn\'t match your location to an office. Type a city instead.' })
+        const next = { ...form, country: nearest.country.slug, location: '', page: 1 }
+        setForm(next)
+        apply(next)
+        setLocating({
+          state: 'done',
+          message: `Showing roles in ${nearest.country.name} — nearest office: ${nearest.city}, about ${Math.round(nearest.miles).toLocaleString()} mi away.`,
+        })
+      },
+      err =>
+        setLocating({
+          state: 'error',
+          message:
+            err.code === err.PERMISSION_DENIED
+              ? 'Location access is blocked. Allow it in your browser settings, or type a city instead.'
+              : 'We couldn\'t get your location right now. Try again, or type a city instead.',
+        }),
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
     )
   }
 
@@ -156,10 +198,22 @@ export default function JobSearchPage() {
                       <img src={pinGrey} alt="" className="pointer-events-none absolute left-[14px] top-1/2 size-[21px] -translate-y-1/2" />
                       <input id="f-location" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} placeholder="City or ZIP code" className={`${inputCls} pl-[43px] pr-[14px]`} />
                     </div>
-                    <button type="button" onClick={useMyLocation} aria-label="Use my location" className="shrink-0">
-                      <img src={target} alt="" className="size-[26px]" />
+                    <button
+                      type="button"
+                      onClick={useMyLocation}
+                      disabled={locating.state === 'busy'}
+                      aria-label="Use my location"
+                      title="Use my location"
+                      className="shrink-0 rounded-md transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-bh-blue disabled:cursor-wait"
+                    >
+                      <img src={target} alt="" className={`size-[26px] ${locating.state === 'busy' ? 'animate-pulse' : ''}`} />
                     </button>
                   </div>
+                  {locating.message && (
+                    <p role="status" className={`mt-2 text-[13px] leading-[1.4] ${locating.state === 'error' ? 'text-[#b42318]' : 'text-night-sky'}`}>
+                      {locating.message}
+                    </p>
+                  )}
                 </Field>
                 <Field label="Country" htmlFor="f-country">
                   <Select id="f-country" value={form.country ?? ''} onChange={country => setForm(f => ({ ...f, country }))} placeholder="All countries" options={countries.map(c => ({ value: c.slug, label: c.name, count: data ? facetCount(data.facets.countries, c.slug) : undefined }))} />
