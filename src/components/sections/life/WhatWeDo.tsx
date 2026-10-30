@@ -5,6 +5,7 @@ import hostBg from '../../../assets/img/life/what-we-do/host-bg.webp'
 import hostMockup from '../../../assets/img/life/what-we-do/host-mockup.webp'
 import runBg from '../../../assets/img/life/what-we-do/run-bg.webp'
 import runMockup from '../../../assets/img/life/what-we-do/run-mockup.webp'
+import { useScrollStackEnabled } from '../../../hooks/useScrollStackEnabled'
 
 interface Pillar {
   tab: string
@@ -82,25 +83,13 @@ function PillarCard({ pillar, flow = false, className = '', style, ref }: { pill
   )
 }
 
-function useScrollStack() {
-  const query = '(min-width: 1024px) and (prefers-reduced-motion: no-preference)'
-  const [enabled, setEnabled] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches)
-  useEffect(() => {
-    const mq = window.matchMedia(query)
-    const onChange = () => setEnabled(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-  return enabled
-}
-
 /**
  * "What we do" — Figma dev note: "Cards change while we are scrolling".
  * The section pins while the visitor scrolls; "Host anything" then "Run your business"
  * slide up over the previous card, leaving its header strip visible as a tab.
  */
 export function WhatWeDo() {
-  const scrollStack = useScrollStack()
+  const scrollStack = useScrollStackEnabled()
   const section = useRef<HTMLElement>(null)
   const pinned = useRef<HTMLDivElement>(null)
   const cards = useRef<(HTMLElement | null)[]>([])
