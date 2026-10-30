@@ -1,0 +1,778 @@
+<!--
+  Bluehost AI Website Builder — landing page embed.
+  Redesigned to the Bluehost Career Site design system (src/index.css tokens, Figma
+  "Bluehost Career Site – 10-23-26"): Poppins, Bluehost Blue scale, eyebrow / section-heading /
+  lead type styles, 10px CTA buttons with the chevron arrow, outlined cards with the shared
+  card shadow, and the light-blue hero gradient.
+
+  Integration notes
+  - Everything is scoped to #bh-aib-embed; no host-page resets.
+  - The hero composer keeps every hook the AEM Ai Builder clientlib (bluehost.aibuilder) uses:
+    .cmp-aibuilder root + data-* config, .cmp-aibuilder__* classes, #ai-builder-prompt, #bh-generate.
+  - data-element-* / data-track-id analytics attributes and data-bff-* pricing attributes are kept.
+  - Prompt text, filenames and attachments are never sent to analytics.
+-->
+<div id="bh-aib-embed" class="bhx">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Design tokens (mirrors src/index.css @theme) ─────────────────────────── */
+#bh-aib-embed{
+  --bh-blue:#196cdf; --bh-blue-500:#196bde; --bh-blue-900:#0c4a9c; --bh-blue-1000:#012957;
+  --bh-blue-1100:#041d33; --bh-light-0:#f0faff; --bh-light-100:#dbf1fc; --bh-light-200:#badefa;
+  --bh-light-300:#a1d1fa; --bh-light-400:#84c1fc; --bh-300:#75a8f0; --bh-50:#fefeff;
+  --night-sky:#465d77; --night-sky-400:#c3c9d6; --gold:#f4c652; --ink:#18181b; --icon-bg:#ecf9ff;
+  --card-shadow:0 -7.5px 75px 0 rgba(0,0,0,.1),0 7.5px 75px 0 rgba(106,246,251,.1);
+  --btn-shadow:drop-shadow(0 3.3px 3.3px rgba(0,0,0,.1));
+  --highlight:linear-gradient(90deg,#196cdf 43%,#0e57bd 57%);
+  --ease:cubic-bezier(.22,1,.36,1);
+  font-family:Poppins,ui-sans-serif,system-ui,sans-serif;color:#000;background:#fff;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;line-height:1.5;
+}
+#bh-aib-embed *,#bh-aib-embed *::before,#bh-aib-embed *::after{box-sizing:border-box}
+#bh-aib-embed :where(h1,h2,h3,h4,p,ul,ol,figure,dl,dd){margin:0;padding:0}
+#bh-aib-embed :where(ul,ol){list-style:none}
+#bh-aib-embed :where(button,input,textarea){font:inherit;color:inherit}
+#bh-aib-embed button{cursor:pointer}
+#bh-aib-embed img{display:block;max-width:100%}
+#bh-aib-embed a{color:inherit}
+#bh-aib-embed [hidden],#bh-aib-embed .d-none{display:none!important}
+#bh-aib-embed :is(a,button,input,textarea,[tabindex]):focus-visible{outline:3px solid var(--bh-300);outline-offset:3px}
+#bh-aib-embed .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+#bh-aib-embed .wrap{width:min(1200px,calc(100% - 48px));margin-inline:auto}
+
+/* ── Shared type styles (eyebrow / h-section / text-lead) ─────────────────── */
+#bh-aib-embed .eyebrow{font-weight:500;font-size:14px;line-height:1.2;letter-spacing:.42px;text-transform:uppercase;color:var(--bh-blue-1100)}
+#bh-aib-embed .h-section{font-weight:600;font-size:clamp(32px,4vw,46px);line-height:1.1;letter-spacing:-1.61px;color:#000;text-wrap:balance}
+#bh-aib-embed .lead{font-size:17px;line-height:28.05px;color:var(--bh-blue-1100)}
+#bh-aib-embed .hl{background:var(--highlight);-webkit-background-clip:text;background-clip:text;color:transparent}
+#bh-aib-embed .head{display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;max-width:1010px;margin:0 auto 48px}
+#bh-aib-embed .head .lead{max-width:864px}
+#bh-aib-embed .section{padding:96px 0}
+
+/* ── Buttons (Button.tsx) ─────────────────────────────────────────────────── */
+#bh-aib-embed .btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:136px;padding:14px 16px 14px 18px;border-radius:10px;border:0;font-weight:500;font-size:16px;line-height:1.4;text-decoration:none;white-space:nowrap;transition:background-color .2s,color .2s}
+#bh-aib-embed .btn svg{width:19.76px;height:19.76px;flex:none}
+#bh-aib-embed .btn svg path{stroke:currentColor;stroke-width:2.06;fill:none}
+#bh-aib-embed .btn-primary{background:var(--bh-blue-500);color:#fff;filter:var(--btn-shadow)}
+#bh-aib-embed .btn-primary:hover{background:var(--bh-blue-900)}
+#bh-aib-embed .btn-white{background:#fff;color:var(--bh-blue);filter:var(--btn-shadow)}
+#bh-aib-embed .btn-white:hover{background:var(--bh-light-0)}
+#bh-aib-embed .btn-outline{background:#fff;border:1.6px solid var(--bh-blue);color:var(--bh-blue);box-shadow:0 3.3px 6.6px rgba(0,0,0,.1)}
+#bh-aib-embed .btn-outline:hover{background:var(--bh-blue);color:#fff}
+#bh-aib-embed .btn-block{width:100%}
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+#bh-aib-embed .hero{background:linear-gradient(180deg,#e6f4ff 0%,#d4ebff 62%,#fff 100%);padding:72px 0 0;overflow:clip}
+#bh-aib-embed .hero-copy{display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+#bh-aib-embed .hero .eyebrow{display:inline-flex;align-items:center;gap:8px}
+#bh-aib-embed .hero .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bh-blue);box-shadow:0 0 0 4px var(--bh-light-200)}
+#bh-aib-embed .hero h1{font-weight:600;font-size:clamp(36px,5vw,62px);line-height:1.1;letter-spacing:-1.8px;max-width:960px}
+#bh-aib-embed .rot{display:inline-grid;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
+#bh-aib-embed .rot span{grid-area:1/1;white-space:nowrap;background:var(--highlight);-webkit-background-clip:text;background-clip:text;color:transparent;transition:translate .55s var(--ease),opacity .55s var(--ease)}
+#bh-aib-embed .rot span[data-state=in]{translate:0 0;opacity:1}
+#bh-aib-embed .rot span[data-state=out]{translate:0 -100%;opacity:0}
+#bh-aib-embed .rot span[data-state=next]{translate:0 100%;opacity:0}
+#bh-aib-embed .rot-sizer{visibility:hidden;grid-area:1/1}
+#bh-aib-embed .stats{display:flex;justify-content:center;gap:0;margin-top:8px}
+#bh-aib-embed .stats li{display:flex;flex-direction:column;align-items:center;padding:0 32px}
+#bh-aib-embed .stats li+li{border-left:1px solid var(--bh-light-200)}
+#bh-aib-embed .stats strong{font-size:28px;font-weight:600;line-height:1.2;letter-spacing:-.5px;color:var(--bh-blue)}
+#bh-aib-embed .stats span{font-size:14px;color:var(--night-sky)}
+
+/* Composer — glass card in the Figma search-bar style */
+#bh-aib-embed .composer-anchor{width:min(840px,100%);margin:36px auto 0;scroll-margin-top:96px}
+#bh-aib-embed .composer{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 14px 14px 22px;border-radius:15px;background:#fff;border:.94px solid var(--bh-300);box-shadow:var(--card-shadow)}
+#bh-aib-embed .composer:focus-within{border-color:var(--bh-blue);box-shadow:0 0 0 4px rgba(25,108,223,.12),var(--card-shadow)}
+#bh-aib-embed .prompt-label{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--night-sky)}
+#bh-aib-embed .prompt-label svg{width:16px;height:16px;color:var(--bh-blue)}
+#bh-aib-embed #ai-builder-prompt{grid-column:1;width:100%;min-height:56px;max-height:240px;padding:6px 0;border:0;background:transparent;resize:none;font-size:17px;line-height:1.6;color:var(--bh-blue-1100);outline:0}
+#bh-aib-embed #ai-builder-prompt::placeholder{color:#6a7b90}
+#bh-aib-embed .composer.is-open #ai-builder-prompt{min-height:132px}
+#bh-aib-embed .toolrow{grid-column:2;display:flex;align-items:center;gap:10px;align-self:end}
+#bh-aib-embed .icon-btn{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:10px;border:1px solid var(--bh-light-200);background:var(--bh-light-0);color:var(--bh-blue)}
+#bh-aib-embed .icon-btn:hover{background:var(--bh-light-100)}
+#bh-aib-embed .icon-btn svg{width:22px;height:22px}
+#bh-aib-embed #bh-generate{min-width:0}
+#bh-aib-embed .prompt-meta{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--bh-light-100);font-size:12px;color:var(--night-sky)}
+#bh-aib-embed .prompt-hint.is-invalid{color:#b3261e}
+#bh-aib-embed .steps-mini{display:flex;align-items:center;gap:6px}
+#bh-aib-embed .steps-mini li{display:flex;align-items:center;gap:6px;white-space:nowrap}
+#bh-aib-embed .steps-mini li+li::before{content:"";width:16px;height:1px;background:var(--bh-light-200)}
+#bh-aib-embed .steps-mini .dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--bh-300);background:#fff}
+#bh-aib-embed .steps-mini .is-current{color:var(--bh-blue-1100);font-weight:600}
+#bh-aib-embed .steps-mini .is-current .dot,#bh-aib-embed .steps-mini .is-done .dot{background:var(--bh-blue);border-color:var(--bh-blue)}
+
+/* AEM attach menu, chips and URL panel */
+#bh-aib-embed .cmp-aibuilder__attach-menu{position:relative}
+#bh-aib-embed .cmp-aibuilder__attach-menu-panel{position:absolute;right:0;top:calc(100% + 10px);z-index:40;min-width:min(320px,calc(100vw - 48px));padding:8px;background:#fff;border:.94px solid var(--bh-300);border-radius:15px;box-shadow:var(--card-shadow)}
+#bh-aib-embed .cmp-aibuilder__attach-menu-item{display:flex;width:100%;align-items:flex-start;gap:12px;padding:12px 14px;border:0;border-radius:10px;background:transparent;text-align:left;color:var(--bh-blue-1100)}
+#bh-aib-embed .cmp-aibuilder__attach-menu-item:hover{background:var(--bh-light-0)}
+#bh-aib-embed .cmp-aibuilder__attach-menu-item svg{width:20px;height:20px;flex:none;stroke:var(--bh-blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#bh-aib-embed .cmp-aibuilder__attach-menu-copy{display:flex;flex-direction:column;gap:2px}
+#bh-aib-embed .cmp-aibuilder__attach-menu-title{font-size:15px;font-weight:600}
+#bh-aib-embed .cmp-aibuilder__attach-menu-desc{font-size:13px;color:var(--night-sky)}
+#bh-aib-embed .cmp-aibuilder__attachments-row{grid-column:1/-1;display:none;flex-wrap:wrap;gap:8px}
+#bh-aib-embed .cmp-aibuilder__attachments-row:has(.cmp-aibuilder__file-chip,.cmp-aibuilder__url-chip:not(.d-none)){display:flex}
+#bh-aib-embed .cmp-aibuilder__file-chips{display:contents}
+#bh-aib-embed :is(.cmp-aibuilder__file-chip,.cmp-aibuilder__url-chip){display:inline-flex;align-items:center;gap:8px;max-width:280px;padding:6px 10px;border:1px solid var(--bh-light-200);border-radius:10px;background:var(--bh-light-0);font-size:13px;color:var(--bh-blue-1000)}
+#bh-aib-embed .cmp-aibuilder__file-chip--error{background:#fdeceb;border-color:#f3c9c5;color:#b3261e}
+#bh-aib-embed :is(.cmp-aibuilder__file-name,.cmp-aibuilder__url-name){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px}
+#bh-aib-embed :is(.cmp-aibuilder__remove-file-btn,.cmp-aibuilder__remove-url-btn,.cmp-aibuilder__url-panel-close){display:inline-grid;place-items:center;min-width:32px;min-height:32px;border:0;border-radius:8px;background:transparent;color:var(--night-sky)}
+#bh-aib-embed .cmp-aibuilder__url-panel{grid-column:1/-1;padding:14px 16px;border:1px solid var(--bh-light-200);border-radius:12px;background:var(--bh-light-0)}
+#bh-aib-embed .cmp-aibuilder__url-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#bh-aib-embed .cmp-aibuilder__url-panel-label{font-size:15px;font-weight:600;color:var(--bh-blue-1100)}
+#bh-aib-embed .cmp-aibuilder__url-panel-row{display:flex;gap:10px}
+#bh-aib-embed .cmp-aibuilder__url-panel-input{flex:1;min-width:0;padding:11px 14px;border:1px solid var(--bh-300);border-radius:10px;background:#fff}
+#bh-aib-embed .cmp-aibuilder__url-panel-add{padding:10px 18px;border:0;border-radius:10px;background:var(--bh-blue-500);color:#fff;font-weight:500}
+#bh-aib-embed .cmp-aibuilder__url-panel-fine{font-size:12px;color:var(--night-sky);margin-top:10px}
+#bh-aib-embed :is(.cmp-aibuilder__url-error,.cmp-aibuilder__sample-edit-note){grid-column:1/-1;font-size:13px}
+#bh-aib-embed .cmp-aibuilder__url-error{color:#b3261e}
+
+/* Showcase: category tabs + desktop/phone stage */
+#bh-aib-embed .showcase{margin-top:64px;padding-bottom:88px}
+#bh-aib-embed .tabs-bar{display:flex;align-items:center;justify-content:center;gap:10px}
+#bh-aib-embed .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid var(--bh-light-200);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+#bh-aib-embed .tabs::-webkit-scrollbar{display:none}
+#bh-aib-embed .tab{flex:none;padding:9px 16px;border:0;border-radius:999px;background:transparent;font-size:14px;font-weight:500;color:var(--night-sky);white-space:nowrap;transition:background-color .2s,color .2s}
+#bh-aib-embed .tab:hover{color:var(--bh-blue-1100)}
+#bh-aib-embed .tab[aria-selected=true]{background:var(--bh-blue-1000);color:#fff}
+#bh-aib-embed .arrow-btn{flex:none;display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--bh-light-200);background:#fff;color:var(--bh-blue)}
+#bh-aib-embed .arrow-btn:hover{background:var(--bh-light-0)}
+#bh-aib-embed .arrow-btn svg{width:20px;height:20px}
+#bh-aib-embed .arrow-btn svg path{stroke:currentColor;stroke-width:2.06;fill:none}
+#bh-aib-embed .arrow-btn.prev svg{rotate:180deg}
+#bh-aib-embed .stage{position:relative;width:min(1080px,calc(100% - 96px));margin:40px auto 0;aspect-ratio:3/2;touch-action:pan-y;cursor:grab}
+#bh-aib-embed .stage.is-dragging{cursor:grabbing}
+#bh-aib-embed .stage-glow{position:absolute;inset:8% 6% -6%;border-radius:40px;background:radial-gradient(60% 60% at 50% 40%,rgba(25,108,223,.25),transparent 70%),radial-gradient(40% 50% at 15% 75%,rgba(132,193,252,.35),transparent 70%);filter:blur(40px);pointer-events:none}
+#bh-aib-embed .scene{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
+#bh-aib-embed .scene.is-active{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
+#bh-aib-embed .desk{position:absolute;inset:0;overflow:hidden;border-radius:15px;background:#fff;border:.94px solid var(--bh-300);box-shadow:0 40px 90px -30px rgba(4,29,51,.45)}
+#bh-aib-embed .chrome{display:flex;align-items:center;gap:12px;height:36px;padding:0 14px;background:var(--bh-light-0);border-bottom:1px solid var(--bh-light-100)}
+#bh-aib-embed .chrome i{width:10px;height:10px;border-radius:50%;background:var(--night-sky-400)}
+#bh-aib-embed .chrome .url{margin:0 auto;min-width:36%;padding:4px 14px;border-radius:999px;background:#fff;border:1px solid var(--bh-light-200);font-size:12px;font-weight:500;color:var(--night-sky);text-align:center}
+#bh-aib-embed .desk img{width:100%;height:calc(100% - 36px);object-fit:cover;object-position:top;pointer-events:none;user-select:none}
+#bh-aib-embed .phone{position:absolute;right:-5%;top:16%;width:20%;aspect-ratio:9/19.5;border-radius:36px;background:var(--bh-blue-1100);padding:8px;box-shadow:0 36px 70px -24px rgba(4,29,51,.6);opacity:0;translate:-60px 30px;transition:opacity .4s ease,translate .7s var(--ease)}
+#bh-aib-embed .stage.show-phone .scene.is-active .phone{opacity:1;translate:0 0}
+#bh-aib-embed .phone .screen{height:100%;border-radius:28px;overflow:hidden;background:#fff;container-type:size}
+#bh-aib-embed .phone img{width:100%;height:auto;pointer-events:none;user-select:none}
+#bh-aib-embed .stage.show-phone .scene.is-active .phone img{animation:bhx-scroll 18s linear .6s infinite}
+@keyframes bhx-scroll{0%,8%{translate:0 0}45%,55%{translate:0 calc(-100% + 100cqh)}92%,100%{translate:0 0}}
+#bh-aib-embed .showcase-foot{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:32px;text-align:center}
+#bh-aib-embed .showcase-caption{font-size:16px;color:var(--night-sky);max-width:640px;min-height:1.5em}
+
+/* ── How it works (dark band) ─────────────────────────────────────────────── */
+#bh-aib-embed .how{background:var(--bh-blue-1000);color:#fff;overflow:hidden;position:relative}
+#bh-aib-embed .how::before{content:"";position:absolute;inset:auto -10% -40% 40%;height:80%;background:radial-gradient(closest-side,rgba(25,108,223,.55),transparent);pointer-events:none}
+#bh-aib-embed .how .eyebrow{color:var(--bh-light-200)}
+#bh-aib-embed .how .h-section{color:#fff}
+#bh-aib-embed .how .lead{color:var(--bh-light-100)}
+#bh-aib-embed .how-grid{position:relative;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:40px;align-items:center}
+#bh-aib-embed .how-steps{display:flex;flex-direction:column;gap:10px}
+#bh-aib-embed .how-step{display:block;width:100%;text-align:left;padding:18px 20px;border-radius:15px;border:1px solid rgba(186,222,250,.25);background:rgba(255,255,255,.04);color:#fff;transition:background-color .25s,border-color .25s}
+#bh-aib-embed .how-step:hover{background:rgba(255,255,255,.08)}
+#bh-aib-embed .how-step[aria-selected=true]{background:var(--bh-blue);border-color:var(--bh-light-400)}
+#bh-aib-embed .how-step .t{display:flex;align-items:center;gap:14px;font-size:18px;font-weight:600}
+#bh-aib-embed .how-step .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(186,222,250,.5);font-size:13px;flex:none}
+#bh-aib-embed .how-step[aria-selected=true] .n{background:#fff;color:var(--bh-blue);border-color:#fff}
+#bh-aib-embed .how-step .d{display:none;margin:8px 0 0 44px;font-size:14px;line-height:1.5;color:var(--bh-light-100)}
+#bh-aib-embed .how-step[aria-selected=true] .d{display:block}
+#bh-aib-embed .how-panel{border-radius:15px;padding:18px;background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border:1px solid rgba(186,222,250,.3)}
+#bh-aib-embed .how-panel header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:2px 4px 14px}
+#bh-aib-embed .how-panel header span{font-size:12px;letter-spacing:.42px;text-transform:uppercase;color:var(--bh-light-400)}
+#bh-aib-embed .how-panel header h3{font-size:22px;font-weight:600;letter-spacing:-.3px}
+#bh-aib-embed .how-cta{margin-top:24px}
+
+/* Illustrative Account Manager mock (scales with its own width) */
+#bh-aib-embed .am{container-type:inline-size;aspect-ratio:3/2;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;background:#f7f9fc;color:var(--bh-blue-1100);font-size:1.5cqw}
+#bh-aib-embed .am-top{flex:none;display:flex;align-items:center;gap:2cqw;height:9%;padding:0 2.5cqw;background:#fff;border-bottom:1px solid #e3e8ef}
+#bh-aib-embed .am-top svg{height:2.4cqw;width:2.4cqw;flex:none;color:var(--bh-blue)}
+#bh-aib-embed .am-top strong{font-size:1.9cqw;font-weight:600;letter-spacing:-.04cqw}
+#bh-aib-embed .am-top span{color:var(--night-sky)}
+#bh-aib-embed .am-top b{margin-left:auto;width:2.6cqw;height:2.6cqw;border-radius:50%;background:var(--bh-light-200)}
+#bh-aib-embed .am-body{flex:1;min-height:0;display:grid;grid-template-columns:17% 1fr}
+#bh-aib-embed .am-nav{background:#fff;border-right:1px solid #e3e8ef;padding:1.5cqw 0}
+#bh-aib-embed .am-nav div{padding:1.4cqw 1.6cqw;font-size:1.4cqw;color:var(--night-sky)}
+#bh-aib-embed .am-nav .on{background:var(--bh-blue);color:#fff}
+#bh-aib-embed .am-main{padding:2.4cqw;min-width:0;display:flex;flex-direction:column;gap:1.4cqw}
+#bh-aib-embed .am-crumb{font-size:1.15cqw;color:var(--night-sky)}
+#bh-aib-embed .am-k{font-size:1.1cqw;letter-spacing:.12em;color:var(--bh-blue);font-weight:600}
+#bh-aib-embed .am-h{font-size:2.9cqw;font-weight:600;line-height:1.2;letter-spacing:-.04cqw}
+#bh-aib-embed .am-p{font-size:1.5cqw;color:var(--night-sky)}
+#bh-aib-embed .am-box{padding:1.8cqw;border:1px solid var(--bh-300);border-radius:.8cqw;background:#fff;font-size:1.6cqw;line-height:1.55}
+#bh-aib-embed .am-row{display:flex;align-items:center;justify-content:space-between;gap:1cqw;font-size:1.35cqw;color:var(--night-sky)}
+#bh-aib-embed .am-btn{padding:1.2cqw 2cqw;border-radius:.8cqw;background:var(--bh-blue-500);color:#fff;font-weight:500}
+#bh-aib-embed .am-chip{display:inline-block;padding:.7cqw 1.2cqw;margin-right:.8cqw;border:1px solid #e3e8ef;border-radius:.8cqw;background:#fff;font-size:1.15cqw}
+#bh-aib-embed .am-opt{padding:1.5cqw;border:1px solid #e3e8ef;border-radius:.8cqw;background:#fff;font-size:1.6cqw}
+#bh-aib-embed .am-opt.on{border-color:var(--bh-blue);background:var(--bh-light-0);color:var(--bh-blue-900)}
+#bh-aib-embed .am-shot{flex:1;min-height:0;width:100%;object-fit:cover;object-position:top;border-radius:.8cqw;border:1px solid #e3e8ef;background:#fff}
+#bh-aib-embed .am-ok{color:#19a27e;font-weight:600}
+
+/* ── Value intro, essentials ──────────────────────────────────────────────── */
+#bh-aib-embed .works{padding:96px 0 0}
+#bh-aib-embed .works .actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+#bh-aib-embed .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+#bh-aib-embed .card{position:relative;display:flex;flex-direction:column;border-radius:15px;border:.94px solid var(--bh-300);background:#fff;box-shadow:var(--card-shadow);overflow:hidden}
+#bh-aib-embed .feat{padding:16px 16px 28px}
+#bh-aib-embed .feat img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;object-position:top;border-radius:10px;background:var(--bh-light-0);margin-bottom:22px}
+#bh-aib-embed .feat .num{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:6.9px;background:var(--icon-bg);color:var(--bh-blue);font-weight:600;font-size:15px;margin:0 8px 12px}
+#bh-aib-embed .feat h3{font-size:19.75px;font-weight:600;line-height:26px;color:var(--ink);margin:0 8px 10px}
+#bh-aib-embed .feat p{font-size:15px;line-height:1.45;letter-spacing:-.14px;color:var(--bh-blue-1100);margin:0 8px}
+
+/* ── Pricing ──────────────────────────────────────────────────────────────── */
+#bh-aib-embed .pricing{background:linear-gradient(180deg,#fff,var(--bh-light-0))}
+#bh-aib-embed .plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;align-items:stretch}
+#bh-aib-embed .plan{padding:32px 24px 28px;gap:14px}
+#bh-aib-embed .plan.pop{border:2px solid var(--bh-blue)}
+#bh-aib-embed .plan .tag{position:absolute;top:0;left:0;right:0;padding:6px;background:var(--bh-blue);color:#fff;font-size:12px;font-weight:600;letter-spacing:.42px;text-align:center;text-transform:uppercase}
+#bh-aib-embed .plan.pop{padding-top:56px}
+#bh-aib-embed .plan h3{font-size:20px;font-weight:600;color:var(--ink)}
+#bh-aib-embed .plan .d{font-size:14px;color:var(--night-sky);min-height:42px}
+#bh-aib-embed .plan .pr{font-size:44px;font-weight:600;line-height:1;letter-spacing:-1.5px;color:var(--bh-blue-1100)}
+#bh-aib-embed .plan .pr small{font-size:15px;font-weight:400;letter-spacing:0;color:var(--night-sky)}
+#bh-aib-embed .plan .per{font-size:13px;color:var(--night-sky);margin-top:-6px}
+#bh-aib-embed .plan .credits{align-self:flex-start;padding:5px 10px;border-radius:8px;background:var(--icon-bg);color:var(--bh-blue-900);font-size:13px;font-weight:600}
+#bh-aib-embed .plan ul{display:flex;flex-direction:column;gap:9px;padding-top:16px;border-top:1px solid var(--bh-light-100);font-size:14px;line-height:1.5;color:var(--bh-blue-1100)}
+#bh-aib-embed .plan li{display:flex;gap:10px}
+#bh-aib-embed .plan li::before{content:"";flex:none;width:18px;height:18px;margin-top:2px;border-radius:50%;background:var(--bh-blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='m5 9.2 2.6 2.6L13 6.4' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px}
+#bh-aib-embed .plan li.dim{color:var(--night-sky)}
+#bh-aib-embed .plan li.dim::before{background:var(--night-sky-400) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5.5 9h7' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center/18px}
+#bh-aib-embed .credits-note{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 32px;margin-top:32px;font-size:14px;font-weight:500;color:var(--bh-blue-1100)}
+#bh-aib-embed .credits-note span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:10px;vertical-align:1px}
+#bh-aib-embed .fine{max-width:900px;margin:20px auto 0;text-align:center;font-size:12px;line-height:1.6;color:var(--night-sky)}
+
+/* ── FAQ ──────────────────────────────────────────────────────────────────── */
+#bh-aib-embed .faq-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px;max-width:1100px;margin:auto}
+#bh-aib-embed .faq-list details{border-top:1px solid var(--night-sky-400)}
+#bh-aib-embed .faq-list details:nth-last-child(-n+2){border-bottom:1px solid var(--night-sky-400)}
+#bh-aib-embed .faq-list summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 0;cursor:pointer;list-style:none;font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#000}
+#bh-aib-embed .faq-list summary::-webkit-details-marker{display:none}
+#bh-aib-embed .faq-list summary::after{content:"";flex:none;width:36px;height:36px;border-radius:50%;border:2.5px solid var(--bh-light-300);background:linear-gradient(var(--bh-light-300),var(--bh-light-300)) center/14px 2.5px no-repeat,linear-gradient(var(--bh-light-300),var(--bh-light-300)) center/2.5px 14px no-repeat;transition:transform .25s}
+#bh-aib-embed .faq-list details[open] summary::after{background:linear-gradient(var(--bh-light-300),var(--bh-light-300)) center/14px 2.5px no-repeat}
+#bh-aib-embed .faq-list p{padding:0 0 28px;font-size:16px;line-height:1.55;color:var(--bh-blue-1100)}
+
+/* ── Closing CTA ──────────────────────────────────────────────────────────── */
+#bh-aib-embed .closing{background:linear-gradient(180deg,#e6f4ff,#d4ebff);text-align:center}
+#bh-aib-embed .closing .actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+
+/* ── Floating prompt dock ─────────────────────────────────────────────────── */
+#bh-aib-embed .dock{position:fixed;z-index:1000;left:50%;bottom:max(16px,env(safe-area-inset-bottom));translate:-50% 0;width:min(820px,calc(100% - 32px));padding:10px 10px 10px 18px;border-radius:15px;background:rgba(255,255,255,.95);border:.94px solid var(--bh-300);box-shadow:0 12px 50px rgba(4,29,51,.18);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);display:flex;align-items:center;gap:12px;transition:opacity .25s,translate .25s var(--ease)}
+#bh-aib-embed .dock[data-shown=false]{opacity:0;translate:-50% 24px;pointer-events:none;visibility:hidden}
+#bh-aib-embed .dock textarea{flex:1;min-width:0;height:44px;padding:10px 0;border:0;background:transparent;resize:none;font-size:15px;line-height:1.5;color:var(--bh-blue-1100);outline:0}
+#bh-aib-embed .dock svg.spark{width:20px;height:20px;color:var(--bh-blue);flex:none}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width:1023px){
+  #bh-aib-embed .grid3,#bh-aib-embed .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #bh-aib-embed .how-grid{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  #bh-aib-embed .wrap{width:calc(100% - 32px)}
+  #bh-aib-embed .section{padding:64px 0}
+  #bh-aib-embed .works{padding-top:40px}
+  #bh-aib-embed .showcase{margin-top:44px;padding-bottom:40px}
+  #bh-aib-embed .head{margin-bottom:32px}
+  #bh-aib-embed .hero{padding-top:48px}
+  #bh-aib-embed .hero h1{letter-spacing:-1px}
+  #bh-aib-embed .stats li{padding:0 14px}
+  #bh-aib-embed .stats strong{font-size:22px}
+  #bh-aib-embed .stats span{font-size:12px}
+  #bh-aib-embed .composer{grid-template-columns:1fr;padding:14px}
+  #bh-aib-embed .toolrow{grid-column:1;justify-content:space-between}
+  #bh-aib-embed #bh-generate{flex:1}
+  #bh-aib-embed .steps-mini{display:none}
+  #bh-aib-embed .arrow-btn{display:none}
+  #bh-aib-embed .tab{padding:8px 12px;font-size:13px}
+  #bh-aib-embed .stage{width:calc(100% - 40px);margin-top:28px}
+  #bh-aib-embed .chrome{height:24px}
+  #bh-aib-embed .chrome i{width:6px;height:6px}
+  #bh-aib-embed .chrome .url{font-size:9px;padding:2px 8px}
+  #bh-aib-embed .desk img{height:calc(100% - 24px)}
+  #bh-aib-embed .phone{width:30%;right:-4%;top:28%;border-radius:20px;padding:5px}
+  #bh-aib-embed .phone .screen{border-radius:15px}
+  #bh-aib-embed .grid3,#bh-aib-embed .plans,#bh-aib-embed .faq-list{grid-template-columns:1fr}
+  #bh-aib-embed .faq-list details:nth-last-child(2){border-bottom:0}
+  #bh-aib-embed .plan .d{min-height:0}
+  #bh-aib-embed .how-step .d{margin-left:0}
+  #bh-aib-embed .dock{padding:8px 8px 8px 14px}
+  #bh-aib-embed .dock .btn{min-width:0;padding:12px}
+  #bh-aib-embed .dock .btn span{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  #bh-aib-embed *,#bh-aib-embed *::before,#bh-aib-embed *::after{transition:none!important;animation:none!important}
+  #bh-aib-embed .phone{translate:0 0}
+}
+</style>
+
+<svg aria-hidden="true" width="0" height="0" style="position:absolute">
+  <symbol id="bhx-arrow" viewBox="0 0 19.76 19.76"><path d="M7.13 15.81 12.94 10 7.13 4.19" fill="none" stroke="currentColor" stroke-width="2.06"/></symbol>
+  <symbol id="bhx-spark" viewBox="0 0 24 24"><path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="bhx-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="bhx-logo" viewBox="0 0 24 24"><path fill="currentColor" d="M23.77 6.69V0h-6.64v6.69zm0 1.96v6.7h-6.64v-6.7zM6.64 24v-6.69H0V24zm8.57-6.69V24H8.56v-6.69zm8.56 0V24h-6.64v-6.69zm-8.56-1.96v-6.7H8.56v6.7zm-8.57-6.7v6.7H0v-6.7zM15.2 0v6.69H8.56V0zM6.64 6.69V0H0v6.69z"/></symbol>
+</svg>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
+<section class="hero" id="bh-hero" aria-labelledby="bh-hero-title">
+  <div class="wrap hero-copy">
+    <p class="eyebrow">AI Website Builder</p>
+    <h1 id="bh-hero-title">
+      <span class="sr-only">Describe the website your business needs.</span>
+      <span aria-hidden="true">Describe the <span class="rot" id="bh-rot"><span class="rot-sizer">photography portfolio</span></span><br> your business needs.</span>
+    </h1>
+    <ul class="stats" aria-label="Why build with Bluehost">
+      <li><strong>Minutes</strong><span>to a first version</span></li>
+      <li><strong>$0</strong><span>to start, no card</span></li>
+      <li><strong>24/7</strong><span>real people on call</span></li>
+    </ul>
+  </div>
+
+  <div class="wrap">
+    <div class="composer-anchor" id="bh-composer-anchor">
+      <!-- AEM: load bluehost.aibuilder clientlib; it binds to this root and its __* children. -->
+      <div class="cmp-aibuilder" id="aibuilder-hero"
+           data-ai-builder-base-url="aHR0cHM6Ly9nYXRld2F5LmJsdWVob3N0LWFnZW50cy5uZXdmb2xkLmNvbS9ibHVlaG9zdC9hZ2VudHMvd2Vic2l0ZS1idWlsZGVy"
+           data-currency-code-cookie-name="currencyCode" data-lang-pref-cookie-name="langPref"
+           data-editor-redirect-url="https://www.bluehost.com/checkout/ai-builder/editor"
+           data-session-prompt-flow="" data-trial-type="app">
+        <form class="cmp-aibuilder__form composer" id="bh-composer" novalidate>
+          <label class="prompt-label" for="ai-builder-prompt"><svg aria-hidden="true"><use href="#bhx-spark"/></svg>Your idea. Your next big thing.</label>
+          <textarea class="cmp-aibuilder__prompt-input" id="ai-builder-prompt" name="website-prompt" rows="2"
+                    minlength="10" maxlength="1500" required
+                    placeholder="Describe the website you want to create…"
+                    aria-describedby="bh-prompt-hint bh-file-help"
+                    data-element-label="ai-builder-prompt" data-element-location="body" data-element-type="field"></textarea>
+
+          <div class="toolrow cmp-aibuilder__toolrow">
+            <div class="cmp-aibuilder__attach-menu">
+              <button type="button" class="cmp-aibuilder__plus-btn icon-btn" id="bh-attach" aria-label="Add a reference"
+                      aria-haspopup="menu" aria-expanded="false" aria-controls="aibuilder-hero-attach-menu" aria-describedby="bh-file-help"
+                      data-track-id="prompt-attach" data-element-label="add_a_reference" data-element-location="body" data-element-type="button">
+                <svg aria-hidden="true"><use href="#bhx-plus"/></svg>
+              </button>
+              <div class="cmp-aibuilder__attach-menu-panel d-none" id="aibuilder-hero-attach-menu" role="menu" aria-label="Add a reference">
+                <button type="button" role="menuitem" class="cmp-aibuilder__attach-menu-item cmp-aibuilder__upload-btn" data-track-id="attach-upload"
+                        data-element-label="add_your_logo_or_photos_well_build_the_site_around_them" data-element-location="body" data-element-type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M4 17l5-5 4 4 3-2.5 4 3.5"/></svg>
+                  <span class="cmp-aibuilder__attach-menu-copy"><span class="cmp-aibuilder__attach-menu-title">Add your logo or photos</span><span class="cmp-aibuilder__attach-menu-desc">We’ll build the site around them</span></span>
+                </button>
+                <button type="button" role="menuitem" class="cmp-aibuilder__attach-menu-item cmp-aibuilder__url-btn" data-track-id="attach-site-url"
+                        data-element-label="show_us_a_site_you_like_well_match_the_look_not_the_content" data-element-location="body" data-element-type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a4 4 0 0 0 5.7.4l2.8-2.8A4 4 0 0 0 12.8 5l-1.6 1.6"/><path d="M14 11a4 4 0 0 0-5.7-.4L5.5 13.4A4 4 0 0 0 11.2 19l1.6-1.6"/></svg>
+                  <span class="cmp-aibuilder__attach-menu-copy"><span class="cmp-aibuilder__attach-menu-title">Show us a site you like</span><span class="cmp-aibuilder__attach-menu-desc">We’ll match the look, not the content</span></span>
+                </button>
+              </div>
+              <input type="file" class="cmp-aibuilder__file-input d-none" accept="image/png,image/jpeg,image/webp" multiple
+                     data-element-label="control_6" data-element-location="body" data-element-type="field">
+            </div>
+            <button type="submit" class="btn btn-primary cmp-aibuilder__build-btn" id="bh-generate" data-track-id="hero-generate"
+                    data-element-label="build_my_website" data-element-location="body" data-element-type="button">
+              <span>Build my website</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg>
+            </button>
+          </div>
+
+          <div class="cmp-aibuilder__attachments-row" aria-label="Selected references">
+            <div class="cmp-aibuilder__file-chips"></div>
+            <div class="cmp-aibuilder__url-chip d-none">
+              <span class="cmp-aibuilder__url-name"></span>
+              <button type="button" class="cmp-aibuilder__remove-url-btn" aria-label="Remove site URL"
+                      data-element-label="remove_site_url" data-element-location="body" data-element-type="button">✕</button>
+            </div>
+          </div>
+
+          <div class="cmp-aibuilder__url-panel d-none">
+            <div class="cmp-aibuilder__url-panel-header">
+              <p class="cmp-aibuilder__url-panel-label">Show us a site you like</p>
+              <button type="button" class="cmp-aibuilder__url-panel-close" aria-label="Close site URL"
+                      data-element-label="close_site_url" data-element-location="body" data-element-type="button">✕</button>
+            </div>
+            <div class="cmp-aibuilder__url-panel-row">
+              <input type="text" class="cmp-aibuilder__url-panel-input" inputmode="url" autocomplete="url" placeholder="tratto-sf.com" aria-label="Website address"
+                     data-element-label="website_address" data-element-location="body" data-element-type="field">
+              <button type="button" class="cmp-aibuilder__url-panel-add" data-element-label="add" data-element-location="body" data-element-type="button">Add</button>
+            </div>
+            <p class="cmp-aibuilder__url-panel-fine">We use it for layout, colour and tone. We don’t copy text or images.</p>
+          </div>
+          <p class="cmp-aibuilder__url-error d-none" role="alert"></p>
+          <p class="cmp-aibuilder__sample-edit-note d-none" role="status">Please edit this sample prompt to make it your own, then get started.</p>
+
+          <div class="prompt-meta">
+            <p class="prompt-hint" id="bh-prompt-hint">At least 10 characters · Enter to build · Shift + Enter for a new line</p>
+            <ol class="steps-mini" id="bh-hero-steps" aria-label="What happens next">
+              <li class="is-current" aria-current="step"><span class="dot"></span>Describe</li>
+              <li><span class="dot"></span>Sign up free</li>
+              <li><span class="dot"></span>Refine</li>
+              <li><span class="dot"></span>Publish</li>
+            </ol>
+          </div>
+          <span class="sr-only" id="bh-file-help">PNG, JPG, or WebP images up to 5 MB each. Add a logo, photos, or a site you like for inspiration.</span>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase" id="bh-showcase" role="region" aria-label="Explore 10 example websites" aria-describedby="bh-carousel-help">
+    <div class="wrap tabs-bar">
+      <button type="button" class="arrow-btn prev" id="bh-showcase-prev" aria-label="Previous website category" data-track-id="showcase-previous"
+              data-element-label="previous_website_category" data-element-location="body" data-element-type="button"><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></button>
+      <div class="tabs" role="tablist" aria-label="Example website categories" id="bh-tabs"></div>
+      <button type="button" class="arrow-btn" id="bh-showcase-next" aria-label="Next website category" data-track-id="showcase-next"
+              data-element-label="next_website_category" data-element-location="body" data-element-type="button"><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></button>
+    </div>
+    <div class="stage" id="bh-showcase-panel" role="tabpanel" tabindex="0">
+      <div class="stage-glow" aria-hidden="true"></div>
+    </div>
+    <div class="wrap showcase-foot">
+      <p class="showcase-caption" id="bh-showcase-caption"></p>
+      <button type="button" class="btn btn-outline" id="bh-showcase-use" data-track-id="showcase-use-prompt"
+              data-element-label="use_this_idea" data-element-location="body" data-element-type="button"><span>Use this idea</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></button>
+    </div>
+    <p class="sr-only" id="bh-carousel-help">Use the category tabs or arrows, or swipe the preview. Select “Use this idea” to put its prompt in the builder. Previews do not rotate automatically.</p>
+    <p class="sr-only" id="bh-showcase-status" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- ═══ YOUR BUSINESS, ONLINE ══════════════════════════════════════════════ -->
+<section class="works" id="works">
+  <div class="wrap head">
+    <p class="eyebrow">Your business, online</p>
+    <h2 class="h-section">Bring your idea to life on <span class="hl">your own domain.</span></h2>
+    <p class="lead">Your logo and brand, on your own domain. Describe your idea, preview your website and publish when you’re satisfied.</p>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══════════════════════════════════════════════════════ -->
+<section class="section how" id="how" aria-labelledby="bh-how-title">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">How it works</p>
+      <h2 class="h-section" id="bh-how-title">From your idea to your live website.</h2>
+      <p class="lead">Describe · Refine · Build · Publish · Manage</p>
+    </div>
+    <div class="how-grid">
+      <div>
+        <div class="how-steps" role="tablist" aria-label="Steps" id="bh-how-steps"></div>
+        <a class="btn btn-white how-cta" href="#bh-composer-anchor" data-element-label="build_my_app_today_for_free" data-element-location="how" data-element-type="button"><span>Try for free</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+      </div>
+      <div class="how-panel" id="bh-how-panel" role="tabpanel" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INCLUDED ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="included" aria-labelledby="bh-inc-title">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Included in every website</p>
+      <h2 class="h-section" id="bh-inc-title">The essentials for <span class="hl">your next website.</span></h2>
+    </div>
+    <div class="grid3" id="bh-essentials"></div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ════════════════════════════════════════════════════════════ -->
+<section class="section pricing" id="pricing" aria-labelledby="bh-price-title">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Pricing</p>
+      <h2 class="h-section" id="bh-price-title">Start free. Upgrade when you’re ready.</h2>
+      <p class="lead">Hosting included on every plan. Your live site never pauses.</p>
+    </div>
+    <div class="plans">
+      <article class="card plan" data-bff-component="plan_card" data-bff-savepercentagerte="false" data-bff-showmonthly="true" data-bff-requestdata='{"jcr:primaryType":"nt:unstructured","jcr:mixinTypes":["dam:cfVariationNode","cq:Taggable"],"siteId@LastModified":1783494912953,"termQuantity@LastModified":1783494912968,"attributes@LastModified":1783494912953,"productLevelChannelId@LastModified":1783494912953,"termUnit":"2","termQuantity":"1","parentSku@LastModified":1783494912953,"sku":"BH_AI_APP_BUILDER_FREE","couponCode@LastModified":1783494912953,"addons@LastModified":1783494912953,"sku@LastModified":1783494912967,"termUnit@LastModified":1783494912969,"transactionType@LastModified":1783494912953}'>
+        <h3>App Builder Free</h3><p class="d">Try it and go live, no risk</p>
+        <p class="pr"><span class="currency-symbol">$</span><span class="price-api">0</span></p><p class="per">no card, no end date</p>
+        <a class="btn btn-outline btn-block" href="https://www.bluehost.com/checkout/ai-builder/editor?trialType=app&amp;currencyCode=USD" data-element-label="start_free" data-element-location="pricing" data-element-type="button"><span>Start free</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+        <span class="credits">5 credits a day</span>
+        <ul><li>Unlimited sites</li><li>Publish on yourname.app.bluehost.ai</li><li>Back office in every site</li><li>24/7 human support</li><li class="dim">Your own domain</li></ul>
+      </article>
+      <article class="card plan pop" data-bff-component="plan_card" data-bff-savepercentagerte="false" data-bff-showmonthly="true" data-bff-requestdata='{"jcr:primaryType":"nt:unstructured","jcr:mixinTypes":["dam:cfVariationNode","cq:Taggable"],"siteId@LastModified":1783494912953,"termQuantity@LastModified":1783494912968,"attributes@LastModified":1783494912953,"productLevelChannelId@LastModified":1783494912953,"termUnit":"2","termQuantity":"1","parentSku@LastModified":1783494912953,"sku":"BH_AI_APP_BUILDER_PRO","couponCode@LastModified":1783494912953,"addons@LastModified":1783494912953,"sku@LastModified":1783494912967,"termUnit@LastModified":1783494912969,"transactionType@LastModified":1783494912953}'>
+        <span class="tag">Most popular</span>
+        <h3>App Builder Lite</h3><p class="d">Take your first site live on your own domain</p>
+        <p class="pr"><span class="currency-symbol">$</span><span class="price-api">20</span><small>/mo</small></p><p class="per">billed monthly</p>
+        <a class="btn btn-primary btn-block" href="https://www.bluehost.com/checkout/ai-builder/editor?trialType=app&amp;currencyCode=USD" data-element-label="get_lite" data-element-location="pricing" data-element-type="button"><span>Get Lite</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+        <span class="credits">100 credits a month</span>
+        <ul><li>Everything in App Builder Free</li><li>Your own domain, connected inside the builder</li><li>Hosting included</li><li>Top up credits anytime</li></ul>
+      </article>
+      <article class="card plan" data-bff-component="plan_card" data-bff-savepercentagerte="false" data-bff-showmonthly="true" data-bff-requestdata='{"jcr:primaryType":"nt:unstructured","jcr:mixinTypes":["dam:cfVariationNode","cq:Taggable"],"siteId@LastModified":1783494912953,"termQuantity@LastModified":1783494912968,"attributes@LastModified":1783494912953,"productLevelChannelId@LastModified":1783494912953,"termUnit":"2","termQuantity":"1","parentSku@LastModified":1783494912953,"sku":"BH_AI_APP_BUILDER_PRO_200","couponCode@LastModified":1783494912953,"addons@LastModified":1783494912953,"sku@LastModified":1783494912967,"termUnit@LastModified":1783494912969,"transactionType@LastModified":1783494912953}'>
+        <h3>App Builder Pro</h3><p class="d">Businesses building and updating often</p>
+        <p class="pr"><span class="currency-symbol">$</span><span class="price-api">40</span><small>/mo</small></p><p class="per">billed monthly</p>
+        <a class="btn btn-outline btn-block" href="https://www.bluehost.com/checkout/ai-builder/editor?trialType=app&amp;currencyCode=USD" data-element-label="get_pro" data-element-location="pricing" data-element-type="button"><span>Get Pro</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+        <span class="credits">200 credits a month</span>
+        <ul><li>Everything in App Builder Lite</li><li>Twice the monthly credits</li><li>Room for frequent changes</li></ul>
+      </article>
+      <article class="card plan" data-bff-component="plan_card" data-bff-savepercentagerte="false" data-bff-showmonthly="true" data-bff-requestdata='{"jcr:primaryType":"nt:unstructured","jcr:mixinTypes":["dam:cfVariationNode","cq:Taggable"],"siteId@LastModified":1783494912953,"termQuantity@LastModified":1783494912968,"attributes@LastModified":1783494912953,"productLevelChannelId@LastModified":1783494912953,"termUnit":"2","termQuantity":"1","parentSku@LastModified":1783494912953,"sku":"BH_AI_APP_BUILDER_PRO_400","couponCode@LastModified":1783494912953,"addons@LastModified":1783494912953,"sku@LastModified":1783494912967,"termUnit@LastModified":1783494912969,"transactionType@LastModified":1783494912953}'>
+        <h3>App Builder Plus</h3><p class="d">Businesses running several sites</p>
+        <p class="pr"><span class="currency-symbol">$</span><span class="price-api">80</span><small>/mo</small></p><p class="per">billed monthly</p>
+        <a class="btn btn-outline btn-block" href="https://www.bluehost.com/checkout/ai-builder/editor?trialType=app&amp;currencyCode=USD" data-element-label="get_plus" data-element-location="pricing" data-element-type="button"><span>Get Plus</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+        <span class="credits">400 credits a month</span>
+        <ul><li>Everything in App Builder Lite</li><li>Four times the monthly credits</li><li>Build for several parts of the business</li></ul>
+      </article>
+    </div>
+    <p class="credits-note"><span>One message = one credit</span><span>The AI’s questions are free</span><span>Hosting never uses credits</span></p>
+    <p class="fine">Monthly plan credits and top-ups expire after 30 days. Running out of credits only pauses new changes; your published site stays online. App Builder Free publishes on a Bluehost subdomain; your own domain requires App Builder Lite, App Builder Pro or App Builder Plus. Top up with 50, 100 or 200 credits from $15. Prices shown in USD.</p>
+  </div>
+</section>
+
+<!-- ═══ FAQ ════════════════════════════════════════════════════════════════ -->
+<section class="section" id="faq" aria-labelledby="bh-faq-title">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Questions, answered</p>
+      <h2 class="h-section" id="bh-faq-title">Before you type your first sentence</h2>
+    </div>
+    <div class="faq-list" id="bh-faq"></div>
+  </div>
+</section>
+
+<!-- ═══ CLOSING ════════════════════════════════════════════════════════════ -->
+<section class="section closing" id="start">
+  <div class="wrap head" style="margin-bottom:0">
+    <p class="eyebrow">Get started</p>
+    <h2 class="h-section">Start with your idea. <span class="hl">Make it your website.</span></h2>
+    <p class="lead">One sentence, in your words. A website for your business. Built, refined and published with Bluehost.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#bh-composer-anchor" data-element-label="build_my_app_today_for_free" data-element-location="start" data-element-type="button"><span>Try for free</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+      <a class="btn btn-outline" href="#pricing" data-element-label="see_pricing" data-element-location="start" data-element-type="button"><span>Explore plans</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLOATING PROMPT ════════════════════════════════════════════════════ -->
+<form class="dock" id="bh-dock" data-shown="false" aria-label="Build your website">
+  <svg class="spark" aria-hidden="true"><use href="#bhx-spark"/></svg>
+  <label class="sr-only" for="bh-dock-input">Describe the website you want to create</label>
+  <textarea id="bh-dock-input" rows="1" maxlength="1500" placeholder="Describe the website you want to create…"
+            data-element-label="floating_website_prompt" data-element-location="body" data-element-type="field"></textarea>
+  <button type="submit" class="btn btn-primary" data-element-label="floating_build_my_website" data-element-location="body" data-element-type="button"><span>Build my website</span><svg aria-hidden="true"><use href="#bhx-arrow"/></svg></button>
+</form>
+
+<script>
+(() => {
+  'use strict';
+  const root = document.getElementById('bh-aib-embed');
+  const $ = s => root.querySelector(s);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const IMG = n => `https://newfold.scene7.com/is/image/NewfoldDigital/sample-${n}?wid=1536&dpr=off&fmt=png-alpha`;
+  const MOB = n => `https://newfold.scene7.com/is/image/NewfoldDigital/sample-${n}-mobile?wid=780&dpr=off&fmt=png-alpha`;
+  const ICON = n => `https://newfold.scene7.com/is/content/NewfoldDigital/${n}`;
+  const arrow = '<svg aria-hidden="true"><use href="#bhx-arrow"/></svg>';
+  const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  /* Example websites: tab label, rotating headline word, domain, caption and seed prompt. */
+  const examples = [
+    ['home','Home & lifestyle','online store','atelierhome.com','Atelier Home','A calm, curated shop for furniture, lighting and home objects.','Create a premium home and lifestyle store for Atelier Home, selling furniture, lighting and home objects for modern, considered living. Use warm ivory and chocolate brown, sculptural furniture photography and elegant serif typography. Open with a split hero: the headline "Objects with intention." and a Shop the collection button beside a large room photo. Add a Curated Collections section for Furniture, Lighting, Objects and Textiles, product pages with materials and dimensions, a cart and a smooth checkout. Make it responsive and easy to browse on mobile.'],
+    ['fashion','Fashion & jewelry','jewelry brand','maisonforme.com','Maison Forme','Editorial jewelry and fashion, shot like a magazine cover.','Create a luxury jewelry website for Maison Forme, a brand of sculptural gold jewelry. Use deep burgundy and warm cream, close-up editorial portraits and a refined high-contrast serif. Start with a full-bleed hero, the headline "Less, but exceptional." and an Explore the collection link, with category tiles for Earrings, Rings, Necklaces and Bracelets. Add an Our Philosophy story section, a featured Sculpture Collection, product pages with materials and care details, a bag and a secure checkout. Make it responsive and polished on every screen.'],
+    ['services','Local services','landscaping site','evergreenstudio.com','Evergreen','Show off finished projects and turn visitors into quote requests.','Create a premium website for Evergreen, a landscape design and home renovation studio. Use deep forest green, linen and stone tones with large dusk photography of finished gardens and outdoor living spaces. Open with the headline "A better place to come home to.", an Explore our work button and a Get in touch button in the header. Add a services row for Landscape Design, Home Renovations, Outdoor Living and Garden Care, a Featured Projects gallery, an about page and a simple quote request form. Make it responsive and fast on mobile.'],
+    ['restaurant','Restaurant','restaurant website','sundaytable.com','Sunday Table','Your menu, your atmosphere and online reservations in one place.','Create a warm, modern restaurant website for Sunday Table, serving refined seasonal food. Use terracotta and cream with candlelit dining-room and plated-dish photography and classic serif type. Open with the headline "A seat at something special." and two buttons: Reserve a table and View menu. Add a seasonal menu page, Our Story, Private Dining enquiries, a photo gallery, opening hours, location and an online reservation form. Make it responsive so guests can book easily from their phones.'],
+    ['consulting','Consulting','consulting site','northline.co','Northline','A confident story for your expertise, with one clear next step.','Create a premium website for Northline, a boutique strategy consultancy. Use off-white, black and a bright cobalt accent, bold modern sans-serif headlines and calm architectural landscape photography. Open with the headline "Clarity creates momentum.", a short intro and an Our approach button, plus a Start a conversation button in the header. Add case study cards for Transformation, Growth and People, a services page, team profiles, an insights blog and a consultation booking form. Make it responsive and easy to scan.'],
+    ['photography','Photography','photography portfolio','lumenstudio.com','Lumen Studio','A dark, cinematic portfolio that lets the photographs lead.','Create a photography portfolio for Lumen Studio, an independent art photography studio. Use a black background, cream type, an elegant oversized serif and dramatic black-and-white portraits and landscapes. Open with the headline "See things differently." beside a large portrait and an editorial image grid, with an Explore the portfolio link. Add Portfolio, About, Journal and Prints pages, full-screen galleries, a print shop and an Inquire form for commissions. Make it responsive and immersive on every screen.'],
+    ['architecture','Architecture','architecture site','cedar.studio','Cedar','Minimal and precise, with large project photography front and centre.','Create a minimal website for Cedar, an architecture studio designing contemporary homes. Use stone, white and black with a light, precise sans-serif and large photographs of concrete-and-glass houses in nature. Open with the headline "Space. Light. Life." over a coastal home photo and an Explore our work link. Add a Selected Projects grid with numbered projects and locations, project detail pages with photo galleries, Studio and Approach pages, a journal and a contact page. Make it responsive and quiet, with generous white space.'],
+    ['florist','Florist','florist shop','stemandstory.com','Stem & Story','Bold, seasonal arrangements with ordering built in.','Create a florist website for Stem & Story, a botanical atelier making sculptural seasonal arrangements. Use butter yellow and deep plum, rich close-up floral photography and an elegant italic serif. Open with the headline "A little wild. Entirely yours." and an Explore the collection button. Add a Spring Collection feature, a shop with delivery dates and gift messages, event and wedding floral enquiries, a journal and an about page. Make it responsive, with an easy checkout on mobile.'],
+    ['travel','Travel & hospitality','travel booking site','stillwater.com','Stillwater','Scenery that sells the stay, with booking right on the page.','Create a boutique travel and hospitality website for Stillwater, a collection of wilderness retreats. Use deep olive, charcoal and sand with sweeping mountain, lake and lakeside cabin photography and a classic serif. Open with the headline "Somewhere to slow down.", an Explore stays button and a booking bar for check-in, check-out, guests and destination. Add an Our Destinations section with location cards, stay pages with photos and amenities, experiences, Our Story and a Book a stay flow. Make it responsive and simple to book on mobile.'],
+    ['fitness','Fitness studio','fitness studio site','formclub.com','Form Club','High energy, with today’s classes one tap away.','Create a high-energy website for Form Club, a Pilates and strength studio. Use black with a vivid lime accent, bold condensed uppercase headlines and dramatic athletic photography. Open with the headline "Find your next level." and a Book a class button. Add a Today\'s Classes strip showing time, class name, length and level, a full class schedule, membership plans, an Our Approach section, coach profiles, a journal and member log-in. Make it responsive so members can book a class from their phones in seconds.']
+  ].map(([slug, label, word, domain, name, caption, prompt], i) => ({ slug, label, word, domain, name, caption, prompt, n: String(i + 1).padStart(2, '0') }));
+
+  /* ── Prompt state (hero composer is the source of truth; the dock mirrors it) ── */
+  const input = $('#ai-builder-prompt'), composer = $('#bh-composer'), hint = $('#bh-prompt-hint');
+  const dock = $('#bh-dock'), dockInput = $('#bh-dock-input');
+  const steps = root.querySelectorAll('#bh-hero-steps li');
+  const HINT = hint.textContent;
+  const valid = v => Array.from(v.trim()).length >= 10 && /[\p{L}\p{N}]/u.test(v);
+  function sync(from) {
+    const v = from.value;
+    if (from !== input) input.value = v;
+    if (from !== dockInput) dockInput.value = v;
+    const ok = valid(v), bad = !!v.trim() && !ok;
+    composer.classList.toggle('is-open', !!v || document.activeElement === input);
+    input.setAttribute('aria-invalid', String(bad));
+    hint.classList.toggle('is-invalid', bad);
+    hint.textContent = bad ? 'Add a little more detail: at least 10 characters, including a letter or number.' : HINT;
+    steps[0].classList.toggle('is-current', !ok); steps[0].classList.toggle('is-done', ok);
+    steps[1].classList.toggle('is-current', ok);
+    steps[0].setAttribute('aria-current', ok ? 'false' : 'step');
+    steps[1].setAttribute('aria-current', ok ? 'step' : 'false');
+  }
+  input.addEventListener('input', () => sync(input));
+  input.addEventListener('focus', () => composer.classList.add('is-open'));
+  input.addEventListener('blur', () => sync(input));
+  dockInput.addEventListener('input', () => sync(dockInput));
+  function focusComposer() {
+    $('#bh-composer-anchor').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' });
+    input.focus({ preventScroll: true });
+  }
+  function usePrompt(text, label) {
+    input.value = text; sync(input);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    focusComposer();
+    $('#bh-showcase-status').textContent = `${label} prompt added. Edit it to make it yours, then build your website.`;
+  }
+  // Enter builds, Shift + Enter adds a line.
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); composer.requestSubmit($('#bh-generate')); } });
+  // Validate before the AEM clientlib handles the submit; a valid prompt is left to the clientlib.
+  composer.addEventListener('submit', e => {
+    if (!valid(input.value)) { e.preventDefault(); e.stopImmediatePropagation(); sync(input); hint.classList.add('is-invalid'); hint.textContent = 'Tell us a little about your website first: at least 10 characters.'; input.focus(); }
+  }, true);
+  // Fallback for previews without the clientlib: hand the prompt to the editor.
+  composer.addEventListener('submit', e => {
+    if (window.__bhAibuilderBound) return;
+    e.preventDefault();
+    const url = new URL($('#aibuilder-hero').dataset.editorRedirectUrl);
+    url.searchParams.set('trialType', 'app'); url.searchParams.set('prompt', input.value.trim());
+    location.assign(url);
+  });
+  dock.addEventListener('submit', e => { e.preventDefault(); sync(dockInput); focusComposer(); });
+  dockInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); dock.requestSubmit(); } });
+  root.querySelectorAll('a[href="#bh-composer-anchor"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); focusComposer(); }));
+
+  // Dock appears once the hero composer has scrolled away, and hides over the closing band.
+  const hero = $('#bh-hero'), closing = $('#start');
+  let heroVisible = true, closingVisible = false;
+  const showDock = () => { dock.dataset.shown = String(!heroVisible && !closingVisible); dock.inert = heroVisible || closingVisible; };
+  new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; showDock(); }, { rootMargin: '0px 0px -40% 0px' }).observe($('#bh-composer-anchor'));
+  new IntersectionObserver(([e]) => { closingVisible = e.isIntersecting; showDock(); }).observe(closing);
+  showDock();
+
+  /* ── Rotating headline word ── */
+  const rot = $('#bh-rot');
+  const words = examples.map(x => x.word);
+  const spans = words.map((w, i) => { const s = document.createElement('span'); s.textContent = w; s.dataset.state = i ? 'next' : 'in'; rot.appendChild(s); return s; });
+  let wi = 0, rotTimer = 0;
+  function showWord(n) {
+    if (n === wi) return;
+    spans[wi].dataset.state = 'out';
+    spans[n].style.transition = 'none'; spans[n].dataset.state = 'next'; void spans[n].offsetWidth; spans[n].style.transition = '';
+    spans[n].dataset.state = 'in'; const prev = spans[wi]; wi = n;
+    setTimeout(() => { if (prev !== spans[wi]) { prev.style.transition = 'none'; prev.dataset.state = 'next'; void prev.offsetWidth; prev.style.transition = ''; } }, 600);
+  }
+  function cycle(delay = 0) {
+    clearTimeout(rotTimer);
+    if (reduce.matches || document.hidden) return;
+    rotTimer = setTimeout(function tick() { showWord((wi + 1) % words.length); rotTimer = setTimeout(tick, 2600); }, delay || 2600);
+  }
+  document.addEventListener('visibilitychange', () => cycle());
+  cycle();
+
+  /* ── Showcase: tabs + desktop/phone stage (manual only, no autoplay) ── */
+  const tabs = $('#bh-tabs'), stage = $('#bh-showcase-panel'), caption = $('#bh-showcase-caption'), useBtn = $('#bh-showcase-use');
+  examples.forEach((x, i) => {
+    tabs.insertAdjacentHTML('beforeend', `<button type="button" role="tab" class="tab" id="bh-tab-${i}" aria-controls="bh-showcase-panel" aria-selected="false" tabindex="-1" data-track-id="showcase-${x.slug}" data-element-label="${x.slug}" data-element-location="body" data-element-type="button">${esc(x.label)}</button>`);
+    stage.insertAdjacentHTML('beforeend', `<div class="scene" data-i="${i}">
+      <figure class="desk"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span class="url">${x.domain}</span></div>
+        <img src="${IMG(x.n)}" alt="${esc(x.name)}: illustrative website concept on desktop" width="1536" height="1024" loading="${i ? 'lazy' : 'eager'}" decoding="async" draggable="false"></figure>
+      <figure class="phone" aria-hidden="true"><div class="screen"><img src="${MOB(x.n)}" alt="" loading="lazy" decoding="async" draggable="false"></div></figure>
+    </div>`);
+  });
+  const tabEls = [...tabs.children], scenes = [...stage.querySelectorAll('.scene')];
+  let cur = -1;
+  function select(i, manual) {
+    i = (i + examples.length) % examples.length; if (i === cur) return; cur = i;
+    tabEls.forEach((t, n) => { t.setAttribute('aria-selected', String(n === i)); t.tabIndex = n === i ? 0 : -1; });
+    scenes.forEach((s, n) => { s.classList.toggle('is-active', n === i); s.inert = n !== i; });
+    stage.setAttribute('aria-labelledby', tabEls[i].id);
+    caption.textContent = examples[i].caption;
+    useBtn.querySelector('span').textContent = `Use the ${examples[i].label} idea`;
+    if (manual) {
+      const t = tabEls[i], r = t.getBoundingClientRect(), b = tabs.getBoundingClientRect();
+      if (r.left < b.left || r.right > b.right) tabs.scrollTo({ left: tabs.scrollLeft + r.left - b.left - (b.width - r.width) / 2, behavior: reduce.matches ? 'auto' : 'smooth' });
+      showWord(i); cycle(5000);
+      $('#bh-showcase-status').textContent = `${examples[i].label} preview selected.`;
+    }
+  }
+  tabEls.forEach((t, i) => {
+    t.addEventListener('click', () => select(i, true));
+    t.addEventListener('keydown', e => {
+      const k = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: examples.length - 1 }[e.key];
+      if (k !== undefined) { e.preventDefault(); select(k, true); tabEls[cur].focus(); }
+    });
+  });
+  $('#bh-showcase-prev').addEventListener('click', () => select(cur - 1, true));
+  $('#bh-showcase-next').addEventListener('click', () => select(cur + 1, true));
+  useBtn.addEventListener('click', () => usePrompt(examples[cur].prompt, examples[cur].label));
+  stage.addEventListener('keydown', e => { if (e.target === stage && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); select(cur + (e.key === 'ArrowRight' ? 1 : -1), true); } });
+  // Swipe / drag between examples.
+  let drag = null;
+  stage.addEventListener('pointerdown', e => { if (e.button === 0) drag = { id: e.pointerId, x: e.clientX, y: e.clientY }; });
+  stage.addEventListener('pointermove', e => { if (drag && Math.abs(e.clientX - drag.x) > 8 && Math.abs(e.clientX - drag.x) > Math.abs(e.clientY - drag.y)) stage.classList.add('is-dragging'); });
+  const endDrag = e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x; drag = null; stage.classList.remove('is-dragging');
+    if (Math.abs(dx) > 60) select(cur + (dx < 0 ? 1 : -1), true);
+  };
+  stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', () => { drag = null; stage.classList.remove('is-dragging'); });
+  // The phone slides out once the stage is well into view.
+  new IntersectionObserver(([e]) => stage.classList.toggle('show-phone', e.isIntersecting || reduce.matches), { threshold: .55 }).observe(stage);
+  select(0);
+
+  /* ── How it works: 5 steps with an illustrative Account Manager panel ── */
+  const shot = `<img class="am-shot" src="${IMG('04')}" alt="Sunday Table restaurant website preview" loading="lazy">`;
+  const how = [
+    ['Describe','Say it.','One sentence, in your words.',
+      `<span class="am-k">YOUR NEXT IDEA STARTS HERE</span><p class="am-h">What would you like to build?</p><p class="am-p">Describe your business. We’ll help bring it to life.</p><div class="am-box">A premium website for my restaurant, with seasonal menus, private dining and table reservations.</div><div class="am-row"><span>+ Add files</span><span class="am-btn">Start building →</span></div><div><span class="am-chip">Seasonal menus</span><span class="am-chip">Table reservations</span><span class="am-chip">Private dining</span></div>`],
+    ['Refine','A few quick questions.','Review your first version, then request changes in your own words.',
+      `<span class="am-k">MAKE IT YOURS · 1 OF 3</span><p class="am-h">A few details. A better fit.</p><p class="am-p">What should your customers be able to do?</p><div class="am-opt on">✓ Reserve a table online</div><div class="am-opt">Explore seasonal menus</div><div class="am-opt">Enquire about private dining</div><div class="am-row"><span>You can refine this anytime.</span><span class="am-btn">Continue →</span></div>`],
+    ['Build','Watch it build.','Your pages, design and content. A first version in minutes.',
+      `<div class="am-row"><strong style="color:var(--bh-blue-1100);font-size:1.8cqw">Your first draft is ready</strong><span>Desktop + mobile preview</span></div>${shot}`],
+    ['Publish','Publish on your domain.','Your domain, or get one in the builder. Publish when you’re ready.',
+      `<div class="am-row"><strong style="color:var(--bh-blue-1100);font-size:1.8cqw">Ready for your customers</strong><span class="am-ok">✓ Secure connection</span></div>${shot}<div class="am-row"><span>sundaytable.example · Custom domain</span><span class="am-btn">Publish website →</span></div>`],
+    ['Manage','Keep it current.','Keep refining in the same conversation as your business grows.',
+      `<div class="am-row"><strong style="color:var(--bh-blue-1100);font-size:1.8cqw">Sunday Table workspace</strong><span class="am-ok">● Published</span></div>${shot}<div class="am-row"><span>Menu updated · Ready for your next season</span><span class="am-btn">Manage website →</span></div>`]
+  ];
+  const howSteps = $('#bh-how-steps'), howPanel = $('#bh-how-panel');
+  how.forEach(([name, , desc], i) => howSteps.insertAdjacentHTML('beforeend',
+    `<button type="button" role="tab" class="how-step" id="bh-how-${i}" aria-controls="bh-how-panel" aria-selected="false" tabindex="-1" data-element-label="${i + 1}_${name.toLowerCase()}" data-element-location="how" data-element-type="tab"><span class="t"><span class="n">${i + 1}</span>${name}</span><span class="d">${desc}</span></button>`));
+  const howEls = [...howSteps.children];
+  function pickStep(i) {
+    howEls.forEach((b, n) => { b.setAttribute('aria-selected', String(n === i)); b.tabIndex = n === i ? 0 : -1; });
+    howPanel.setAttribute('aria-labelledby', howEls[i].id);
+    howPanel.innerHTML = `<header><h3>${how[i][1]}</h3><span>0${i + 1} / ${how[i][0]}</span></header>
+      <div class="am" role="img" aria-label="Illustrative Bluehost Account Manager: ${how[i][0]}">
+        <div class="am-top"><svg><use href="#bhx-logo"/></svg><strong>bluehost</strong><span>Account Manager</span><b></b></div>
+        <div class="am-body"><div class="am-nav"><div>Home</div><div class="on">Websites</div><div>Email</div><div>Domains</div><div>Hosting</div><div>Marketing</div><div>Security</div></div>
+        <div class="am-main"><span class="am-crumb">Websites › Sunday Table › AI Website Builder</span>${how[i][3]}</div></div></div>`;
+  }
+  howEls.forEach((b, i) => {
+    b.addEventListener('click', () => pickStep(i));
+    b.addEventListener('keydown', e => {
+      const k = { ArrowDown: i + 1, ArrowRight: i + 1, ArrowUp: i - 1, ArrowLeft: i - 1, Home: 0, End: how.length - 1 }[e.key];
+      if (k !== undefined) { e.preventDefault(); const n = (k + how.length) % how.length; pickStep(n); howEls[n].focus(); }
+    });
+  });
+  pickStep(0);
+
+  /* ── Essentials ── */
+  [['01','A design built around your idea','Describe your business and the look you have in mind to shape the first draft.','Atelier Home'],
+   ['05','Pages that work together','Build a clear home for your services, products, story, and contact information.','Northline Advisory'],
+   ['03','A layout for every screen','Review how your website looks on desktop, tablet, and mobile.','Evergreen'],
+   ['04','Images that tell your story','Personalize the imagery to reflect your brand and what you offer.','Sunday Table'],
+   ['02','Your words, in your voice','Refine the generated copy so it sounds like you and speaks to your customers.','Maison Forme'],
+   ['07','A website you can keep refining','Update the design and content as your ideas and business develop.','Cedar Architecture']
+  ].forEach(([img, title, body, alt], i) => $('#bh-essentials').insertAdjacentHTML('beforeend',
+    `<article class="card feat"><img src="${IMG(img)}" alt="${alt}: website template concept" width="1536" height="1024" loading="lazy" decoding="async"><span class="num" aria-hidden="true">0${i + 1}</span><h3>${title}</h3><p>${body}</p></article>`));
+
+  /* ── FAQ (also emitted as JSON-LD below) ── */
+  const faq = [
+    ['What is AI Website Builder?','AI Website Builder turns a description of your business or idea into a website draft that you can personalize and publish.'],
+    ['Can I change the generated website?','Yes. Preview your first version, request changes through chat and publish when you’re satisfied. Keep refining the design, copy, images and layout as your business grows.'],
+    ['Do I need to know how to code?','No. Tell the builder what you need in plain language and it builds a first version. Then request changes through chat and review them in a live preview.'],
+    ['Can I publish on my own domain?','Connect your domain when you are ready to publish. Check Bluehost’s current plan details for included domain features.']
+  ];
+  faq.forEach(([q, a], i) => $('#bh-faq').insertAdjacentHTML('beforeend',
+    `<details open><summary data-element-label="website_faq_${i + 1}" data-element-location="faq" data-element-type="dropdown">${q}</summary><p>${a}</p></details>`));
+  const ld = document.createElement('script'); ld.type = 'application/ld+json';
+  ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
+  root.appendChild(ld);
+
+  /* Analytics hook: listen for "bh:track". Prompt text is never included. */
+  root.addEventListener('click', e => {
+    const c = e.target.closest('[data-track-id]');
+    if (c && !c.disabled) root.dispatchEvent(new CustomEvent('bh:track', { bubbles: true, detail: { id: c.dataset.trackId, component: 'ai-website-builder' } }));
+  }, { capture: true });
+
+  sync(input);
+})();
+</script>
+<!-- AEM: <script defer src="/etc.clientlibs/bluehost/clientlibs/clientlib-aibuilder.min.js"></script>
+     The clientlib should set window.__bhAibuilderBound = true once it binds; until then the
+     composer falls back to opening the editor with ?prompt=. -->
+</div>

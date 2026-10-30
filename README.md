@@ -142,3 +142,10 @@ These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the cod
 - **Chat assistant** (`ChatWidget.getBotReply`): UI and quick actions are wired; replies are
   scripted until a backend is connected.
 - **Language switch** (Header): toggles state only; connect to your i18n provider for Portuguese.
+
+## Embeds
+
+`embeds/ai-website-builder/index.html` is a self-contained AI Website Builder landing-page embed for
+the AEM host page, styled with the same design tokens as this site (see `src/index.css`). It keeps the
+AEM Ai Builder clientlib hooks (`.cmp-aibuilder*`), analytics `data-element-*` attributes and BFF pricing
+attributes; everything is scoped to `#bh-aib-embed`.
