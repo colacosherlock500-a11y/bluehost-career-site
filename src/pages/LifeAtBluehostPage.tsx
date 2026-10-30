@@ -74,7 +74,7 @@ export default function LifeAtBluehostPage() {
     <>
       <section className="relative overflow-hidden">
         <img src={heroSky} alt="" className="absolute inset-0 size-full object-cover" />
-        <div className="relative mx-auto flex min-h-[679px] max-w-[700px] flex-col items-center justify-center gap-[26px] px-4 pb-16 pt-[62px] text-center">
+        <div className="relative mx-auto flex min-h-[679px] max-w-[700px] flex-col items-center justify-center gap-[26px] px-4 pb-16 pt-[140px] text-center">
           <div className="flex flex-col items-center gap-4">
             <p className="text-sm font-medium uppercase leading-[1.2] tracking-[2px]">life at bluehost</p>
             <h1 className="flex flex-col gap-1 font-semibold">

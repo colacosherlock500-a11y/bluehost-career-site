@@ -124,7 +124,7 @@ export default function JobSearchPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-[#e6f3ff] to-white px-4 pb-16 pt-[42px]">
+      <section className="bg-gradient-to-b from-[#e6f3ff] to-white px-4 pb-16 pt-[120px]">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-[34px]">
           <div className="flex flex-col gap-5">
             <p className="eyebrow">Build your future with us</p>

@@ -20,7 +20,7 @@ export default function OurTeamsPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden pt-[78px]">
         <img src={heroBg} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="relative mx-auto flex max-w-[1218px] flex-col items-center gap-12 px-4 py-16 lg:h-[562px] lg:flex-row lg:gap-[111px] lg:py-0">
           <img src={iconGrid} alt="" className="w-full max-w-[405px] drop-shadow-[0_20px_40px_rgba(0,42,102,0.12)]" />

@@ -50,7 +50,7 @@ export default function RolePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-[1200px] px-4 pb-24 pt-[52px]">
+      <div className="mx-auto max-w-[1200px] px-4 pb-24 pt-[130px]">
         <div className="h-12 w-1/3 animate-pulse rounded bg-bh-light-100" />
         <div className="mt-6 h-24 animate-pulse rounded bg-bh-light-0" />
       </div>
@@ -59,7 +59,7 @@ export default function RolePage() {
 
   if (!job) {
     return (
-      <section className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4 pt-12 text-center">
+      <section className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4 pt-32 text-center">
         <h1 className="h-section">This role is no longer open</h1>
         <p className="text-lead max-w-xl">It may have been filled or removed. Explore other opportunities that match your skills.</p>
         <Button to="/jobs">View open roles</Button>
@@ -72,7 +72,7 @@ export default function RolePage() {
 
   return (
     <>
-      <article className="px-4 pb-[50px] pt-8">
+      <article className="px-4 pb-[50px] pt-[110px]">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-[60px]">
           <header className="flex flex-col gap-[30px]">
             <nav aria-label="Breadcrumb" className="text-sm text-night-sky">

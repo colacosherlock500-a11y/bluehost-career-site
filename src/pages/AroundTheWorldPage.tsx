@@ -32,7 +32,7 @@ export default function AroundTheWorldPage() {
   return (
     <>
       <VideoHero className="h-[600px] md:h-[894px]">
-        <div className="absolute inset-x-0 top-[42px] flex flex-col items-center px-4 text-center md:top-[52px]">
+        <div className="absolute inset-x-0 top-[120px] flex flex-col items-center px-4 text-center md:top-[130px]">
           <h1 className="text-[clamp(34px,4vw,52px)] font-semibold leading-[1.2] tracking-[-0.5px] text-white">
             One team, <span className="text-bh-light-300">a world of possibilities.</span>
           </h1>

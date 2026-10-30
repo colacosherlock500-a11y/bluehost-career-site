@@ -24,9 +24,9 @@ npm run lint
 | `/jobs` | Job search (filters, pagination, alerts, recently viewed) | Jobs search |
 | `/jobs/:id` | Role page | Role page |
 
-Global pieces: the **Blu** chat widget (Chatbot frames). The site header/navigation and footer are
-intentionally not part of this build — they are provided by the host site, which should render them
-around `<main id="main">` (see `src/components/layout/Layout.tsx`).
+Global pieces: header with *Life at Bluehost / Our team / Around the World* mega-menus and language
+switch, and the **Blu** chat widget (Chatbot frames). The footer is intentionally not part of this
+build — the host site provides it.
 
 ## Project structure
 
@@ -41,7 +41,7 @@ src/
   hooks/useJobs.ts    useJobSearch, useJob, useJobStats, recently viewed
   data/               static site content (teams, countries, benefits, affinity groups…)
   components/
-    layout/           ChatWidget, Layout
+    layout/           Header, ChatWidget, Layout
     sections/         page sections (Globe, TeamsCarousel, JoinCta, …)
     jobs/             JobCard, JobListCard, OpenRoles, Pagination
     ui/               Button, FilterSelect, Marquee, SectionHeader, FeatureCard
@@ -117,3 +117,4 @@ These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the cod
   Bluehost copy.
 - **Chat assistant** (`ChatWidget.getBotReply`): UI and quick actions are wired; replies are
   scripted until a backend is connected.
+- **Language switch** (Header): toggles state only; connect to your i18n provider for Portuguese.

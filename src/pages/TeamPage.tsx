@@ -16,7 +16,7 @@ export default function TeamPage() {
 
   return (
     <>
-      <section className="px-4 pt-6">
+      <section className="px-4 pt-[102px]">
         <div className="mx-auto max-w-[1346px] rounded-xl px-6 py-[50px] md:px-[73px]" style={{ backgroundImage: 'linear-gradient(189.7deg, #e6f3ff 15%, #d1e7ff 86%)' }}>
           <div className="grid items-center gap-[57px] lg:grid-cols-[618px_1fr]">
             <div className="flex flex-col gap-5">
