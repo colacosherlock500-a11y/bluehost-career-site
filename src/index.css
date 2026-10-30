@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/* Design tokens taken from the Figma file (Bluehost Career Site). */
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-montserrat: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+
+  --color-bh-blue: #196cdf;        /* Bluehost Blue / Primary Blue */
+  --color-bh-blue-500: #196bde;    /* primary/bluehost/500 (buttons) */
+  --color-bh-blue-900: #0c4a9c;    /* Dark 900 */
+  --color-bh-blue-1000: #012957;   /* Dark 1000 */
+  --color-bh-blue-1100: #041d33;   /* Darker 1100 */
+  --color-bh-blue-950: #030b17;
+  --color-bh-light-0: #f0faff;
+  --color-bh-light-100: #dbf1fc;
+  --color-bh-light-200: #badefa;
+  --color-bh-light-300: #a1d1fa;
+  --color-bh-light-400: #84c1fc;
+  --color-bh-300: #75a8f0;
+  --color-bh-50: #fefeff;
+  --color-night-sky: #465d77;
+  --color-night-sky-400: #c3c9d6;
+  --color-gold: #f4c652;
+  --color-ink: #18181b;
+  --color-icon-bg: #ecf9ff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white font-sans text-black antialiased;
+}
+
+/* Shared typography from the design system */
+@utility eyebrow {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.42px;
+  text-transform: uppercase;
+}
+
+@utility h-section {
+  font-weight: 600;
+  font-size: clamp(32px, 4vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -1.61px;
+}
+
+@utility text-lead {
+  font-size: 17px;
+  line-height: 28.05px;
+}
+
+@utility card-shadow {
+  box-shadow: 0px -7.5px 75px 0px rgba(0, 0, 0, 0.1), 0px 7.5px 75px 0px rgba(106, 246, 251, 0.1);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@utility animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+@utility animate-marquee-reverse {
+  animation: marquee-reverse 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(40%); }
+  to { opacity: 1; transform: none; }
+}
