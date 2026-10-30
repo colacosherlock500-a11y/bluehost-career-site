@@ -29,7 +29,7 @@ function CardGrid({ items, teamStyle, onNavigate }: { items: NavCard[]; teamStyl
           >
             <img src={item.image} alt="" className={`absolute inset-0 size-full transition-transform duration-300 group-hover:scale-105 ${teamStyle ? 'object-cover object-top' : 'object-cover'}`} />
           </span>
-          <span className="flex items-center pl-2 text-sm text-bh-blue-1100 group-hover:text-bh-blue">
+          <span className="flex items-center whitespace-nowrap pl-2 text-sm text-bh-blue-1100 group-hover:text-bh-blue">
             {item.label}
             <img src={chevronSmall} alt="" className="size-[21.4px]" />
           </span>
