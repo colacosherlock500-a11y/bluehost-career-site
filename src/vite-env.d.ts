@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_JOBS_PROVIDER?: 'mock' | 'workday'
   /** Base URL of the jobs API / Workday proxy. */
   readonly VITE_JOBS_API_URL?: string
+  /** Overrides the home page brand banner video URL. */
+  readonly VITE_BRAND_VIDEO_URL?: string
   /** Endpoint that accepts { email, search } to create a job alert. */
   readonly VITE_JOB_ALERTS_URL?: string
 }
