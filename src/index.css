@@ -99,3 +99,31 @@ body {
   from { opacity: 0; transform: translateX(40%); }
   to { opacity: 1; transform: none; }
 }
+
+/* Workday job description HTML (role page). Styled to match the Figma "About the role" sections. */
+@layer components {
+  .job-description {
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.16px;
+    color: var(--color-bh-blue-1100, #0b1015);
+  }
+  .job-description > * + * { margin-top: 12px; }
+  .job-description h2,
+  .job-description h3,
+  .job-description h4 {
+    margin-top: 32px;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.33;
+    letter-spacing: -0.25px;
+    color: #0b1015;
+  }
+  .job-description h4 { font-size: 20px; }
+  .job-description > :first-child { margin-top: 0; }
+  .job-description ul { list-style: disc; padding-left: 24px; }
+  .job-description ol { list-style: decimal; padding-left: 24px; }
+  .job-description li + li { margin-top: 4px; }
+  .job-description a { color: var(--color-bh-blue, #196cdf); text-decoration: underline; }
+  .job-description strong, .job-description b { font-weight: 600; }
+}

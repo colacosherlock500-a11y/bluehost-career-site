@@ -86,7 +86,7 @@ export default function RolePage() {
             </nav>
             <div className="flex max-w-[951px] flex-col gap-[10px]">
               <h1 className="text-[clamp(30px,3vw,38px)] font-semibold leading-[1.33] tracking-[-1.61px]">{job.title}</h1>
-              <p className="text-base leading-[1.4] tracking-[-0.16px] text-bh-blue-1100">{job.summary}</p>
+              {job.summary && <p className="text-base leading-[1.4] tracking-[-0.16px] text-bh-blue-1100">{job.summary}</p>}
             </div>
             <div className="flex flex-wrap gap-[23px]">
               <InfoCard icon={iconLocation} label="Location" value={jobLocationLabel(job)} />
@@ -96,7 +96,10 @@ export default function RolePage() {
             <Button href={job.applyUrl} className="self-start">Apply</Button>
           </header>
 
-          {/* INTEGRATION: Workday descriptions are usually HTML; see workdayProvider.mapJob. */}
+          {job.descriptionHtml ? (
+            // Sanitized server-side (server/workday/sanitize.ts) before it reaches the browser.
+            <div className="job-description max-w-[951px]" dangerouslySetInnerHTML={{ __html: job.descriptionHtml }} />
+          ) : (
           <div className="flex flex-col gap-8">
             {d.about && (
               <DescSection title="About the role">
@@ -119,6 +122,7 @@ export default function RolePage() {
               </DescSection>
             ) : null}
           </div>
+          )}
 
           <div className="relative overflow-hidden rounded-2xl px-6 py-16 md:px-20" style={{ backgroundImage: `url("${mesh}")`, backgroundSize: '160% 250%', backgroundPosition: '20% 25%' }}>
             <div className="relative flex flex-col items-center gap-8 text-center">

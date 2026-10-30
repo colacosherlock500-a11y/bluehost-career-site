@@ -1,6 +1,7 @@
 import { countries } from '../../data/countries'
 import { teams } from '../../data/teams'
-import type { FacetCount, Job, JobSearchParams, JobSearchResult, JobStats, JobsProvider, WorkType } from './types'
+import { computeStats, searchJobs } from './search'
+import type { Job, JobsProvider, WorkType } from './types'
 
 /**
  * Deterministic sample data so the UI can be built and reviewed before the
@@ -84,46 +85,13 @@ function buildJobs(): Job[] {
 
 const allJobs = buildJobs()
 
-function facet(jobs: Job[], key: (j: Job) => string[]): FacetCount[] {
-  const map = new Map<string, number>()
-  for (const j of jobs) for (const v of new Set(key(j))) map.set(v, (map.get(v) ?? 0) + 1)
-  return [...map].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count)
-}
-
-function matches(job: Job, p: JobSearchParams): boolean {
-  if (p.team && job.team !== p.team) return false
-  if (p.country && !job.locations.some(l => l.country === p.country)) return false
-  if (p.workType && job.workType !== p.workType) return false
-  // The mock has no geo data, so `location` is a simple city match and `radiusMiles` is ignored.
-  if (p.location && !job.locations.some(l => l.city.toLowerCase().includes(p.location!.toLowerCase()))) return false
-  if (p.keyword) {
-    const q = p.keyword.toLowerCase()
-    const team = teams.find(t => t.slug === job.team)?.name ?? ''
-    const hay = `${job.title} ${team} ${job.brand} ${job.locations.map(l => l.city).join(' ')}`.toLowerCase()
-    if (!hay.includes(q)) return false
-  }
-  return true
-}
+const teamName = (slug: string) => teams.find(t => t.slug === slug)?.name ?? ''
 
 const delay = <T,>(v: T) => new Promise<T>(r => setTimeout(() => r(v), 150))
 
 export const mockProvider: JobsProvider = {
   async searchJobs(params) {
-    const page = params.page ?? 1
-    const pageSize = params.pageSize ?? 10
-    const filtered = allJobs.filter(j => matches(j, params))
-    const result: JobSearchResult = {
-      jobs: filtered.slice((page - 1) * pageSize, page * pageSize),
-      total: filtered.length,
-      page,
-      pageSize,
-      facets: {
-        countries: facet(allJobs.filter(j => matches(j, { ...params, country: undefined })), j => j.locations.map(l => l.country)),
-        teams: facet(allJobs.filter(j => matches(j, { ...params, team: undefined })), j => [j.team]),
-        workTypes: facet(allJobs.filter(j => matches(j, { ...params, workType: undefined })), j => [j.workType]),
-      },
-    }
-    return delay(result)
+    return delay(searchJobs(allJobs, params, teamName))
   },
 
   async getJob(id) {
@@ -131,11 +99,6 @@ export const mockProvider: JobsProvider = {
   },
 
   async getJobStats() {
-    const stats: JobStats = { total: allJobs.length, byCountry: {}, byTeam: {} }
-    for (const j of allJobs) {
-      stats.byTeam[j.team] = (stats.byTeam[j.team] ?? 0) + 1
-      for (const c of new Set(j.locations.map(l => l.country))) stats.byCountry[c] = (stats.byCountry[c] ?? 0) + 1
-    }
-    return delay(stats)
+    return delay(computeStats(allJobs))
   },
 }

@@ -43,15 +43,23 @@ export function useJob(id: string | undefined) {
   return useAsync<Job | null>(() => (id ? jobsProvider.getJob(id) : Promise.resolve(null)), [id])
 }
 
-// Stats are shared by many components on a page, so fetch them once per session.
-let statsPromise: Promise<JobStats> | null = null
+// Stats are shared by many components on a page, so they are fetched once and
+// reused for a few minutes (the server re-pulls Workday on its own schedule).
+const STATS_TTL_MS = 5 * 60_000
+let stats: { promise: Promise<JobStats>; at: number } | null = null
 
 /** Total / per-country / per-team open role counts. */
 export function useJobStats() {
-  return useAsync<JobStats>(() => (statsPromise ??= jobsProvider.getJobStats().catch(e => {
-    statsPromise = null
-    throw e
-  })), [])
+  return useAsync<JobStats>(() => {
+    if (!stats || Date.now() - stats.at > STATS_TTL_MS) {
+      const promise = jobsProvider.getJobStats().catch(e => {
+        stats = null
+        throw e
+      })
+      stats = { promise, at: Date.now() }
+    }
+    return stats.promise
+  }, [])
 }
 
 /** Helper for the "44 open roles" style labels. */

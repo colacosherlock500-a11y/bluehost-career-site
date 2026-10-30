@@ -5,11 +5,16 @@ Front-end for the Bluehost careers site, built from the Figma file
 
 ```bash
 npm install
-npm run dev       # http://localhost:5173
+cp .env.example .env   # then fill in the Workday section
+npm run dev:api   # careers API on :8787 — pulls jobs from Workday
+npm run dev       # site on http://localhost:5173 (proxies /api to the API)
 npm run build     # type-check + production build into dist/
-npm run preview   # serve the production build
+npm start         # production: API + built site from one Node process
 npm run lint
 ```
+
+Requires Node.js 22.18+ (the API server runs TypeScript natively). Without Workday settings, set
+`VITE_JOBS_PROVIDER=mock` to browse the site with sample jobs.
 
 ## Pages
 
@@ -31,11 +36,23 @@ build — the host site provides it.
 ## Project structure
 
 ```
+server/               ← careers API (Node) — the only place Workday credentials live
+  index.ts            HTTP routes (/api/jobs, /api/jobs/stats, /api/jobs/:id, /api/health) + static site
+  config.ts           env vars → config (see .env.example)
+  store.ts            in-memory job cache, re-synced from Workday every N minutes
+  workday/
+    rest.ts           Workday Recruiting REST API (OAuth 2.0 refresh token)
+    raas.ts           Workday custom report / RaaS (ISU username + password)
+    cxs.ts            public Workday career-site feed (no credentials)
+    normalize.ts      Workday posting → site Job (team, country, brand, work type…)
+    mapping.ts        ← EDIT: job family → team, location → country, company → brand
+    sanitize.ts       allow-list HTML sanitizer for job descriptions
 src/
-  services/jobs/      ← job data layer (Workday goes here)
+  services/jobs/      job data layer used by the UI
     types.ts          Job, JobSearchParams, JobSearchResult, JobStats, JobsProvider
-    mockProvider.ts   sample data used until Workday is connected
-    workdayProvider.ts Workday/BFF implementation stub (TODOs inside)
+    search.ts         search / facets / stats (shared by the server and the mock)
+    workdayProvider.ts calls the careers API (/api)
+    mockProvider.ts   sample data
     index.ts          picks the provider from VITE_JOBS_PROVIDER
   services/jobAlerts.ts  "Create alert" sign-up hook
   hooks/useJobs.ts    useJobSearch, useJob, useJobStats, recently viewed
@@ -51,52 +68,58 @@ src/
 
 ## Workday integration
 
-Every job-related number and list on the site comes from **one interface**, `JobsProvider`
-(`src/services/jobs/types.ts`):
-
-```ts
-interface JobsProvider {
-  searchJobs(params: JobSearchParams): Promise<JobSearchResult> // list + facet counts
-  getJob(id: string): Promise<Job | null>                      // role page
-  getJobStats(): Promise<JobStats>                             // total / by country / by team
-}
+```
+Workday tenant ──(every 15 min)──▶ careers API (server/) ──/api/*──▶ browser
+                 OAuth / ISU          cache + mapping          no credentials
 ```
 
-Where the data shows up:
+The API server pulls **all open job postings** from Workday on start-up and then every
+`WORKDAY_SYNC_INTERVAL_MINUTES` (default 15), maps them onto the site's `Job` type, and serves the
+site from that cache — so counts, lists and country/team numbers update automatically as recruiters
+post or close jobs in Workday, visitors never wait on Workday, and a failed sync keeps serving the
+last good data. Full job descriptions are fetched on first view when the list call doesn't include
+them. `POST /api/jobs/refresh` (with `Authorization: Bearer $JOBS_REFRESH_SECRET`) forces a sync.
 
-| Data | Used by |
+### Connection methods
+
+Set `WORKDAY_SOURCE` to one of:
+
+| `WORKDAY_SOURCE` | Workday API | Credentials | Notes |
+| --- | --- | --- | --- |
+| `rest` (recommended) | Recruiting REST API — `GET /ccx/api/recruiting/v4/{tenant}/jobPostings` | OAuth 2.0: client ID, client secret, refresh token | Official API; access tokens are renewed automatically |
+| `raas` | Custom report as a web service — `/ccx/service/customreport2/…?format=json` | Integration System User username + password | Report columns are listed in `server/workday/raas.ts` |
+| `cxs` | Public career site JSON (`*.myworkdayjobs.com/wday/cxs/…`) | none | Only what is already public on the external career site; good for going live early |
+
+All variables are documented in `.env.example`. Credentials are read only by the server; never
+put them in `VITE_*` variables (those are bundled into the public JavaScript).
+
+### Endpoints the site uses
+
+| Endpoint | Used by |
 | --- | --- |
-| `searchJobs` | Job search results + pagination, "Open roles" on team & location pages, "Related jobs" on the role page |
-| `searchJobs().facets` | Counts next to Country / Team options on the job search page |
-| `getJobStats().byTeam` | "44 open roles" labels on the home teams carousel, Our teams tabs, team page hero, Team filter counts |
-| `getJobStats().byCountry` | Globe "Open roles" panel, Location filter counts |
-| `getJob` | Role page (title, summary, location, team, posted date, description, Apply URL) |
+| `GET /api/jobs?keyword=&country=&team=&workType=&location=&page=&pageSize=` | Job search + pagination + filter counts, "Open roles" on team & location pages, "Related jobs" |
+| `GET /api/jobs/stats` → `{ total, byCountry, byTeam }` | "44 open roles" labels (teams carousel, Our teams, team pages), globe "Open roles" panel |
+| `GET /api/jobs/:id` | Role page (title, location, team, posted date, description HTML, Apply URL) |
+| `GET /api/health` | Monitoring: last sync time, errors, job count, and **unmapped** Workday values |
 
-### Steps
+### Mapping Workday values
 
-1. Build a small backend/proxy (recommended — Workday endpoints shouldn't be called from the
-   browser: CORS, credentials, and tenant details). It should expose:
-   - `GET /jobs?keyword=&country=&team=&workType=&location=&radiusMiles=&page=&pageSize=`
-   - `GET /jobs/:id`
-   - `GET /jobs/stats` → `{ total, byCountry: { [countrySlug]: n }, byTeam: { [teamSlug]: n } }`
-2. Set environment variables (see `.env.example`):
-   ```
-   VITE_JOBS_PROVIDER=workday
-   VITE_JOBS_API_URL=https://careers-api.example.com
-   VITE_JOB_ALERTS_URL=https://careers-api.example.com/alerts   # optional
-   ```
-3. In `src/services/jobs/workdayProvider.ts`, adjust `WorkdayJob` to your proxy's payload and finish
-   `mapJob` — especially:
-   - **Team mapping** — Workday Job Family Group → team slug in `src/data/teams.ts`
-     (`customer-service`, `executive`, `facilities`, `finance`, `fulfillment`, `human-resources`,
-     `legal`, `marketing`, `product`, `sales`, `technology-and-engineering`).
-   - **Country mapping** — Workday location/country → country slug in `src/data/countries.ts`
-     (`united-states`, `argentina`, `brazil`, `canada`, `india`, `netherlands`, `philippines`,
-     `united-kingdom`, `italy`, `spain`).
-   - **Description** — Workday returns HTML; either split it into the `description` sections or
-     render it as sanitized HTML in `src/pages/RolePage.tsx`.
-   - **applyUrl** — the Workday external apply link (used by every *Apply* button).
-4. Nothing else needs to change: pages read data only through `src/hooks/useJobs.ts`.
+`server/workday/mapping.ts` decides how Workday data lands on the site:
+
+- **Team** — Job Family (Group) → one of the 11 team slugs (exact overrides first, then keyword rules
+  on the family and the job title).
+- **Country** — location / country → one of the 10 country slugs (country names, ISO codes,
+  "City, ST" US states / Canadian provinces, and known office cities).
+- **Brand** — company / hiring organization → Bluehost, HostGator, Yoast or YITH.
+
+After the first sync, open `/api/health`: `unmapped.families` and `unmapped.locations` list anything
+that fell back to a default, so the tables can be tuned with real data.
+
+### Deployment
+
+Run `npm run build && npm start` on any Node 22.18+ host (container, VM, PaaS) with the env vars
+set; it serves both the site and `/api`. To host the static site elsewhere (CDN), deploy `dist/` there,
+run the API separately, and build with `VITE_JOBS_API_URL=https://<api-host>/api`.
 
 Adding a team or country is a data change only: add an entry to `src/data/teams.ts` or
 `src/data/countries.ts` (and its images) and it appears in navigation, filters, tabs, and the globe.

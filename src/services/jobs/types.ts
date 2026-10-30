@@ -1,9 +1,9 @@
 /**
  * Job data contracts used by every page of the career site.
  *
- * The UI only ever talks to these types. To plug in Workday, implement
- * `JobsProvider` (see ./workdayProvider.ts) and map the Workday payload
- * onto these shapes — no component needs to change.
+ * The UI only ever talks to these types. Workday data is mapped onto them
+ * server-side (server/workday/normalize.ts), so no component needs to know
+ * about Workday.
  */
 
 export type WorkType = 'Remote' | 'Hybrid' | 'On-site'
@@ -34,6 +34,11 @@ export interface Job {
     requirements?: string[]
     niceToHave?: string[]
   }
+  /**
+   * Full job description as sanitized HTML, as authored in Workday.
+   * When present the role page renders it instead of `description`.
+   */
+  descriptionHtml?: string
   /** Where the "Apply now" button sends the candidate (Workday apply URL). */
   applyUrl: string
 }
