@@ -27,7 +27,6 @@ import { ReviewCard, type Testimonial } from '../components/sections/Testimonial
 import { Button } from '../components/ui/Button'
 import { FeatureCard } from '../components/ui/FeatureCard'
 import { SectionHeader } from '../components/ui/SectionHeader'
-import { StackOver } from '../components/ui/StackOver'
 
 const chips = [
   [iconBelonging, 'Belonging'],
@@ -97,44 +96,41 @@ export default function LifeAtBluehostPage() {
       </section>
       <LogoStrip />
 
-      {/* Figma dev note: "Our brands" moves up over the section above, which freezes. */}
-      <StackOver>
-        <section className="px-4 py-[80px]">
-          <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[1fr_582px]">
-            <div className="flex flex-col gap-5">
-              <p className="eyebrow">who we are</p>
-              <h2 className="h-section">We power prosperity for business builders</h2>
-              <p className="text-base leading-[1.75]">Bluehost Group brings together a family of brands that help small businesses and builders succeed online: Bluehost, HostGator, Yoast, and YITH. Each brand offers its own products and services, and all of them share the same vision, the same pillars, and the same focus on the business builders and AI builders we serve. Together, our brands are trusted by millions of customers in more than 100 countries.</p>
-              <p className="text-base leading-[1.75]">Behind every product and every solved problem are real people. Our customers keep us human, and they remind us every day why our work matters. We measure our success by two things that matter most to them: the growth of their business and how helpful we are along the way.</p>
-            </div>
-            <ul className="grid grid-cols-2 gap-[22px]">
-              {stats.map(([n, l]) => (
-                <li key={l} className="flex aspect-[280/227] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-bh-300 bg-white p-4 text-center">
-                  <span className="text-[clamp(40px,5vw,72px)] font-semibold leading-none text-bh-blue">{n}</span>
-                  <span className="text-base leading-[1.4]">{l}</span>
-                </li>
-              ))}
-            </ul>
+      <section className="px-4 py-[80px]">
+        <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[1fr_582px]">
+          <div className="flex flex-col gap-5">
+            <p className="eyebrow">who we are</p>
+            <h2 className="h-section">We power prosperity for business builders</h2>
+            <p className="text-base leading-[1.75]">Bluehost Group brings together a family of brands that help small businesses and builders succeed online: Bluehost, HostGator, Yoast, and YITH. Each brand offers its own products and services, and all of them share the same vision, the same pillars, and the same focus on the business builders and AI builders we serve. Together, our brands are trusted by millions of customers in more than 100 countries.</p>
+            <p className="text-base leading-[1.75]">Behind every product and every solved problem are real people. Our customers keep us human, and they remind us every day why our work matters. We measure our success by two things that matter most to them: the growth of their business and how helpful we are along the way.</p>
           </div>
-        </section>
+          <ul className="grid grid-cols-2 gap-[22px]">
+            {stats.map(([n, l]) => (
+              <li key={l} className="flex aspect-[280/227] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-bh-300 bg-white p-4 text-center">
+                <span className="text-[clamp(40px,5vw,72px)] font-semibold leading-none text-bh-blue">{n}</span>
+                <span className="text-base leading-[1.4]">{l}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
-        <section className="bg-bh-light-0 px-4 py-[80px]">
-          <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-10">
-            <SectionHeader eyebrow="Our brands" title="Different brands working toward one shared vision" body="Wherever you work in Bluehost Group, you help business builders show up, stand out, and thrive in the AI era. Each brand serves its customers in its own way, and together they bring our three pillars to life." />
-            <ul className="grid w-full gap-[30px] sm:grid-cols-2 lg:grid-cols-4">
-              {brands.map(b => (
-                <li key={b.cta} className="flex flex-col justify-between gap-6 rounded-2xl border border-bh-light-200 bg-white p-5 shadow-[0px_-8px_80px_0px_rgba(171,157,251,0.1),0px_8px_80px_0px_rgba(106,246,251,0.1)]">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex h-11 items-center">{b.logo}</div>
-                    <p className="text-sm leading-[1.4]">{b.body}</p>
-                  </div>
-                  <Button href={b.url} variant="link" className="self-start !text-sm">{b.cta}</Button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      </StackOver>
+      <section className="bg-bh-light-0 px-4 py-[80px]">
+        <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-10">
+          <SectionHeader eyebrow="Our brands" title="Different brands working toward one shared vision" body="Wherever you work in Bluehost Group, you help business builders show up, stand out, and thrive in the AI era. Each brand serves its customers in its own way, and together they bring our three pillars to life." />
+          <ul className="grid w-full gap-[30px] sm:grid-cols-2 lg:grid-cols-4">
+            {brands.map(b => (
+              <li key={b.cta} className="flex flex-col justify-between gap-6 rounded-2xl border border-bh-light-200 bg-white p-5 shadow-[0px_-8px_80px_0px_rgba(171,157,251,0.1),0px_8px_80px_0px_rgba(106,246,251,0.1)]">
+                <div className="flex flex-col gap-4">
+                  <div className="flex h-11 items-center">{b.logo}</div>
+                  <p className="text-sm leading-[1.4]">{b.body}</p>
+                </div>
+                <Button href={b.url} variant="link" className="self-start !text-sm">{b.cta}</Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <WhatWeDo />
 

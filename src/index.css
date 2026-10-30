@@ -127,15 +127,3 @@ body {
   .job-description a { color: var(--color-bh-blue, #196cdf); text-decoration: underline; }
   .job-description strong, .job-description b { font-weight: 600; }
 }
-
-/* Sections overlap on scroll (see useStackedSections). */
-.stack-section {
-  position: sticky;
-}
-.stack-section + .stack-section {
-  box-shadow: 0 -28px 48px -28px rgba(0, 42, 102, 0.22);
-}
-/* Keep an open dropdown above the section that would otherwise cover it. */
-.stack-section:has([aria-expanded="true"]) {
-  z-index: 100 !important;
-}
