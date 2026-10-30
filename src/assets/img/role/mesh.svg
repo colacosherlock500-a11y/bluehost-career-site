@@ -1,0 +1,21 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1927" height="963" viewBox="0 0 1927 963" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="mesh-gradient" clip-path="url(#clip0_0_16)">
+<path id="background" d="M1927 0H0V963H1927V0Z" fill="#A1D1FA"/>
+<g id="swatches" filter="url(#filter0_f_0_16)">
+<path id="Vector" d="M1036.88 -385.078H209.174V703.887H1036.88V-385.078Z" fill="#DBF1FC"/>
+<path id="Vector_2" d="M1940.32 336.328H1183.07V1283.91H1940.32V336.328Z" fill="#FDF3DC"/>
+<path id="Vector_3" d="M724.175 -83.5312H-263.5V752.711H724.175V-83.5312Z" fill="#A1D1FA"/>
+<path id="Vector_4" d="M1198.62 -208.853H219.859V490.04H1198.62V-208.853Z" fill="#CDEDFF"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_16" x="-645.45" y="-767.029" width="2967.72" height="2432.89" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="190.975" result="effect1_foregroundBlur_0_16"/>
+</filter>
+<clipPath id="clip0_0_16">
+<rect width="1927" height="963" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -94,6 +94,8 @@ function matches(job: Job, p: JobSearchParams): boolean {
   if (p.team && job.team !== p.team) return false
   if (p.country && !job.locations.some(l => l.country === p.country)) return false
   if (p.workType && job.workType !== p.workType) return false
+  // The mock has no geo data, so `location` is a simple city match and `radiusMiles` is ignored.
+  if (p.location && !job.locations.some(l => l.city.toLowerCase().includes(p.location!.toLowerCase()))) return false
   if (p.keyword) {
     const q = p.keyword.toLowerCase()
     const team = teams.find(t => t.slug === job.team)?.name ?? ''

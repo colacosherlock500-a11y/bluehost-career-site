@@ -7,7 +7,8 @@ import type { GeometryCollection, Topology } from 'topojson-specification'
 import world from 'world-atlas/countries-110m.json'
 import check from '../../assets/img/common/check.svg'
 import closeIcon from '../../assets/img/common/close.svg'
-import { countries, defaultBenefits, type Country } from '../../data/countries'
+import { getBenefits } from '../../data/benefits'
+import { countries, type Country } from '../../data/countries'
 import { formatOpenRoles, useJobStats } from '../../hooks/useJobs'
 
 /** ISO 3166 numeric codes (world-atlas feature ids) for the countries we operate in. */
@@ -252,7 +253,7 @@ function CountryStatsPanel({ country, onResume }: { country: Country; onResume: 
       <div className="flex flex-col gap-[10px]">
         <p className="text-[20px] font-semibold leading-[1.3] tracking-[-0.2px]">Benefits:</p>
         <ul>
-          {defaultBenefits.map(b => (
+          {getBenefits(country.slug).slice(0, 7).map(b => (
             <li key={b} className="flex items-center gap-[9px] text-base leading-[1.4]">
               <img src={check} alt="" className="size-[22px]" />
               {b}

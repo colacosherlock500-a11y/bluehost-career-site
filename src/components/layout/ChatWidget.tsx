@@ -63,7 +63,7 @@ export function ChatWidget() {
     <div className="fixed bottom-6 right-4 z-40 flex flex-col items-end gap-4 md:right-[6.5%]">
       {open && (
         <div role="dialog" aria-label="Chat with Blu" className="relative flex h-[385px] w-[333px] max-w-[calc(100vw-32px)] flex-col overflow-hidden rounded-[13px] border border-[#e6f4ff] bg-[#f4f9ff] shadow-[0px_0px_24px_0px_rgba(0,20,56,0.17)]">
-          <div className="relative flex h-[54.5px] shrink-0 items-center gap-3 px-4" style={{ backgroundImage: `url(${headerBg})`, backgroundSize: 'cover' }}>
+          <div className="relative flex h-[54.5px] shrink-0 items-center gap-3 px-4" style={{ backgroundImage: `url("${headerBg}")`, backgroundSize: 'cover' }}>
             <span className="relative flex size-[36.6px] items-center justify-center rounded-full border-[1.3px] border-white/20 shadow-[0px_1.3px_2.6px_0px_rgba(0,0,0,0.15)]">
               <img src={avatar} alt="" className="size-[31.4px]" />
               <span className="absolute -bottom-0.5 right-0 size-[9.2px] rounded-full border border-[#2e93ee] bg-[#31ff9f]" />

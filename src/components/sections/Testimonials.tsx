@@ -24,7 +24,7 @@ export const testimonials: Testimonial[] = [
   { quote: 'What keeps me going is knowing that every effort we make, every customer we help, and every solution we find contributes to something bigger than ourselves. We are here to grow, support each other, and make a difference.', name: 'Jose Castellano', role: 'Product Support Specialist · Philippines', photo: jose },
 ]
 
-function ReviewCard({ quote, name, role, photo }: Testimonial) {
+export function ReviewCard({ quote, name, role, photo }: Testimonial) {
   return (
     <figure className="flex h-[400px] w-[337px] shrink-0 flex-col justify-between rounded-[13px] border border-bh-light-200 bg-white px-[25px] py-[29px]">
       <div className="flex flex-col gap-[17px]">

@@ -73,6 +73,8 @@ interface JoinCtaProps {
   body?: string
   /** Show the secondary "Meet Our Teams" button. */
   showTeamsButton?: boolean
+  /** Job search variant: static social icon row under "join our socials" instead of the animated icon. */
+  socialRow?: boolean
 }
 
 export function JoinCta({
@@ -87,11 +89,12 @@ export function JoinCta({
   ),
   body = "Bring your curiosity and your courage. We'll bring the team, the tools, and the support to help you grow and shine.",
   showTeamsButton = true,
+  socialRow = false,
 }: JoinCtaProps) {
   return (
     <section className="flex flex-col items-center gap-10 px-4 pb-[60px] pt-[100px]">
       <div className="flex flex-col items-center gap-5 text-center">
-        <SocialSpinner />
+        {!socialRow && <SocialSpinner />}
         <p className="eyebrow">{eyebrow}</p>
         <h2 className="h-section">{title}</h2>
         <p className="text-lead max-w-[734px]">{body}</p>
@@ -100,9 +103,18 @@ export function JoinCta({
         <Button to="/jobs">View All open roles</Button>
         {showTeamsButton && <Button to="/our-teams" variant="outline">Meet Our Teams</Button>}
       </div>
-      <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="text-base font-semibold uppercase leading-[1.5] tracking-[-0.08px] text-bh-blue hover:underline">
-        join our socials
-      </a>
+      <div className="flex flex-col items-center gap-3">
+        <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="text-base font-semibold uppercase leading-[1.5] tracking-[-0.08px] text-bh-blue hover:underline">
+          join our socials
+        </a>
+        {socialRow && (
+          <div className="flex items-center gap-[14px]">
+            <a href="https://www.facebook.com/bluehost" target="_blank" rel="noreferrer" aria-label="Facebook"><FacebookIcon /></a>
+            <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" aria-label="Instagram"><img src={instagram} alt="" className="size-7" /></a>
+            <a href="https://www.linkedin.com/company/bluehost-com" target="_blank" rel="noreferrer" aria-label="LinkedIn"><img src={linkedin} alt="" className="size-7" /></a>
+          </div>
+        )}
+      </div>
       <SocialCards />
     </section>
   )

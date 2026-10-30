@@ -1,0 +1,29 @@
+/** "Prev 1 2 3 4 … 11 12 Next" pager. */
+export function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (page: number) => void }) {
+  if (totalPages <= 1) return null
+  const pages: (number | '…')[] = []
+  for (let p = 1; p <= totalPages; p++) {
+    if (p <= 4 || p > totalPages - 2 || Math.abs(p - page) <= 1) pages.push(p)
+    else if (pages[pages.length - 1] !== '…') pages.push('…')
+  }
+  return (
+    <nav aria-label="Pagination" className="flex items-center justify-center gap-[14px] text-[15px]">
+      <button disabled={page <= 1} onClick={() => onChange(page - 1)} className="text-[#4e5c6e] underline disabled:opacity-40">Prev</button>
+      {pages.map((p, i) =>
+        p === '…' ? (
+          <span key={`e${i}`} aria-hidden>…</span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            aria-current={p === page ? 'page' : undefined}
+            className={`flex size-[25px] items-center justify-center rounded-full ${p === page ? 'bg-bh-blue text-white' : 'hover:text-bh-blue'}`}
+          >
+            {p}
+          </button>
+        ),
+      )}
+      <button disabled={page >= totalPages} onClick={() => onChange(page + 1)} className="text-bh-blue underline disabled:opacity-40">Next</button>
+    </nav>
+  )
+}

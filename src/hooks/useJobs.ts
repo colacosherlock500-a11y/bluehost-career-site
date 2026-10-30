@@ -32,6 +32,8 @@ export function useJobSearch(params: JobSearchParams) {
     params.country,
     params.team,
     params.workType,
+    params.location,
+    params.radiusMiles,
     params.page,
     params.pageSize,
   ])
@@ -56,4 +58,33 @@ export function useJobStats() {
 export function formatOpenRoles(count: number | undefined) {
   if (count === undefined) return '— open roles'
   return `${count} open role${count === 1 ? '' : 's'}`
+}
+
+const RECENT_KEY = 'bh-careers:recently-viewed'
+
+/** Job ids the visitor opened recently (stored in localStorage, newest first). */
+export function getRecentlyViewed(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_KEY) ?? '[]') as string[]
+  } catch {
+    return []
+  }
+}
+
+export function rememberJob(id: string) {
+  try {
+    const next = [id, ...getRecentlyViewed().filter(x => x !== id)].slice(0, 6)
+    localStorage.setItem(RECENT_KEY, JSON.stringify(next))
+  } catch {
+    // storage unavailable (private mode) — recently viewed is a nice-to-have
+  }
+}
+
+/** Resolves recently viewed ids to jobs (skips ids that no longer exist). */
+export function useRecentlyViewedJobs(limit = 3) {
+  const ids = getRecentlyViewed().slice(0, limit)
+  return useAsync<Job[]>(
+    async () => (await Promise.all(ids.map(id => jobsProvider.getJob(id)))).filter((j): j is Job => !!j),
+    [ids.join(',')],
+  )
 }

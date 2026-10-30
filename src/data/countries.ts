@@ -301,15 +301,4 @@ export const countries: Country[] = [
   },
 ]
 
-/** Benefits listed on the globe card (Figma shows one shared list). CONTENT: make per-country if needed. */
-export const defaultBenefits = [
-  'Accident Insurance',
-  'Free Friday Lunch',
-  'Free Website or Hosting Domain',
-  'Health Insurance',
-  'Life Insurance',
-  'Vacation & Sick Leave',
-  'Wellness Support',
-]
-
 export const getCountry = (slug: string | undefined) => countries.find(c => c.slug === slug)

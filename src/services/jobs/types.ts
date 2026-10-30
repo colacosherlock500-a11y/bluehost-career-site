@@ -45,6 +45,10 @@ export interface JobSearchParams {
   /** Team slug. */
   team?: string
   workType?: WorkType
+  /** Free-text city / ZIP from the "Location" field. */
+  location?: string
+  /** Search radius around `location`, in miles (Workday supports distance search). */
+  radiusMiles?: number
   page?: number
   pageSize?: number
 }

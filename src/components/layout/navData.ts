@@ -56,6 +56,6 @@ export const lifeNav = [
   { label: 'Purpose, mission & values', to: '/life-at-bluehost#values' },
   { label: 'Benefits', to: '/life-at-bluehost#benefits' },
   { label: 'Affinity groups', to: '/life-at-bluehost#affinity-groups' },
-  { label: 'Learning & growth', to: '/life-at-bluehost#growth' },
+  { label: 'Our promise to you', to: '/life-at-bluehost#growth' },
   { label: 'Awards & recognition', to: '/life-at-bluehost#awards' },
 ]
