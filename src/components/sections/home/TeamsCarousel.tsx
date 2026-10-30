@@ -40,15 +40,16 @@ export function TeamsCarousel() {
                 className={`absolute top-1/2 hidden h-[87%] w-[calc(50%-var(--card-w)/2-67px)] -translate-y-1/2 overflow-hidden md:block ${d < 0 ? 'left-0 rounded-r-[10px]' : 'right-0 rounded-l-[10px]'}`}
               >
                 <img src={t.image} alt="" className={`absolute inset-0 size-full object-cover ${d < 0 ? 'object-right' : 'object-left'}`} />
+                {/* blue band + arrow on the card's outer edge (screen side) */}
                 <span
-                  className={`absolute inset-y-0 w-[min(246px,100%)] ${d < 0 ? 'right-0 -scale-x-100' : 'left-0'}`}
+                  className={`absolute inset-y-0 w-[min(246px,100%)] ${d < 0 ? 'left-0 -scale-x-100' : 'right-0'}`}
                   style={{ backgroundImage: 'linear-gradient(269.6deg, rgba(25,108,223,0.82) 17%, rgba(0,67,133,0) 99%)' }}
                 />
-                {/* 160px in from the inner edge, as in Figma, but never closer than 32px to the screen edge */}
+                {/* centred in the band, never more than halfway into a narrow card */}
                 <img
                   src={d < 0 ? prev : next}
                   alt=""
-                  className={`absolute top-1/2 size-16 -translate-y-1/2 ${d < 0 ? 'right-[clamp(0px,calc(100%-96px),160px)] rotate-90 -scale-y-100' : 'left-[clamp(0px,calc(100%-96px),160px)] rotate-90'}`}
+                  className={`absolute top-1/2 size-16 -translate-y-1/2 ${d < 0 ? 'left-[min(91px,calc(50%-32px))] rotate-90 -scale-y-100' : 'right-[min(91px,calc(50%-32px))] rotate-90'}`}
                 />
               </button>
             )
