@@ -1,9 +1,9 @@
 import { useEffect, type RefObject } from 'react'
 
 /**
- * "Sections overlap on scroll": every top-level section of the page becomes
- * sticky, so as you scroll the next section slides up over the previous one,
- * which stays pinned behind it.
+ * "Section moves up" (Figma dev note on Life at Bluehost, ref. jobs.uber.com):
+ * the children of `container` become sticky, so as you scroll each one slides
+ * up over the previous one, which freezes behind it. Used via <StackOver>.
  *
  * A section taller than the viewport sticks with its bottom edge at the bottom
  * of the screen (top = viewport height − section height), so all of its
@@ -12,8 +12,8 @@ import { useEffect, type RefObject } from 'react'
  */
 export function useStackedSections(container: RefObject<HTMLElement | null>) {
   useEffect(() => {
-    const main = container.current
-    if (!main || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const wrapper = container.current
+    if (!wrapper || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     let sections: HTMLElement[] = []
     const layout = () => {
@@ -24,7 +24,7 @@ export function useStackedSections(container: RefObject<HTMLElement | null>) {
 
     const setup = () => {
       resize.disconnect()
-      sections = [...main.children].filter((el): el is HTMLElement => el instanceof HTMLElement)
+      sections = [...wrapper.children].filter((el): el is HTMLElement => el instanceof HTMLElement)
       sections.forEach((s, i) => {
         s.classList.add('stack-section')
         s.style.zIndex = String(i + 1)
@@ -46,23 +46,22 @@ export function useStackedSections(container: RefObject<HTMLElement | null>) {
       const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
       if (hit && (el.contains(hit) || hit.contains(el))) return
       const vh = window.innerHeight
-      const naturalTop = main.offsetTop + sections.slice(0, i).reduce((sum, s) => sum + s.offsetHeight, 0)
+      const naturalTop = wrapper.getBoundingClientRect().top + window.scrollY + sections.slice(0, i).reduce((sum, s) => sum + s.offsetHeight, 0)
       const offsetInSection = r.top - sections[i].getBoundingClientRect().top
       const uncoveredUntil = naturalTop + Math.max(0, sections[i].offsetHeight - vh)
       window.scrollTo({ top: Math.min(uncoveredUntil, naturalTop + offsetInSection - vh / 2) })
     }
 
-    // Pages load lazily, so re-run whenever the page content is swapped in.
     const children = new MutationObserver(setup)
-    children.observe(main, { childList: true })
+    children.observe(wrapper, { childList: true })
     window.addEventListener('resize', layout)
-    main.addEventListener('focusin', revealFocused)
+    wrapper.addEventListener('focusin', revealFocused)
     setup()
     return () => {
       children.disconnect()
       resize.disconnect()
       window.removeEventListener('resize', layout)
-      main.removeEventListener('focusin', revealFocused)
+      wrapper.removeEventListener('focusin', revealFocused)
     }
   }, [container])
 }
