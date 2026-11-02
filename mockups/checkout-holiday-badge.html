@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout Holiday Badge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#196bde; --blue-soft:#eaf1fd; --blue-line:#a9c4f2;
+    --ink:#1b1b1b; --muted:#6b6b6b; --line:#d8dbe0; --bg:#f5f6f8;
+    --green:#3d9a5a; --green-soft:#e6f5ea; --orange:#e08a00; --orange-soft:#fff4e0;
+    --holiday:#c8102e; --holiday-soft:#fdecef;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);font-family:Poppins,system-ui,sans-serif;color:var(--ink)}
+  .wrap{max-width:1900px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1.5fr 1fr;gap:40px}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+  h1{font-size:34px;margin:0 0 24px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+
+  /* BMSM */
+  .bmsm{background:#f6f9ff;border:1.5px solid var(--blue-line);border-radius:12px;padding:24px 26px}
+  .bmsm-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .bmsm h2{font-size:28px;margin:0}
+  .pill{border:1.5px solid var(--blue-line);border-radius:999px;padding:8px 18px;color:var(--blue);font-weight:600;background:#fff;font-size:18px}
+  .applied{display:flex;gap:10px;align-items:center;margin-top:16px;font-size:20px}
+  .check{width:26px;height:26px;border-radius:50%;background:var(--green);display:grid;place-items:center;flex:none}
+  .hint{margin:6px 0 0 36px;font-size:19px;color:#3a3f47}
+  .hint b{color:var(--blue)}
+  .bars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+  .bar{height:8px;border-radius:8px;background:#e2e6ec}
+  .bar.on{background:var(--blue)} .bar.next{background:#d3e1f8}
+  .bars span{font-size:17px;margin-top:10px;display:block}
+  .bars b{color:var(--blue)}
+  .t1{color:var(--ink)} .t2{color:var(--blue)} .t3{color:#9aa0a8} .t3 b{color:#9aa0a8}
+
+  /* Cart */
+  .cart h3{font-size:24px;margin:0 0 20px}
+  .label{font-size:14px;letter-spacing:.08em;color:var(--muted);font-weight:600}
+  .terms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0 28px}
+  .term{position:relative;border:1.5px solid var(--line);border-radius:8px;padding:18px 6px 12px;text-align:center}
+  .term.sel{border:3px solid var(--blue);box-shadow:0 2px 8px rgba(25,107,222,.18)}
+  .term .name{font-weight:700;font-size:19px}
+  .term.sel .name,.term.sel .price{color:var(--blue)}
+  .price{font-weight:700;font-size:28px;margin-top:4px}
+  .price small{font-size:17px;font-weight:600}
+  .billed{font-size:13px;color:var(--muted)}
+  .save{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--green-soft);color:var(--green)}
+  .save.o{background:var(--orange-soft);color:var(--orange)}
+  .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);white-space:nowrap;
+         font-size:11px;font-weight:700;letter-spacing:.05em;color:#fff;background:var(--blue);
+         padding:3px 9px;border-radius:4px;display:flex;align-items:center;gap:4px}
+  /* NEW: holiday badge on the 1-year card */
+  .badge.holiday{background:var(--holiday)}
+  .badge.holiday svg{flex:none}
+
+  .row{display:flex;justify-content:space-between;align-items:baseline;font-size:22px;margin:14px 0}
+  .row .r{text-align:right}
+  .sub{font-size:18px;color:#8a8f96}
+  .row.disc{font-size:18px;padding:12px 14px;margin:18px 0;background:var(--holiday-soft);border-radius:8px}
+  .row.disc .k{font-weight:600}
+  .row.disc .k em{font-style:normal;color:var(--holiday)}
+  .row.disc .v{color:var(--holiday);font-weight:700}
+  hr{border:0;border-top:2px solid var(--line);margin:22px 0}
+  .total{font-weight:700;font-size:26px}
+  .strike{color:#9aa0a8;text-decoration:line-through;font-weight:400;font-size:22px;margin-right:12px}
+  .yousave{float:right;background:var(--green-soft);color:var(--green);font-weight:600;padding:6px 12px;border-radius:999px;font-size:18px}
+  .new{outline:2px dashed var(--holiday);outline-offset:4px;border-radius:6px}
+  .note{grid-column:1/-1;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section>
+    <h1>Checkout</h1>
+    <div class="bmsm">
+      <div class="bmsm-head">
+        <h2>2. Buy more, save more</h2>
+        <span class="pill">Show 3 options ⌄</span>
+      </div>
+      <div class="applied">
+        <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M5 12l5 5 9-10"/></svg></span>
+        <span><b>Extra 15% off applied</b> · you save <b>$8.98</b></span>
+      </div>
+      <p class="hint">Add 1 more 1-year product → <b>extra 20% off</b> both.</p>
+      <div class="bars">
+        <div><div class="bar on"></div><span class="t1">1 product · <b>15% off</b></span></div>
+        <div><div class="bar next"></div><span class="t2">2 products · <b>20% off</b></span></div>
+        <div><div class="bar"></div><span class="t3">3+ products · <b>25% off</b></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h1>Shopping Cart</h1>
+    <div class="panel cart">
+      <h3>Starter Hosting</h3>
+      <div class="label">CHOOSE YOUR TERM</div>
+      <div class="terms">
+        <div class="term">
+          <div class="name">Monthly</div>
+          <div class="price">$15<small>.99/mo</small></div>
+          <div class="billed">Billed monthly</div>
+        </div>
+        <div class="term sel">
+          <span class="badge holiday new" title="Holiday season: extra 15% off with Buy more, save more">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M20 7h-2.2A3 3 0 0012 3.8 3 3 0 006.2 7H4a1 1 0 00-1 1v3a1 1 0 001 1h7V7h2v5h7a1 1 0 001-1V8a1 1 0 00-1-1zM9 7a1 1 0 110-2 1 1 0 011 1v1H9zm6 0h-1V6a1 1 0 111 1zM5 14v6a1 1 0 001 1h5v-7H5zm8 7h5a1 1 0 001-1v-6h-6v7z"/></svg>
+            HOLIDAY EXTRA 15%
+          </span>
+          <div class="name">1 Year</div>
+          <div class="price">$4<small>.24/mo</small></div>
+          <div class="billed">$50.90 billed</div>
+          <span class="save">✓ Save 65%</span>
+        </div>
+        <div class="term">
+          <span class="badge">BEST VALUE</span>
+          <div class="name">3 Years</div>
+          <div class="price">$3<small>.99/mo</small></div>
+          <div class="billed">$143.64 billed</div>
+          <span class="save o">✓ Save 60%</span>
+        </div>
+        <div class="term">
+          <div class="name">4 Years</div>
+          <div class="price">$3<small>.99/mo</small></div>
+          <div class="billed">$191.52 billed</div>
+          <span class="save">✓ Save 60%</span>
+        </div>
+      </div>
+
+      <div class="row"><span>12-month plan</span><span class="r">$50.90<br><span class="sub">Renews at $143.88</span></span></div>
+      <div class="row"><span>Domain name</span><span>$0.00</span></div>
+      <div class="row disc new">
+        <span class="k">Buy more, save more · <em>Holiday Extra 15% off</em></span>
+        <span class="v">−$8.98</span>
+      </div>
+      <hr>
+      <div class="row"><span>Tax:</span><span>$0.00</span></div>
+      <div class="row total"><span>Today's Total:</span><span><span class="strike">$150.86</span>$50.90</span></div>
+      <div><span class="yousave">You Save $99.96</span></div>
+      <div style="clear:both"></div>
+    </div>
+  </section>
+  <p class="note">Dashed red outlines mark the new elements and are for review only. Remove the <code>.new</code> class before handoff.</p>
+</div>
+</body>
+</html>
