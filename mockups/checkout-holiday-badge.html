@@ -16,6 +16,7 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);font-family:Poppins,system-ui,sans-serif;color:var(--ink)}
   .wrap{max-width:1900px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1.5fr 1fr;gap:40px}
+  .wrap>section{min-width:0}
   @media (max-width:900px){.wrap{grid-template-columns:1fr}}
   h1{font-size:34px;margin:0 0 24px}
   .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
@@ -69,6 +70,7 @@
   .yousave{float:right;background:var(--green-soft);color:var(--green);font-weight:600;padding:6px 12px;border-radius:999px;font-size:18px}
   .new{outline:2px dashed var(--holiday);outline-offset:4px;border-radius:6px}
   .note{grid-column:1/-1;font-size:14px;color:var(--muted)}
+  @media (max-width:600px){.bars span{font-size:14px}.terms{grid-template-columns:repeat(2,1fr);row-gap:22px}.row.disc{flex-wrap:wrap;gap:6px}}
 </style>
 </head>
 <body>
@@ -86,9 +88,9 @@
       </div>
       <p class="hint">Add 1 more 1-year product → <b>extra 20% off</b> both.</p>
       <div class="bars">
-        <div><div class="bar on"></div><span class="t1">1 product · <b>15% off</b></span></div>
-        <div><div class="bar next"></div><span class="t2">2 products · <b>20% off</b></span></div>
-        <div><div class="bar"></div><span class="t3">3+ products · <b>25% off</b></span></div>
+        <div><div class="bar on"></div><span class="t1">1 product · <b>Extra 15% off</b></span></div>
+        <div><div class="bar next"></div><span class="t2">2 products · <b>Extra 20% off</b></span></div>
+        <div><div class="bar"></div><span class="t3">3+ products · <b>Extra 25% off</b></span></div>
       </div>
     </div>
   </section>
