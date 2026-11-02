@@ -11,7 +11,7 @@
     --blue:#196bde; --blue-soft:#eaf1fd; --blue-line:#a9c4f2;
     --ink:#1b1b1b; --muted:#6b6b6b; --line:#d8dbe0; --bg:#f5f6f8;
     --green:#3d9a5a; --green-soft:#e6f5ea; --orange:#e08a00; --orange-soft:#fff4e0;
-    --holiday:#c8102e; --holiday-soft:#fdecef;
+    --holiday:#c8102e;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);font-family:Poppins,system-ui,sans-serif;color:var(--ink)}
@@ -60,17 +60,13 @@
   .row{display:flex;justify-content:space-between;align-items:baseline;font-size:22px;margin:14px 0}
   .row .r{text-align:right}
   .sub{font-size:18px;color:#8a8f96}
-  .row.disc{font-size:18px;padding:12px 14px;margin:18px 0;background:var(--holiday-soft);border-radius:8px}
-  .row.disc .k{font-weight:600}
-  .row.disc .k em{font-style:normal;color:var(--holiday)}
-  .row.disc .v{color:var(--holiday);font-weight:700}
   hr{border:0;border-top:2px solid var(--line);margin:22px 0}
   .total{font-weight:700;font-size:26px}
   .strike{color:#9aa0a8;text-decoration:line-through;font-weight:400;font-size:22px;margin-right:12px}
   .yousave{float:right;background:var(--green-soft);color:var(--green);font-weight:600;padding:6px 12px;border-radius:999px;font-size:18px}
   .new{outline:2px dashed var(--holiday);outline-offset:4px;border-radius:6px}
   .note{grid-column:1/-1;font-size:14px;color:var(--muted)}
-  @media (max-width:600px){.bars span{font-size:14px}.terms{grid-template-columns:repeat(2,1fr);row-gap:22px}.row.disc{flex-wrap:wrap;gap:6px}}
+  @media (max-width:600px){.bars span{font-size:14px}.terms{grid-template-columns:repeat(2,1fr);row-gap:22px}}
 </style>
 </head>
 <body>
@@ -133,10 +129,6 @@
 
       <div class="row"><span>12-month plan</span><span class="r">$50.90<br><span class="sub">Renews at $143.88</span></span></div>
       <div class="row"><span>Domain name</span><span>$0.00</span></div>
-      <div class="row disc new">
-        <span class="k">Buy more, save more · <em>Holiday Extra 15% off</em></span>
-        <span class="v">−$8.98</span>
-      </div>
       <hr>
       <div class="row"><span>Tax:</span><span>$0.00</span></div>
       <div class="row total"><span>Today's Total:</span><span><span class="strike">$150.86</span>$50.90</span></div>
@@ -144,7 +136,7 @@
       <div style="clear:both"></div>
     </div>
   </section>
-  <p class="note">Dashed red outlines mark the new elements and are for review only. Remove the <code>.new</code> class before handoff.</p>
+  <p class="note">The dashed red outline marks the new badge and is for review only. Remove the <code>.new</code> class before handoff.</p>
 </div>
 </body>
 </html>
