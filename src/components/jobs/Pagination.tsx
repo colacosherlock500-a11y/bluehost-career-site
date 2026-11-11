@@ -1,5 +1,8 @@
+import { useT } from '../../i18n/I18n'
+
 /** "Prev 1 2 3 4 … 11 12 Next" pager. */
 export function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (page: number) => void }) {
+  const t = useT()
   if (totalPages <= 1) return null
   const pages: (number | '…')[] = []
   for (let p = 1; p <= totalPages; p++) {
@@ -7,8 +10,8 @@ export function Pagination({ page, totalPages, onChange }: { page: number; total
     else if (pages[pages.length - 1] !== '…') pages.push('…')
   }
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-center gap-[14px] text-[15px]">
-      <button disabled={page <= 1} onClick={() => onChange(page - 1)} className="text-[#4e5c6e] underline disabled:opacity-40">Prev</button>
+    <nav aria-label={t('Pagination')} className="flex items-center justify-center gap-[14px] text-[15px]">
+      <button disabled={page <= 1} onClick={() => onChange(page - 1)} className="text-[#4e5c6e] underline disabled:opacity-40">{t('Prev')}</button>
       {pages.map((p, i) =>
         p === '…' ? (
           <span key={`e${i}`} aria-hidden>…</span>
@@ -23,7 +26,7 @@ export function Pagination({ page, totalPages, onChange }: { page: number; total
           </button>
         ),
       )}
-      <button disabled={page >= totalPages} onClick={() => onChange(page + 1)} className="text-bh-blue underline disabled:opacity-40">Next</button>
+      <button disabled={page >= totalPages} onClick={() => onChange(page + 1)} className="text-bh-blue underline disabled:opacity-40">{t('Next')}</button>
     </nav>
   )
 }

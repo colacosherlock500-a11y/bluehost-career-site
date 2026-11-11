@@ -11,11 +11,13 @@ import { Pagination } from '../components/jobs/Pagination'
 import { JoinCta } from '../components/sections/JoinCta'
 import { workTypeOptions } from '../components/sections/JobSearchBar'
 import { Button } from '../components/ui/Button'
+import { RotatingWord } from '../components/ui/RotatingWord'
 import { countries } from '../data/countries'
 import { teams } from '../data/teams'
 import { useJobSearch, useRecentlyViewedJobs } from '../hooks/useJobs'
 import { createJobAlert } from '../services/jobAlerts'
 import type { JobSearchParams, WorkType } from '../services/jobs'
+import { useI18n, useT } from '../i18n/I18n'
 
 const PAGE_SIZE = 6
 
@@ -59,6 +61,7 @@ function readParams(sp: URLSearchParams): JobSearchParams {
 }
 
 function JobAlertCard({ search }: { search: JobSearchParams }) {
+  const t = useT()
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle')
@@ -74,17 +77,17 @@ function JobAlertCard({ search }: { search: JobSearchParams }) {
   }
   return (
     <div className="flex flex-col items-center gap-6 rounded-2xl px-[47px] py-[45px] text-center text-white" style={{ backgroundImage: 'linear-gradient(171deg, #5e9cd5 10%, #addbff 98%)' }}>
-      <p className="text-[20px] font-semibold leading-[1.33] tracking-[-0.2px]">Get job alerts for this search by email</p>
-      {!open && <Button variant="white" onClick={() => setOpen(true)} className="w-[202px]">Create alert</Button>}
+      <p className="text-[20px] font-semibold leading-[1.33] tracking-[-0.2px]">{t('Get job alerts for this search by email')}</p>
+      {!open && <Button variant="white" onClick={() => setOpen(true)} className="w-[202px]">{t('Create alert')}</Button>}
       {open && status !== 'done' && (
         <form onSubmit={submit} className="flex w-full flex-col gap-3">
-          <label htmlFor="alert-email" className="sr-only">Email address</label>
+          <label htmlFor="alert-email" className="sr-only">{t('Email address')}</label>
           <input id="alert-email" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className={`${inputCls} px-[14px]`} />
-          <Button type="submit" variant="white" arrow={false}>{status === 'saving' ? 'Saving…' : 'Subscribe'}</Button>
-          {status === 'error' && <p className="text-sm">Something went wrong. Please try again.</p>}
+          <Button type="submit" variant="white" arrow={false}>{t(status === 'saving' ? 'Saving…' : 'Subscribe')}</Button>
+          {status === 'error' && <p className="text-sm">{t('Something went wrong. Please try again.')}</p>}
         </form>
       )}
-      {status === 'done' && <p className="font-medium">You’re subscribed! We’ll email new matching roles.</p>}
+      {status === 'done' && <p className="font-medium">{t('You’re subscribed! We’ll email new matching roles.')}</p>}
     </div>
   )
 }
@@ -106,6 +109,7 @@ function nearestOffice(lat: number, lon: number) {
 }
 
 export default function JobSearchPage() {
+  const { lang, t } = useI18n()
   const [sp, setSp] = useSearchParams()
   const params = readParams(sp)
   const [form, setForm] = useState(params)
@@ -133,20 +137,20 @@ export default function JobSearchPage() {
   const [locating, setLocating] = useState<{ state: 'idle' | 'busy' | 'done' | 'error'; message?: string }>({ state: 'idle' })
   const useMyLocation = () => {
     if (!('geolocation' in navigator) || !window.isSecureContext) {
-      setLocating({ state: 'error', message: 'Your browser can\'t share your location here. Type a city instead.' })
+      setLocating({ state: 'error', message: t('Your browser can\'t share your location here. Type a city instead.') })
       return
     }
-    setLocating({ state: 'busy', message: 'Finding your location…' })
+    setLocating({ state: 'busy', message: t('Finding your location…') })
     navigator.geolocation.getCurrentPosition(
       pos => {
         const nearest = nearestOffice(pos.coords.latitude, pos.coords.longitude)
-        if (!nearest) return setLocating({ state: 'error', message: 'We couldn\'t match your location to an office. Type a city instead.' })
+        if (!nearest) return setLocating({ state: 'error', message: t('We couldn\'t match your location to an office. Type a city instead.') })
         const next = { ...form, country: nearest.country.slug, location: '', page: 1 }
         setForm(next)
         apply(next)
         setLocating({
           state: 'done',
-          message: `Showing roles in ${nearest.country.name} — nearest office: ${nearest.city}, about ${Math.round(nearest.miles).toLocaleString()} mi away.`,
+          message: `${t('Showing roles in')} ${t(nearest.country.name)} — ${t('nearest office')}: ${nearest.city}, ${t('about')} ${Math.round(nearest.miles).toLocaleString()} mi.`,
         })
       },
       err =>
@@ -154,8 +158,8 @@ export default function JobSearchPage() {
           state: 'error',
           message:
             err.code === err.PERMISSION_DENIED
-              ? 'Location access is blocked. Allow it in your browser settings, or type a city instead.'
-              : 'We couldn\'t get your location right now. Try again, or type a city instead.',
+              ? t('Location access is blocked. Allow it in your browser settings, or type a city instead.')
+              : t('We couldn\'t get your location right now. Try again, or type a city instead.'),
         }),
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
     )
@@ -169,9 +173,9 @@ export default function JobSearchPage() {
       <section className="bg-gradient-to-b from-[#e6f3ff] to-white px-4 pb-16 pt-[120px]">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-[34px]">
           <div className="flex flex-col gap-5">
-            <p className="eyebrow">Build your future with us</p>
+            <p className="eyebrow">{t('Build your future with us')}</p>
             <h1 className="h-section">
-              Where people <span className="text-bh-blue">grow</span> as one team
+              {t('Where people')} <RotatingWord key={lang} words={lang === 'pt' ? ['pertencem', 'constroem', 'crescem', 'brilham'] : undefined} /> {t('as one team')}
             </h1>
           </div>
 
@@ -179,31 +183,31 @@ export default function JobSearchPage() {
             <aside className="flex flex-col gap-8">
               <form
                 role="search"
-                aria-label="Filter jobs"
+                aria-label={t('Filter jobs')}
                 className="flex flex-col gap-[19px]"
                 onSubmit={e => {
                   e.preventDefault()
                   apply({ ...form, page: 1 })
                 }}
               >
-                <Field label="Search by skill" htmlFor="f-keyword">
+                <Field label={t('Search by skill')} htmlFor="f-keyword">
                   <div className="relative">
                     <img src={searchIcon} alt="" className="pointer-events-none absolute left-[14px] top-1/2 size-[21px] -translate-y-1/2" />
-                    <input id="f-keyword" value={form.keyword} onChange={e => setForm(f => ({ ...f, keyword: e.target.value }))} placeholder="e.g. developer" className={`${inputCls} border-bh-light-400 pl-[43px] pr-[14px]`} />
+                    <input id="f-keyword" value={form.keyword} onChange={e => setForm(f => ({ ...f, keyword: e.target.value }))} placeholder={t('e.g. developer')} className={`${inputCls} border-bh-light-400 pl-[43px] pr-[14px]`} />
                   </div>
                 </Field>
-                <Field label="Location" htmlFor="f-location">
+                <Field label={t('Location')} htmlFor="f-location">
                   <div className="flex items-center gap-2">
                     <div className="relative flex-1">
                       <img src={pinGrey} alt="" className="pointer-events-none absolute left-[14px] top-1/2 size-[21px] -translate-y-1/2" />
-                      <input id="f-location" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} placeholder="City or ZIP code" className={`${inputCls} pl-[43px] pr-[14px]`} />
+                      <input id="f-location" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} placeholder={t('City or ZIP code')} className={`${inputCls} pl-[43px] pr-[14px]`} />
                     </div>
                     <button
                       type="button"
                       onClick={useMyLocation}
                       disabled={locating.state === 'busy'}
-                      aria-label="Use my location"
-                      title="Use my location"
+                      aria-label={t('Use my location')}
+                      title={t('Use my location')}
                       className="shrink-0 rounded-md transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-bh-blue disabled:cursor-wait"
                     >
                       <img src={target} alt="" className={`size-[26px] ${locating.state === 'busy' ? 'animate-pulse' : ''}`} />
@@ -215,21 +219,21 @@ export default function JobSearchPage() {
                     </p>
                   )}
                 </Field>
-                <Field label="Country" htmlFor="f-country">
-                  <Select id="f-country" value={form.country ?? ''} onChange={country => setForm(f => ({ ...f, country }))} placeholder="All countries" options={countries.map(c => ({ value: c.slug, label: c.name, count: data ? facetCount(data.facets.countries, c.slug) : undefined }))} />
+                <Field label={t('Country')} htmlFor="f-country">
+                  <Select id="f-country" value={form.country ?? ''} onChange={country => setForm(f => ({ ...f, country }))} placeholder={t('All countries')} options={countries.map(c => ({ value: c.slug, label: t(c.name), count: data ? facetCount(data.facets.countries, c.slug) : undefined }))} />
                 </Field>
-                <Field label="Radius in miles" htmlFor="f-radius">
+                <Field label={t('Radius in miles')} htmlFor="f-radius">
                   <input id="f-radius" type="number" min={5} max={500} step={5} value={form.radiusMiles} onChange={e => setForm(f => ({ ...f, radiusMiles: Number(e.target.value) }))} className={`${inputCls} px-[14px]`} />
-                  <input type="range" min={5} max={500} step={5} value={form.radiusMiles} onChange={e => setForm(f => ({ ...f, radiusMiles: Number(e.target.value) }))} aria-label="Radius in miles" className="mt-2 w-full accent-bh-blue" />
+                  <input type="range" min={5} max={500} step={5} value={form.radiusMiles} onChange={e => setForm(f => ({ ...f, radiusMiles: Number(e.target.value) }))} aria-label={t('Radius in miles')} className="mt-2 w-full accent-bh-blue" />
                 </Field>
-                <Field label="Team" htmlFor="f-team">
-                  <Select id="f-team" value={form.team ?? ''} onChange={team => setForm(f => ({ ...f, team }))} placeholder="All teams" options={teams.map(t => ({ value: t.slug, label: t.name, count: data ? facetCount(data.facets.teams, t.slug) : undefined }))} />
+                <Field label={t('Team')} htmlFor="f-team">
+                  <Select id="f-team" value={form.team ?? ''} onChange={team => setForm(f => ({ ...f, team }))} placeholder={t('All teams')} options={teams.map(team => ({ value: team.slug, label: t(team.name), count: data ? facetCount(data.facets.teams, team.slug) : undefined }))} />
                 </Field>
-                <Field label="Work type" htmlFor="f-worktype">
-                  <Select id="f-worktype" value={form.workType ?? ''} onChange={v => setForm(f => ({ ...f, workType: (v || undefined) as WorkType | undefined }))} placeholder="All work types" options={workTypeOptions} />
+                <Field label={t('Work type')} htmlFor="f-worktype">
+                  <Select id="f-worktype" value={form.workType ?? ''} onChange={v => setForm(f => ({ ...f, workType: (v || undefined) as WorkType | undefined }))} placeholder={t('All work types')} options={workTypeOptions.map(o => ({ ...o, label: t(o.label) }))} />
                 </Field>
                 <div className="mt-1 grid grid-cols-2 gap-[11px]">
-                  <Button type="submit" className="!min-w-0 !py-3">Search</Button>
+                  <Button type="submit" className="!min-w-0 !py-3">{t('Search')}</Button>
                   <button
                     type="button"
                     onClick={() => {
@@ -238,7 +242,7 @@ export default function JobSearchPage() {
                     }}
                     className="rounded-[10px] border border-bh-blue bg-white py-3 text-base font-medium text-bh-blue hover:bg-bh-light-0"
                   >
-                    Clear Filters
+                    {t('Clear Filters')}
                   </button>
                 </div>
               </form>
@@ -247,14 +251,14 @@ export default function JobSearchPage() {
 
             <div className="flex flex-col gap-[21px]" aria-live="polite" aria-busy={loading}>
               <p className="text-[15px] text-night-sky">
-                {loading ? 'Searching…' : error ? 'We couldn’t load jobs right now. Please try again later.' : `${data?.total ?? 0} open role${data?.total === 1 ? '' : 's'}`}
+                {loading ? t('Searching…') : error ? t('We couldn’t load jobs right now. Please try again later.') : t(`${data?.total ?? 0} open role${data?.total === 1 ? '' : 's'}`)}
               </p>
               {loading && Array.from({ length: 4 }, (_, i) => <JobCardSkeleton key={i} />)}
               {!loading && data?.jobs.map(job => <JobListCard key={job.id} job={job} />)}
               {!loading && data && data.jobs.length === 0 && (
                 <div className="rounded-3xl border border-dashed border-bh-light-200 bg-white p-10 text-center">
-                  <p className="text-[20px] font-semibold">No roles match your search</p>
-                  <p className="mt-2 text-night-sky">Try removing a filter or searching for a broader skill.</p>
+                  <p className="text-[20px] font-semibold">{t('No roles match your search')}</p>
+                  <p className="mt-2 text-night-sky">{t('Try removing a filter or searching for a broader skill.')}</p>
                 </div>
               )}
               <div className="pt-4">
@@ -268,7 +272,7 @@ export default function JobSearchPage() {
       {recent.data && recent.data.length > 0 && (
         <section className="px-4 py-[50px]">
           <div className="mx-auto flex max-w-[1200px] flex-col gap-8">
-            <h2 className="h-section">Recently viewed jobs</h2>
+            <h2 className="h-section">{t('Recently viewed jobs')}</h2>
             <div className="grid gap-[21px] md:grid-cols-3">
               {recent.data.map(job => <JobCard key={job.id} job={job} />)}
             </div>
@@ -280,9 +284,9 @@ export default function JobSearchPage() {
         eyebrow="join us"
         title={
           <>
-            Build your future{' '}
+            {t('Build your future')}{' '}
             <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(90deg, #196cdf 30%, #83c0fc 100%)' }}>
-              with us
+              {t('with us')}
             </span>
           </>
         }

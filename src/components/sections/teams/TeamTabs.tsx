@@ -47,7 +47,7 @@ export function TeamTabs({ active, onChange }: { active: Team; onChange: (slug: 
               </div>
             </div>
           </div>
-          <div className="relative h-[449px] overflow-hidden rounded-[10.7px]">
+          <div data-cube-target className="relative h-[449px] overflow-hidden rounded-[10.7px]">
             <img src={active.image} alt={`${active.name} team at Bluehost`} className="absolute inset-0 size-full object-cover" />
             <span className="absolute bottom-4 right-4 rounded-md bg-bh-blue-1100/60 px-2 py-1 text-[16.5px] leading-[1.4] text-gold backdrop-blur-sm">
               {formatOpenRoles(stats?.byTeam[active.slug])}

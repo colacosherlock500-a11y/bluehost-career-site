@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import andrew from '../../assets/img/people/andrew-jackson.jpg'
 import jorge from '../../assets/img/people/jorge-tristan.png'
 import jose from '../../assets/img/people/jose-castellano.png'
@@ -6,8 +6,8 @@ import maaz from '../../assets/img/people/maaz-mansoor.png'
 import rakshitha from '../../assets/img/people/rakshitha-rai.png'
 import ring from '../../assets/img/common/avatar-ring.svg'
 import star from '../../assets/img/common/star.svg'
-import { Marquee } from '../ui/Marquee'
 import { SectionHeader } from '../ui/SectionHeader'
+import { useT } from '../../i18n/I18n'
 
 export interface Testimonial {
   quote: string
@@ -18,8 +18,8 @@ export interface Testimonial {
 
 export const testimonials: Testimonial[] = [
   { quote: 'My journey here started 14 years ago. What I love most is how the company has evolved so many times. It feels like starting a new job every few years, but with the same great people by your side. Roles may change, but the sense of community stays the same.', name: 'Jorge Tristan', role: 'System Administrator · Argentina', photo: jorge },
-  { quote: "I joined as a Sales Agent, and less than a year later I was part of the Bluehost marketing team. Growth here isn't just possible, it's encouraged. This is a place where your ambition is matched by opportunity.", name: 'Maaz Mansoor', role: 'Product Marketing Specialist · Canada', photo: maaz },
   { quote: 'I joined Bluehost in 2016 and have seen firsthand how deeply the company lives its customer-first culture. What has kept me here is the people and the purpose. If you are looking for a place where you feel valued and proud of the difference your work makes, you will find it here.', name: 'Andrew Jackson', role: 'Director, Customer Advocacy · United States', photo: andrew },
+  { quote: "I joined as a Sales Agent, and less than a year later I was part of the Bluehost marketing team. Growth here isn't just possible, it's encouraged. This is a place where your ambition is matched by opportunity.", name: 'Maaz Mansoor', role: 'Product Marketing Specialist · Canada', photo: maaz },
   { quote: 'My favorite part of my job is the people. I get to work with teams not just in India, but across the globe. Working with people from different cultural backgrounds brings fresh perspectives and little learning moments every day.', name: 'Rakshitha Rai', role: 'Content Marketing · India', photo: rakshitha },
   { quote: 'What keeps me going is knowing that every effort we make, every customer we help, and every solution we find contributes to something bigger than ourselves. We are here to grow, support each other, and make a difference.', name: 'Jose Castellano', role: 'Product Support Specialist · Philippines', photo: jose },
 ]
@@ -49,24 +49,170 @@ export function ReviewCard({ quote, name, role, photo }: Testimonial) {
   )
 }
 
-/** "Stories from the people who make Bluehost" — auto-scrolling testimonial cards with faded edges. */
+/** Blob colours for gradient cards (overridable per card). */
+const BLOBS: [string, string][] = [
+  ['#5d9bff', '#9fe0ff'],
+  ['#7fd3ff', '#3f8bf0'],
+  ['#8ab8ff', '#b7f0ff'],
+]
+
+/*
+ * "For Dev Team – Testimonials": cards alternate gradient – photo – gradient – photo.
+ * Gradient cards: the Bluehost gradient blob (blurred ellipses) behind dark text; on hover the
+ * person's photo crossfades in (opacity 0 → 1, 400 ms ease-out) under the navy overlay, the blob
+ * fades out and the text turns white. Photo cards: full-colour photo under a navy overlay
+ * (darker at top and bottom behind the text), subtle zoom 1.0 → 1.04 on hover.
+ */
+function StoryCard({ t, index }: { t: Testimonial; index: number }) {
+  const tr = useT()
+  const photoCard = index % 2 === 1
+  const [c1, c2] = BLOBS[index % BLOBS.length]
+  const overlay = 'linear-gradient(180deg, rgba(1,24,56,0.88) 0%, rgba(1,24,56,0.25) 30%, rgba(1,24,56,0.25) 45%, rgba(1,24,56,0.92) 100%)'
+  return (
+    <figure
+      data-card
+      tabIndex={0}
+      className="group relative flex h-[420px] w-[min(85vw,300px)] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-[14px] border border-bh-light-200 bg-white p-6 outline-none focus-visible:ring-2 focus-visible:ring-bh-blue md:w-[300px]"
+    >
+      {/* photo layer: always shown on photo cards, crossfades in on gradient cards */}
+      <div className={`absolute inset-0 transition-opacity duration-[400ms] ease-out ${photoCard ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
+        <img src={t.photo} alt="" draggable={false} className={`size-full object-cover object-top transition-[scale] duration-[400ms] ease-out ${photoCard ? 'group-hover:scale-[1.04]' : ''}`} />
+        <span className="absolute inset-0" style={{ backgroundImage: overlay }} />
+      </div>
+      {!photoCard && (
+        <div aria-hidden className="pointer-events-none absolute inset-0 transition-opacity duration-[400ms] ease-out group-hover:opacity-0 group-focus-visible:opacity-0">
+          <span className="absolute -left-[30%] top-[38%] h-[70%] w-[120%] rounded-full opacity-95 blur-[44px]" style={{ background: `radial-gradient(closest-side, ${c1}, transparent)` }} />
+          <span className="absolute -right-[25%] -top-[20%] h-[50%] w-[90%] rounded-full opacity-75 blur-[36px]" style={{ background: `radial-gradient(closest-side, ${c2}, transparent)` }} />
+        </div>
+      )}
+      <figcaption className={`relative flex flex-col gap-1 transition-colors duration-[400ms] ${photoCard ? 'text-white' : 'text-bh-blue-1100 group-hover:text-white group-focus-visible:text-white'}`}>
+        <span className="text-[15px] font-semibold leading-[1.3]">{t.name}</span>
+        <span className={`text-[10.5px] font-medium uppercase leading-[1.35] tracking-[0.6px] ${photoCard ? 'text-white/80' : 'text-night-sky group-hover:text-white/80 group-focus-visible:text-white/80'}`}>{tr(t.role)}</span>
+      </figcaption>
+      <blockquote className={`relative text-[14px] leading-[1.45] tracking-[-0.14px] transition-colors duration-[400ms] ${photoCard ? 'text-white' : 'text-bh-blue-1100 group-hover:text-white group-focus-visible:text-white'}`}>
+        “{tr(t.quote)}”
+      </blockquote>
+    </figure>
+  )
+}
+
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
+
+/** Scrolls `el` horizontally to `to` over 500 ms ease-in-out (snap is paused meanwhile). */
+function glide(el: HTMLElement, to: number) {
+  const from = el.scrollLeft
+  const start = performance.now()
+  el.style.scrollSnapType = 'none'
+  const tick = (now: number) => {
+    const t = Math.min(1, (now - start) / 500)
+    el.scrollLeft = from + (to - from) * easeInOut(t)
+    if (t < 1) requestAnimationFrame(tick)
+    else el.style.scrollSnapType = ''
+  }
+  requestAnimationFrame(tick)
+}
+
+/** "Stories from the people who make Bluehost" — horizontal story carousel with snap, drag, arrows and a progress bar. */
 export function Testimonials({ title, eyebrow = 'Our People', items = testimonials }: { title?: ReactNode; eyebrow?: string; items?: Testimonial[] }) {
+  const t = useT()
+  const track = useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = useState({ start: 0, size: 1 })
+  const [edges, setEdges] = useState({ atStart: true, atEnd: false })
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null)
+
+  const sync = () => {
+    const el = track.current
+    if (!el) return
+    const max = el.scrollWidth - el.clientWidth
+    const size = el.clientWidth / el.scrollWidth
+    setProgress({ start: max > 0 ? (el.scrollLeft / max) * (1 - size) : 0, size })
+    setEdges({ atStart: el.scrollLeft < 4, atEnd: el.scrollLeft > max - 4 })
+  }
+  useEffect(() => {
+    sync()
+    window.addEventListener('resize', sync)
+    return () => window.removeEventListener('resize', sync)
+  }, [])
+
+  // Arrows move by exactly one card (500 ms ease-in-out).
+  const move = (dir: 1 | -1) => {
+    const el = track.current
+    const card = el?.querySelector<HTMLElement>('[data-card]')
+    if (!el || !card) return
+    const stepPx = card.offsetWidth + parseFloat(getComputedStyle(el).columnGap || '0')
+    const max = el.scrollWidth - el.clientWidth
+    glide(el, Math.max(0, Math.min(max, Math.round(el.scrollLeft / stepPx + dir) * stepPx)))
+  }
+
+  // Mouse drag (touch and trackpads scroll natively).
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !track.current) return
+    drag.current = { x: e.clientX, left: track.current.scrollLeft, moved: false }
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = drag.current
+    const el = track.current
+    if (!d || !el) return
+    const dx = e.clientX - d.x
+    if (!d.moved && Math.abs(dx) > 6) {
+      d.moved = true
+      el.style.scrollSnapType = 'none'
+      el.setPointerCapture(e.pointerId)
+    }
+    if (d.moved) el.scrollLeft = d.left - dx
+  }
+  const onPointerUp = () => {
+    const d = drag.current
+    const el = track.current
+    drag.current = null
+    if (!d?.moved || !el) return
+    // settle on the nearest card
+    const card = el.querySelector<HTMLElement>('[data-card]')
+    const stepPx = card ? card.offsetWidth + parseFloat(getComputedStyle(el).columnGap || '0') : 1
+    glide(el, Math.round(el.scrollLeft / stepPx) * stepPx)
+  }
+
+  const arrow = 'flex size-9 items-center justify-center rounded-full border border-[#d5e2f5] bg-white text-bh-blue shadow-sm transition hover:bg-bh-light-0 disabled:opacity-40 disabled:hover:bg-white'
+
   return (
     <section className="flex flex-col items-center gap-10 py-[100px]">
       <SectionHeader
         className="px-4"
-        eyebrow={eyebrow}
-        title={title ?? (<>Stories from the people <span className="text-bh-blue">who make Bluehost</span></>)}
-        body="Hear from colleagues around the world about what it means to belong, build, grow, and shine here."
+        eyebrow={t(eyebrow)}
+        title={title ?? (<>{t('Stories from the people')} <span className="text-bh-blue">{t('who make Bluehost')}</span></>)}
+        body={t('Hear from colleagues around the world about what it means to belong, build, grow, and shine here.')}
       />
-      <div className="relative w-full py-10">
-        <Marquee gap={29} scrollLinked>
-          {items.map(t => (
-            <ReviewCard key={t.name} {...t} />
+      <div className="flex w-full flex-col gap-6">
+        <div
+          ref={track}
+          onScroll={sync}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          role="region"
+          aria-label={t('Stories from our people')}
+          className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-[22px] overflow-x-auto overscroll-x-contain py-4 [scroll-padding-inline:max(16px,calc((100vw-1200px)/2))] active:cursor-grabbing [&_img]:pointer-events-none"
+          style={{ paddingInline: 'max(16px, calc((100vw - 1200px) / 2))' }}
+        >
+          {items.map((t, i) => (
+            <StoryCard key={t.name} t={t} index={i} />
           ))}
-        </Marquee>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[min(300px,15vw)] bg-gradient-to-r from-white/80 to-white/0" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-[min(300px,15vw)] bg-gradient-to-l from-white/80 to-white/0" />
+        </div>
+        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4">
+          <div className="flex gap-2">
+            <button type="button" onClick={() => move(-1)} disabled={edges.atStart} aria-label={t('Previous story')} className={arrow}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <button type="button" onClick={() => move(1)} disabled={edges.atEnd} aria-label={t('Next story')} className={arrow}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+          {/* position within the list */}
+          <div className="relative h-[3px] w-[120px] overflow-hidden rounded-full bg-[#d8e4f5]" aria-hidden>
+            <span className="absolute inset-y-0 rounded-full bg-bh-blue" style={{ left: `${progress.start * 100}%`, width: `${progress.size * 100}%` }} />
+          </div>
+        </div>
       </div>
     </section>
   )

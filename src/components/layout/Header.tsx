@@ -7,6 +7,7 @@ import chevronSmall from '../../assets/img/common/chevron-small.svg'
 import flagBr from '../../assets/img/common/flag-br.svg'
 import flagUs from '../../assets/img/common/flag-us.svg'
 import { Button } from '../ui/Button'
+import { useI18n, useT } from '../../i18n/I18n'
 import { countryNav, lifeNav, teamNav, type NavCard } from './navData'
 
 type Theme = 'dark' | 'light'
@@ -19,6 +20,7 @@ const menus: { key: MenuKey; label: string; to: string }[] = [
 ]
 
 function CardGrid({ items, teamStyle, onNavigate }: { items: NavCard[]; teamStyle?: boolean; onNavigate: () => void }) {
+  const t = useT()
   return (
     <div className="grid grid-cols-4 gap-x-[35px] gap-y-5">
       {items.map(item => (
@@ -30,7 +32,7 @@ function CardGrid({ items, teamStyle, onNavigate }: { items: NavCard[]; teamStyl
             <img src={item.image} alt="" className={`absolute inset-0 size-full transition-transform duration-300 group-hover:scale-105 ${teamStyle ? 'object-cover object-top' : 'object-cover'}`} />
           </span>
           <span className="flex items-center whitespace-nowrap pl-2 text-sm text-bh-blue-1100 group-hover:text-bh-blue">
-            {item.label}
+            {t(item.label)}
             <img src={chevronSmall} alt="" className="size-[21.4px]" />
           </span>
         </Link>
@@ -47,7 +49,7 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
   const [open, setOpen] = useState<MenuKey | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [lang, setLang] = useState<'en' | 'pt'>('en')
+  const { lang, setLang, t } = useI18n()
   const closeTimer = useRef<number | undefined>(undefined)
   const location = useLocation()
 
@@ -95,7 +97,7 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
                 aria-expanded={open === m.key}
                 onFocus={() => openMenu(m.key)}
               >
-                {m.label}
+                {t(m.label)}
                 <img src={caretDown} alt="" className={`size-[17px] transition-transform ${open === m.key ? 'rotate-180' : ''} ${dark ? '' : 'invert'}`} />
               </NavLink>
             </div>
@@ -107,9 +109,8 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
             className="flex items-center gap-[7.3px] rounded-[6.2px] border-[0.6px] border-white px-[5.8px] py-[5.1px] shadow-[7.7px_3.8px_15.4px_0px_rgba(0,0,0,0.08)] backdrop-blur-[2px]"
             style={{ backgroundImage: 'linear-gradient(152.5deg, rgba(207,227,254,0.22) 0%, rgba(42,123,210,0.22) 100%)' }}
             role="group"
-            aria-label="Language"
+            aria-label={t('Language')}
           >
-            {/* i18n hook: wire `lang` to your translation provider. */}
             <button onClick={() => setLang('pt')} aria-pressed={lang === 'pt'} aria-label="Português" className={`rounded-full border-[0.7px] ${lang === 'pt' ? 'border-bh-light-400' : 'border-transparent opacity-60'}`}>
               <img src={flagBr} alt="" className="size-[26.3px]" />
             </button>
@@ -117,12 +118,12 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
               <img src={flagUs} alt="" className="size-[26.3px] rounded-full" />
             </button>
           </div>
-          <Button to="/jobs" variant={dark ? 'white' : 'primary'}>View open roles</Button>
+          <Button to="/jobs" variant={dark ? 'white' : 'primary'}>{t('View open roles')}</Button>
         </div>
 
         <button
           className={`flex size-11 items-center justify-center rounded-lg lg:hidden ${textColor}`}
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-label={t(mobileOpen ? 'Close menu' : 'Open menu')}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen(v => !v)}
         >
@@ -143,7 +144,7 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
                 {lifeNav.map(l => (
                   <li key={l.to}>
                     <Link to={l.to} onClick={() => setOpen(null)} className="flex items-center justify-between rounded-lg px-3 py-2.5 text-[15px] text-bh-blue-1100 hover:bg-bh-light-0 hover:text-bh-blue">
-                      {l.label}
+                      {t(l.label)}
                       <img src={chevronSmall} alt="" className="size-[21.4px]" />
                     </Link>
                   </li>
@@ -160,13 +161,13 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
           {menus.map(m => (
             <details key={m.key} className="border-b border-bh-light-100 py-3">
               <summary className="flex cursor-pointer list-none items-center justify-between text-base font-medium">
-                {m.label}
+                {t(m.label)}
                 <img src={caretDown} alt="" className="size-[17px] invert" />
               </summary>
               <div className="mt-3 flex flex-col gap-1 pl-2">
-                <Link to={m.to} className="py-1.5 text-bh-blue">Overview</Link>
+                <Link to={m.to} className="py-1.5 text-bh-blue">{t('Overview')}</Link>
                 {(m.key === 'team' ? teamNav : m.key === 'world' ? countryNav : lifeNav).map(i => (
-                  <Link key={i.to} to={i.to} className="py-1.5 text-[15px] text-bh-blue-1100">{i.label}</Link>
+                  <Link key={i.to} to={i.to} className="py-1.5 text-[15px] text-bh-blue-1100">{t(i.label)}</Link>
                 ))}
               </div>
             </details>
@@ -176,7 +177,7 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
               <button onClick={() => setLang('pt')} aria-label="Português" className={lang === 'pt' ? '' : 'opacity-50'}><img src={flagBr} alt="" className="size-7" /></button>
               <button onClick={() => setLang('en')} aria-label="English" className={lang === 'en' ? '' : 'opacity-50'}><img src={flagUs} alt="" className="size-7" /></button>
             </div>
-            <Button to="/jobs">View open roles</Button>
+            <Button to="/jobs">{t('View open roles')}</Button>
           </div>
         </div>
       )}

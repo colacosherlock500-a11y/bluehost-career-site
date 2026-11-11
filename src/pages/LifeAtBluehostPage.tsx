@@ -2,7 +2,6 @@ import iconBelonging from '../assets/img/life/icon-belonging.svg'
 import iconGrowth from '../assets/img/life/icon-growth.svg'
 import iconOneTeam from '../assets/img/life/icon-oneteam.svg'
 import iconPurpose from '../assets/img/life/icon-purpose.svg'
-import businessBuilder from '../assets/img/life/business-builder.jpg'
 import heroSky from '../assets/img/life/hero-sky.jpg'
 import howWeWork from '../assets/img/life/how-we-work.jpg'
 import ashley from '../assets/img/people/ashley-pitts.jpg'
@@ -22,6 +21,7 @@ import { Benefits } from '../components/sections/life/Benefits'
 import { WhatWeDo } from '../components/sections/life/WhatWeDo'
 import { JoinCta } from '../components/sections/JoinCta'
 import { HostGatorLogo, LogoStrip } from '../components/sections/LogoStrip'
+import { BuildersBook } from '../components/sections/life/BuildersBook'
 import { PromiseCarousel } from '../components/sections/PromiseCarousel'
 import { ReviewCard, type Testimonial } from '../components/sections/Testimonials'
 import { Button } from '../components/ui/Button'
@@ -134,20 +134,7 @@ export default function LifeAtBluehostPage() {
 
       <WhatWeDo />
 
-      <section className="px-4 py-[80px]">
-        <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-10">
-          <SectionHeader eyebrow="Who we build for" title={<>The builders who <span className="text-bh-blue">inspire our work</span></>} body="Every day, teams across all our brands work for two kinds of builders who are shaping the future of business online. Their success is our scoreboard, and helping them grow is what gets us up in the morning." />
-          <div className="grid w-full gap-[30px] md:grid-cols-2">
-            <div className="flex min-h-[505px] flex-col gap-4 rounded-2xl p-[53px] pt-[70px] text-white" style={{ backgroundImage: 'linear-gradient(150deg, #5a9ef0 0%, #1e6fe0 60%, #1868d8 100%)' }}>
-              <h3 className="text-[clamp(28px,2.6vw,36px)] font-semibold leading-[1.3]">The Business Builder</h3>
-              <p className="max-w-[460px] text-base leading-[1.4]">Small business owners who want to grow revenue online. They want simple, effective solutions to be found and win new customers, and a team that helps them when they get stuck.</p>
-            </div>
-            <div className="min-h-[505px] overflow-hidden rounded-2xl">
-              <img src={businessBuilder} alt="A florist managing her online store" className="size-full object-cover" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <BuildersBook />
 
       <section id="values" className="scroll-mt-24 bg-gradient-to-b from-white to-[#e6f3ff] px-4 py-[80px]">
         <div className="mx-auto flex max-w-[1000px] flex-col items-center gap-10">

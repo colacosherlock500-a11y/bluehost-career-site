@@ -1,8 +1,10 @@
+import { useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import heroBg from '../assets/img/teams-page/hero-bg.jpg'
 import iconGrid from '../assets/img/teams-page/icon-grid.svg'
 import { JoinCta } from '../components/sections/JoinCta'
 import { LogoStrip } from '../components/sections/LogoStrip'
+import { TeamCube } from '../components/sections/teams/TeamCube'
 import { TeamTabs } from '../components/sections/teams/TeamTabs'
 import { Button } from '../components/ui/Button'
 import { getTeam, teams } from '../data/teams'
@@ -17,13 +19,17 @@ const stats = [
 export default function OurTeamsPage() {
   const [params, setParams] = useSearchParams()
   const active = getTeam(params.get('team') ?? undefined) ?? teams[0]
+  const cubeArea = useRef<HTMLDivElement>(null)
 
   return (
     <>
+      {/* The hero grid becomes a cube that travels down into the team photo (TeamCube). */}
+      <div ref={cubeArea} className="relative">
+      <TeamCube container={cubeArea} face={teams.indexOf(active)} />
       <section className="relative overflow-hidden pt-[78px]">
         <img src={heroBg} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="relative mx-auto flex max-w-[1218px] flex-col items-center gap-12 px-4 py-16 lg:h-[562px] lg:flex-row lg:gap-[111px] lg:py-0">
-          <img src={iconGrid} alt="" className="w-full max-w-[405px] drop-shadow-[0_20px_40px_rgba(0,42,102,0.12)]" />
+          <img data-cube-start src={iconGrid} alt="" className="w-full max-w-[405px] drop-shadow-[0_20px_40px_rgba(0,42,102,0.12)]" />
           <div className="flex flex-col gap-[26px]">
             <div className="flex flex-col gap-4">
               <p className="text-sm font-medium uppercase leading-[1.2] tracking-[2px]">our teams</p>
@@ -49,6 +55,7 @@ export default function OurTeamsPage() {
       </section>
       <LogoStrip />
       <TeamTabs active={active} onChange={slug => setParams({ team: slug }, { replace: true, preventScrollReset: true })} />
+      </div>
       <JoinCta
         eyebrow="Join a team"
         title={

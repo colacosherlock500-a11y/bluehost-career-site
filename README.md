@@ -124,11 +124,26 @@ run the API separately, and build with `VITE_JOBS_API_URL=https://<api-host>/api
 Adding a team or country is a data change only: add an entry to `src/data/teams.ts` or
 `src/data/countries.ts` (and its images) and it appears in navigation, filters, tabs, and the globe.
 
+## Translations (Portuguese)
+
+The flags in the header switch between English and Portuguese (Brazil); `?lang=pt` / `?lang=en`
+also works and the choice is remembered. `src/i18n/I18n.tsx` provides `useT()`, and the English text
+itself is the key: `t('Search Roles')` looks it up in `src/i18n/pt.ts` and falls back to English
+when there is no entry. Counted labels use `{n}` entries (e.g. `'{n} open roles'`).
+
+Translated so far: header and menus, the whole home page, the job search page, job cards and the
+chat widget. Other pages (Life at Bluehost, Our teams, team/country pages, the role page) and data
+such as benefits lists still show English until their text is added to `pt.ts`. Job titles and
+descriptions come from Workday and should be requested in the visitor's language there.
+
 ## Content & media still needed
 
 These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the code.
 
-- **Brand video** (`VideoSection` on the home page): Figma only has a placeholder.
+- **Testimonial portraits**: Jorge Tristan's (159 px) and Maaz Mansoor's (300 px) photos are too small for the
+  full-card hover/photo state in `Testimonials` — higher-resolution portraits are needed.
+- **Brand video** (`VideoSection` on the home page): plays the preview banner from Newfold's Scene7
+  (`banner-4`); swap the URL in `src/pages/HomePage.tsx` (or `VITE_BRAND_VIDEO_URL`) for the final cut.
 - **Employee counts per country** (`src/data/countries.ts`): Figma uses placeholder numbers; only
   US / Argentina / Philippines are filled in.
 - **Affinity group descriptions** (`src/data/affinityGroups.ts`): Figma only has text for *Able*;
@@ -141,4 +156,3 @@ These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the cod
   Bluehost copy.
 - **Chat assistant** (`ChatWidget.getBotReply`): UI and quick actions are wired; replies are
   scripted until a backend is connected.
-- **Language switch** (Header): toggles state only; connect to your i18n provider for Portuguese.

@@ -7,6 +7,7 @@ import headerBg from '../../assets/img/chat/header-bg.svg'
 import sendIdle from '../../assets/img/chat/send.svg'
 import sendActive from '../../assets/img/chat/send-active.svg'
 import chatIcon from '../../assets/img/common/chat-icon.svg'
+import { useT } from '../../i18n/I18n'
 
 interface Message {
   from: 'bot' | 'user'
@@ -41,6 +42,7 @@ export function ChatWidget() {
   const [typing, setTyping] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const t = useT()
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
@@ -62,7 +64,7 @@ export function ChatWidget() {
   return (
     <div className="fixed bottom-6 right-4 z-40 flex flex-col items-end gap-4 md:right-[6.5%]">
       {open && (
-        <div role="dialog" aria-label="Chat with Blu" className="relative flex h-[385px] w-[333px] max-w-[calc(100vw-32px)] flex-col overflow-hidden rounded-[13px] border border-[#e6f4ff] bg-[#f4f9ff] shadow-[0px_0px_24px_0px_rgba(0,20,56,0.17)]">
+        <div role="dialog" aria-label={t('Chat with Blu')} className="relative flex h-[385px] w-[333px] max-w-[calc(100vw-32px)] flex-col overflow-hidden rounded-[13px] border border-[#e6f4ff] bg-[#f4f9ff] shadow-[0px_0px_24px_0px_rgba(0,20,56,0.17)]">
           <div className="relative flex h-[54.5px] shrink-0 items-center gap-3 px-4" style={{ backgroundImage: `url("${headerBg}")`, backgroundSize: 'cover' }}>
             <span className="relative flex size-[36.6px] items-center justify-center rounded-full border-[1.3px] border-white/20 shadow-[0px_1.3px_2.6px_0px_rgba(0,0,0,0.15)]">
               <img src={avatar} alt="" className="size-[31.4px]" />
@@ -70,9 +72,9 @@ export function ChatWidget() {
             </span>
             <div className="flex flex-col gap-0.5 text-white">
               <p className="text-[15px] font-medium leading-[0.9]">Blu</p>
-              <p className="text-[8px] leading-[1.5]">Online</p>
+              <p className="text-[8px] leading-[1.5]">{t('Online')}</p>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Close chat" className="ml-auto">
+            <button onClick={() => setOpen(false)} aria-label={t('Close chat')} className="ml-auto">
               <img src={closeMd} alt="" className="size-[26px]" />
             </button>
           </div>
@@ -81,7 +83,7 @@ export function ChatWidget() {
             {messages.map((m, i) =>
               m.from === 'bot' ? (
                 <p key={i} className="w-[265px] max-w-[85%] self-start rounded-[16px] rounded-tl-none border-[0.4px] border-night-sky-400 bg-white px-3 py-1.5 text-[13px] leading-[15.6px] tracking-[0.26px] text-bh-blue-1100">
-                  {m.text}
+                  {t(m.text)}
                 </p>
               ) : (
                 <p key={i} className="max-w-[269px] self-end rounded-[16px] rounded-br-none bg-bh-blue px-3 py-3.5 text-sm leading-[17.6px] tracking-[0.26px] text-white">
@@ -100,23 +102,23 @@ export function ChatWidget() {
                     }}
                     className="rounded-[25px] border border-bh-blue px-3 py-[7px] text-[13px] font-medium leading-[1.4] text-bh-blue shadow-[0px_3.3px_6.6px_0px_rgba(0,0,0,0.1)] hover:bg-bh-blue hover:text-white"
                   >
-                    {a.label}
+                    {t(a.label)}
                   </button>
                 ))}
               </div>
             )}
-            {typing && <p className="self-start text-xs text-night-sky">Blu is typing…</p>}
+            {typing && <p className="self-start text-xs text-night-sky">{t('Blu is typing…')}</p>}
           </div>
 
           <form onSubmit={send} className="mx-4 mb-[18px] flex h-[43.8px] shrink-0 items-center rounded-full border border-bh-light-400 bg-white pl-4 pr-1">
             <input
               value={draft}
               onChange={e => setDraft(e.target.value)}
-              placeholder="Type your question"
-              aria-label="Type your question"
+              placeholder={t('Type your question')}
+              aria-label={t('Type your question')}
               className="flex-1 bg-transparent text-[13px] tracking-[0.13px] text-bh-blue-1100 outline-none placeholder:text-[#6b7077]"
             />
-            <button type="submit" aria-label="Send" disabled={!draft.trim()}>
+            <button type="submit" aria-label={t('Send')} disabled={!draft.trim()}>
               <img src={draft.trim() ? sendActive : sendIdle} alt="" className="size-[32.7px]" />
             </button>
           </form>
@@ -124,13 +126,13 @@ export function ChatWidget() {
       )}
 
       {open ? (
-        <button onClick={() => setOpen(false)} aria-label="Close chat" className="flex size-[65px] items-center justify-center rounded-[38px] shadow-lg" style={{ backgroundImage: 'linear-gradient(204deg, #196cdf 12%, #0e3b79 91%)' }}>
+        <button onClick={() => setOpen(false)} aria-label={t('Close chat')} className="flex size-[65px] items-center justify-center rounded-[38px] shadow-lg" style={{ backgroundImage: 'linear-gradient(204deg, #196cdf 12%, #0e3b79 91%)' }}>
           <img src={closeLg} alt="" className="size-[27px]" />
         </button>
       ) : (
         <button
           onClick={() => setOpen(true)}
-          aria-label="Open chat"
+          aria-label={t('Open chat')}
           className="flex h-14 w-[50px] flex-col items-center justify-center gap-[5px] rounded-l-[50px] rounded-tr-[50px] bg-bh-blue font-montserrat text-[12px] font-bold text-white drop-shadow-[0px_4px_2px_rgba(0,0,0,0.25)] transition-transform hover:scale-105"
         >
           <img src={chatIcon} alt="" className="h-[20.5px] w-[21.4px]" />

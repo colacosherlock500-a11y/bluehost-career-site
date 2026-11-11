@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import arrowBlue from '../../assets/img/common/arrow-blue.svg'
+import { useI18n } from '../../i18n/I18n'
 
 export interface Option {
   value: string
@@ -18,6 +19,7 @@ interface FilterSelectProps {
 /** Outline dropdown ("Location ▾", "Team ▾", "Work type ▾") used by the job search filters. */
 export function FilterSelect({ label, value, options, onChange, className = '' }: FilterSelectProps) {
   const [open, setOpen] = useState(false)
+  const { lang } = useI18n()
   const ref = useRef<HTMLDivElement>(null)
   const id = useId()
   const selected = options.find(o => o.value === value)
@@ -51,7 +53,7 @@ export function FilterSelect({ label, value, options, onChange, className = '' }
         <ul id={id} role="listbox" aria-label={label} className="absolute left-0 top-[calc(100%+6px)] z-30 max-h-72 w-full min-w-[220px] overflow-y-auto rounded-[10px] border border-bh-light-200 bg-white py-1 shadow-[0_12px_30px_rgba(0,42,102,0.15)]">
           <li>
             <button type="button" role="option" aria-selected={!value} onClick={() => { onChange(''); setOpen(false) }} className="flex w-full px-4 py-2 text-left text-sm text-night-sky hover:bg-bh-light-0">
-              Any {label.toLowerCase()}
+              {lang === 'pt' ? 'Qualquer' : 'Any'} {label.toLowerCase()}
             </button>
           </li>
           {options.map(o => (

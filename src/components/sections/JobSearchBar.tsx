@@ -6,6 +6,7 @@ import { useJobStats } from '../../hooks/useJobs'
 import type { WorkType } from '../../services/jobs'
 import { Button } from '../ui/Button'
 import { FilterSelect } from '../ui/FilterSelect'
+import { useT } from '../../i18n/I18n'
 
 export const workTypeOptions: { value: WorkType; label: string }[] = [
   { value: 'Remote', label: 'Remote' },
@@ -33,6 +34,7 @@ interface JobSearchBarProps {
  */
 export function JobSearchBar({ initial, onSearch, className = '' }: JobSearchBarProps) {
   const navigate = useNavigate()
+  const t = useT()
   const { data: stats } = useJobStats()
   const [values, setValues] = useState<SearchValues>({ keyword: '', country: '', team: '', workType: '', ...initial })
 
@@ -63,26 +65,26 @@ export function JobSearchBar({ initial, onSearch, className = '' }: JobSearchBar
           type="search"
           value={values.keyword}
           onChange={e => setValues(v => ({ ...v, keyword: e.target.value }))}
-          placeholder="Search by role team or keyword..."
-          aria-label="Search by role, team or keyword"
+          placeholder={t('Search by role team or keyword...')}
+          aria-label={t('Search by role, team or keyword')}
           className="h-14 w-full rounded-[9px] border border-night-sky-400 bg-bh-50 px-[35px] text-[15px] tracking-[-0.15px] text-bh-blue-1100 drop-shadow-[0px_0px_7.5px_rgba(25,107,222,0.16)] outline-none placeholder:text-night-sky focus:border-bh-blue sm:pr-[210px]"
         />
-        <Button type="submit" className="h-14 sm:absolute sm:right-0 sm:top-0 sm:w-[189px]">Search Roles</Button>
+        <Button type="submit" className="h-14 sm:absolute sm:right-0 sm:top-0 sm:w-[189px]">{t('Search Roles')}</Button>
       </div>
       <div className="flex flex-wrap justify-center gap-5 sm:justify-start">
         <FilterSelect
-          label="Location"
+          label={t('Location')}
           value={values.country}
           onChange={country => update({ country })}
-          options={countries.map(c => ({ value: c.slug, label: c.name, count: stats?.byCountry[c.slug] }))}
+          options={countries.map(c => ({ value: c.slug, label: t(c.name), count: stats?.byCountry[c.slug] }))}
         />
         <FilterSelect
-          label="Team"
+          label={t('Team')}
           value={values.team}
           onChange={team => update({ team })}
-          options={teams.map(t => ({ value: t.slug, label: t.name, count: stats?.byTeam[t.slug] }))}
+          options={teams.map(team => ({ value: team.slug, label: t(team.name), count: stats?.byTeam[team.slug] }))}
         />
-        <FilterSelect label="Work type" value={values.workType} onChange={workType => update({ workType })} options={workTypeOptions} />
+        <FilterSelect label={t('Work type')} value={values.workType} onChange={workType => update({ workType })} options={workTypeOptions.map(o => ({ ...o, label: t(o.label) }))} />
       </div>
     </form>
   )

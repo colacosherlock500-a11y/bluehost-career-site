@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import instagram from '../../assets/img/social/instagram.svg'
 import igWhite from '../../assets/img/social/ig-white.svg'
 import linkedin from '../../assets/img/social/linkedin.svg'
@@ -8,17 +8,11 @@ import post3 from '../../assets/img/social/post-3.jpg'
 import post4 from '../../assets/img/social/post-4.jpg'
 import post5 from '../../assets/img/social/post-5.jpg'
 import { Button } from '../ui/Button'
+import { useT } from '../../i18n/I18n'
 
 const INSTAGRAM_URL = 'https://www.instagram.com/bluehost/'
 
-// Fan of social posts: [image, x-offset from centre, width, height, z-index]
-const posts: [string, number, number, number, number][] = [
-  [post3, -352, 289, 393, 2],
-  [post4, -213, 299, 407, 4],
-  [post5, 0, 318.5, 433, 5],
-  [post1, 206, 299, 407, 3],
-  [post2, 332, 289, 393, 1],
-]
+const POSTS = [post5, post1, post2, post3, post4]
 
 function FacebookIcon() {
   return (
@@ -48,24 +42,123 @@ function SocialSpinner() {
   )
 }
 
+/*
+ * Social posts as Lando Norris's "What's up on socials": tall post cards sit on a wide arc
+ * (a wheel whose hub is far below), each tilted along the curve. As the section scrolls in,
+ * the cards fan out from a stack; scrolling on turns the wheel, and it can also be dragged.
+ * It loops, so posts keep coming round. Hover lifts a card forward. Reduced motion: a still fan.
+ */
+const CARD_W = 290
+const CARD_H = 396
+const RADIUS = 1500 // distance from a card's centre to the wheel's hub
+const STEP = 11.5 // degrees between neighbouring cards
+const CARDS = Array.from({ length: 12 }, (_, i) => POSTS[i % POSTS.length])
+
 export function SocialCards() {
+  const stage = useRef<HTMLDivElement>(null)
+  const cards = useRef<(HTMLAnchorElement | null)[]>([])
+
+  useEffect(() => {
+    const el = stage.current
+    if (!el) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const loop = CARDS.length * STEP
+    let dragDeg = 0
+    let drag: { x: number; deg: number; moved: boolean } | null = null
+    let raf = 0
+
+    const render = () => {
+      raf = 0
+      const vh = window.innerHeight
+      const r = el.getBoundingClientRect()
+      // 0 → 1 while the stage scrolls from the bottom of the screen to its middle: fan out
+      const spread = reduce ? 1 : Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.7)))
+      // then the wheel keeps turning with the scroll
+      const turn = reduce ? 0 : ((vh * 0.5 - (r.top + r.height / 2)) / vh) * 28
+      const scale = Math.min(1, el.clientWidth / 1100)
+      cards.current.forEach((card, i) => {
+        if (!card) return
+        let a = (i - (CARDS.length - 1) / 2) * STEP + turn + dragDeg
+        a = ((((a + loop / 2) % loop) + loop) % loop) - loop / 2 // keep within one loop
+        const shown = Math.abs(a) < 62
+        const fan = a * (0.25 + 0.75 * spread)
+        card.style.transform = `translate(-50%, -50%) scale(${scale}) translateY(${RADIUS}px) rotate(${fan}deg) translateY(${-RADIUS}px)`
+        card.style.zIndex = String(200 - Math.round(Math.abs(a) * 2))
+        card.style.opacity = shown ? String(Math.min(1, (62 - Math.abs(a)) / 14)) : '0'
+        card.style.visibility = shown ? '' : 'hidden'
+      })
+    }
+    const schedule = () => {
+      raf ||= requestAnimationFrame(render)
+    }
+
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      drag = { x: e.clientX, deg: dragDeg, moved: false }
+    }
+    const onMove = (e: PointerEvent) => {
+      if (!drag) return
+      const dx = e.clientX - drag.x
+      if (!drag.moved && Math.abs(dx) > 6) {
+        drag.moved = true
+        el.setPointerCapture(e.pointerId)
+      }
+      if (!drag.moved) return
+      dragDeg = drag.deg + (dx / CARD_W) * STEP
+      schedule()
+    }
+    const onUp = () => {
+      if (drag?.moved) el.addEventListener('click', ev => (ev.preventDefault(), ev.stopPropagation()), { capture: true, once: true })
+      drag = null
+    }
+
+    render()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    el.addEventListener('pointerdown', onDown)
+    el.addEventListener('pointermove', onMove)
+    el.addEventListener('pointerup', onUp)
+    el.addEventListener('pointercancel', onUp)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      el.removeEventListener('pointerdown', onDown)
+      el.removeEventListener('pointermove', onMove)
+      el.removeEventListener('pointerup', onUp)
+      el.removeEventListener('pointercancel', onUp)
+    }
+  }, [])
+
   return (
-    <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" aria-label="Follow Bluehost on Instagram" className="group relative block h-[clamp(320px,40vw,558px)] w-full max-w-[1199px] overflow-hidden">
-      <div className="absolute left-1/2 top-1/2 h-[558px] w-[1199px] -translate-x-1/2 -translate-y-1/2 max-xl:scale-90 max-lg:scale-75 max-md:scale-[0.6] max-sm:scale-[0.42]">
-        {posts.map(([src, x, w, h, z]) => (
-          // Hover (Figma "Cards" variants): the card comes to the front and grows to the
-          // featured size (343 × 466) around its own centre; the others stay in place.
-          <div
-            key={src}
-            className="absolute top-1/2 z-[var(--z)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[12.6px] shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-[scale,box-shadow] duration-300 ease-out hover:z-10 hover:scale-[var(--hover-scale)] hover:shadow-[0_24px_50px_rgba(0,42,102,0.28)]"
-            style={{ width: w, height: h, left: `calc(50% + ${x}px)`, '--z': z, '--hover-scale': 343 / w } as CSSProperties}
-          >
+    <div
+      ref={stage}
+      role="region"
+      aria-label="Bluehost on Instagram"
+      className="relative h-[clamp(300px,42vw,520px)] w-full cursor-grab touch-pan-y select-none overflow-hidden active:cursor-grabbing [&_img]:pointer-events-none"
+    >
+      {CARDS.map((src, i) => (
+        <a
+          key={i}
+          ref={el => {
+            cards.current[i] = el
+          }}
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noreferrer"
+          draggable={false}
+          aria-label="Bluehost post on Instagram"
+          tabIndex={i < POSTS.length ? 0 : -1}
+          className="group absolute left-1/2 top-[56%] will-change-transform"
+          style={{ width: CARD_W, height: CARD_H }}
+        >
+          <span className="relative block size-full overflow-hidden rounded-[22px] shadow-[0_14px_36px_rgba(0,42,102,0.18)] transition-[translate,scale,box-shadow] duration-300 ease-out group-hover:-translate-y-5 group-hover:scale-[1.06] group-hover:shadow-[0_28px_60px_rgba(0,42,102,0.3)] group-focus-visible:-translate-y-5 group-focus-visible:scale-[1.06]">
             <img src={src} alt="" className="size-full object-cover" />
-            <img src={igWhite} alt="" className="absolute bottom-[4.5%] right-[5.8%] w-[6.8%]" />
-          </div>
-        ))}
-      </div>
-    </a>
+            <img src={igWhite} alt="" className="absolute bottom-[4.5%] right-[5.8%] w-[7%]" />
+          </span>
+        </a>
+      ))}
+    </div>
   )
 }
 
@@ -81,33 +174,36 @@ interface JoinCtaProps {
 
 export function JoinCta({
   eyebrow = 'join us',
-  title = (
-    <>
-      Your next chapter{' '}
-      <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(89.7deg, #196cdf 26%, #83c0fc 100%)' }}>
-        starts here
-      </span>
-    </>
-  ),
+  title,
   body = "Bring your curiosity and your courage. We'll bring the team, the tools, and the support to help you grow and shine.",
   showTeamsButton = true,
   socialRow = false,
 }: JoinCtaProps) {
+  const t = useT()
   return (
     <section className="flex flex-col items-center gap-10 px-4 pb-[60px] pt-[100px]">
       <div className="flex flex-col items-center gap-5 text-center">
         {!socialRow && <SocialSpinner />}
-        <p className="eyebrow">{eyebrow}</p>
-        <h2 className="h-section">{title}</h2>
-        <p className="text-lead max-w-[734px]">{body}</p>
+        <p className="eyebrow">{t(eyebrow)}</p>
+        <h2 className="h-section">
+          {title ?? (
+            <>
+              {t('Your next chapter')}{' '}
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(89.7deg, #196cdf 26%, #83c0fc 100%)' }}>
+                {t('starts here')}
+              </span>
+            </>
+          )}
+        </h2>
+        <p className="text-lead max-w-[734px]">{t(body)}</p>
       </div>
       <div className="flex flex-wrap justify-center gap-[18px]">
-        <Button to="/jobs">View All open roles</Button>
-        {showTeamsButton && <Button to="/our-teams" variant="outline">Meet Our Teams</Button>}
+        <Button to="/jobs">{t('View All open roles')}</Button>
+        {showTeamsButton && <Button to="/our-teams" variant="outline">{t('Meet Our Teams')}</Button>}
       </div>
       <div className="flex flex-col items-center gap-3">
         <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="text-base font-semibold uppercase leading-[1.5] tracking-[-0.08px] text-bh-blue hover:underline">
-          join our socials
+          {t('join our socials')}
         </a>
         {socialRow && (
           <div className="flex items-center gap-[14px]">
