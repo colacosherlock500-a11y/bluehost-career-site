@@ -52,13 +52,15 @@ interface GlobeProps {
   onSelect?: (slug: string | null) => void
   /** Show the photo card + stats panel when a country is selected (Figma "Variant2"). */
   showDetails?: boolean
+  /** Fade the "Click a country" hint in/out (hidden while the globe is still animating into place). */
+  hintVisible?: boolean
 }
 
 /**
  * Interactive globe ("Click a country · drag to rotate").
  * Rotates on its own, can be dragged, and clicking a highlighted country focuses it.
  */
-export function Globe({ selected: controlled, onSelect, showDetails = true }: GlobeProps) {
+export function Globe({ selected: controlled, onSelect, showDetails = true, hintVisible = true }: GlobeProps) {
   const t = useT()
   const [internal, setInternal] = useState<string | null>(null)
   const selected = controlled !== undefined ? controlled : internal
@@ -192,7 +194,7 @@ export function Globe({ selected: controlled, onSelect, showDetails = true }: Gl
   return (
     <div className="relative mx-auto flex w-full max-w-[1212px] flex-col items-center">
       <div className="pointer-events-none absolute inset-x-[18%] -top-8 h-48 rounded-full bg-[radial-gradient(closest-side,rgba(232,240,255,0.9),rgba(255,255,255,0))]" />
-      <p className="relative mb-6 flex items-center gap-2 text-[12px] font-medium text-[#6a7a99]">
+      <p aria-hidden={!hintVisible} className={`relative mb-6 flex items-center gap-2 text-[12px] font-medium text-[#6a7a99] transition-[opacity,translate] duration-500 ${hintVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}>
         <span className="size-2 rounded-full bg-bh-blue ring-4 ring-bh-light-100" />
         {t('Click a country · drag to rotate')}
       </p>

@@ -26,17 +26,19 @@ const Intro = () => (
 )
 
 /**
- * Where a photo sits along its path, by slot `s` relative to the active pillar:
- * s = 0 the large upright card on the left, s = 1 the small tilted, blurred card on the
- * right, s = 0.5 swooping past behind the logo, s = -1 / 2 off-screen (left / right).
+ * Where a photo sits along its path, by slot `s` relative to the active pillar.
+ * Perspective (HR feedback, ref. jobs.uber.com): photos arrive big, as if close to the
+ * viewer (s = 2, off-screen right), shrink as they settle into the active slot on the left
+ * (s = 0) and keep shrinking into the distance as they leave (s = -1, up and to the left).
+ * s = 1 is the next photo waiting on the right, s = 0.5 swooping past behind the logo.
  * x is a fraction of the stage width from its centre; y is in px.
  */
 const PATH: { s: number; x: number; y: number; scale: number; rot: number; blur: number; opacity: number }[] = [
-  { s: -1, x: -0.78, y: -40, scale: 0.75, rot: -12, blur: 2, opacity: 0 },
+  { s: -1, x: -0.62, y: -70, scale: 0.42, rot: -8, blur: 3, opacity: 0 },
   { s: 0, x: -0.355, y: 0, scale: 1, rot: 0, blur: 0, opacity: 1 },
-  { s: 0.5, x: 0.02, y: 55, scale: 0.64, rot: -6, blur: 1, opacity: 1 },
-  { s: 1, x: 0.29, y: 10, scale: 0.506, rot: 8, blur: 1.5, opacity: 0.9 },
-  { s: 2, x: 0.62, y: -50, scale: 0.4, rot: 14, blur: 3, opacity: 0 },
+  { s: 0.5, x: 0.0, y: 40, scale: 1.08, rot: -3, blur: 0.5, opacity: 1 },
+  { s: 1, x: 0.3, y: 30, scale: 0.78, rot: 6, blur: 1, opacity: 0.95 },
+  { s: 2, x: 0.78, y: 90, scale: 1.55, rot: 10, blur: 4, opacity: 0 },
 ]
 const smooth = (t: number) => t * t * (3 - 2 * t)
 

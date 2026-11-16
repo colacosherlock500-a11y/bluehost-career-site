@@ -237,6 +237,8 @@ export const pt: Record<string, string> = {
   'You’re subscribed! We’ll email new matching roles.': 'Inscrição feita! Enviaremos por e-mail as novas vagas compatíveis.',
   'Build your future': 'Construa seu futuro',
   'with us': 'com a gente',
+  "Come build what's next": 'Venha construir o que vem a seguir',
+  'View Open Roles': 'Ver vagas abertas',
   'Browse open roles across all our teams and regions. Your next opportunity is waiting.':
     'Explore vagas em todos os nossos times e regiões. Sua próxima oportunidade está esperando.',
   Apply: 'Candidatar-se',

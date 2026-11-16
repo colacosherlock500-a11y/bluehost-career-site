@@ -94,6 +94,14 @@ export function WhatWeDo() {
   const pinned = useRef<HTMLDivElement>(null)
   const cards = useRef<(HTMLElement | null)[]>([])
   const [active, setActive] = useState(scrollStack ? 0 : pillars.length - 1)
+  const [pinH, setPinH] = useState(600)
+  useEffect(() => {
+    const p = pinned.current
+    if (!p) return
+    const ro = new ResizeObserver(() => setPinH(p.offsetHeight))
+    ro.observe(p)
+    return () => ro.disconnect()
+  }, [scrollStack])
 
   useEffect(() => {
     if (!scrollStack) {
@@ -107,8 +115,9 @@ export function WhatWeDo() {
       const p = pinned.current
       if (!s || !p) return
       const travel = s.offsetHeight - p.offsetHeight
+      const pinTop = parseFloat(getComputedStyle(p).top) || HEADER
       // 0 → 2 across the pinned scroll distance: one step per incoming card.
-      const progress = Math.min(1, Math.max(0, (HEADER - s.getBoundingClientRect().top) / travel)) * (pillars.length - 1)
+      const progress = Math.min(1, Math.max(0, (pinTop - s.getBoundingClientRect().top) / travel)) * (pillars.length - 1)
       cards.current.forEach((card, i) => {
         if (!card || i === 0) return
         const t = Math.min(1, Math.max(0, progress - (i - 1)))
@@ -166,9 +175,11 @@ export function WhatWeDo() {
   }
 
   return (
-    // The extra height is the scroll distance over which the cards change.
-    <section ref={section} className="relative h-[calc(100vh+140vh)]">
-      <div ref={pinned} className="sticky top-[78px] flex h-[calc(100vh-78px)] items-center px-4">
+    // The extra height is the scroll distance over which the cards change. The pinned block is
+    // only as tall as its content (no empty band above or below the section, HR feedback) and
+    // pins centred in the space under the header.
+    <section ref={section} className="relative h-[calc(var(--pin-h,600px)+120vh)] py-0" style={{ '--pin-h': `${pinH}px` } as CSSProperties}>
+      <div ref={pinned} className="sticky flex items-center px-4 py-8" style={{ top: `max(${HEADER}px, calc(50vh + ${HEADER / 2}px - ${pinH / 2}px))` }}>
         <div className="mx-auto grid w-full max-w-[1204px] grid-cols-2 items-center gap-[30px]">
           {intro}
           {/* Keep the whole stack on screen on short laptop displays. */}

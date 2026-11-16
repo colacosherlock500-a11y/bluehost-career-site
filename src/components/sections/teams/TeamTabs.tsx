@@ -8,7 +8,8 @@ export function TeamTabs({ active, onChange }: { active: Team; onChange: (slug: 
   return (
     <section id="teams" className="bg-gradient-to-b from-white to-[#e6f4ff] px-4 pb-20 pt-[48px]">
       <div className="mx-auto flex max-w-[1350px] flex-col items-center gap-[60px]">
-        <div role="tablist" aria-label="Teams" className="no-scrollbar -mx-4 flex w-[calc(100%+32px)] gap-4 overflow-x-auto px-4 lg:mx-0 lg:w-full lg:flex-wrap lg:justify-center lg:overflow-visible">
+        {/* All functions on one line (HR feedback); scrolls sideways on narrow screens. */}
+        <div role="tablist" aria-label="Teams" className="no-scrollbar -mx-4 flex w-[calc(100%+32px)] gap-4 overflow-x-auto px-4 lg:gap-2 xl:mx-0 xl:w-full xl:justify-center xl:gap-2.5 xl:overflow-visible xl:px-0">
           {teams.map(t => {
             const selected = t.slug === active.slug
             return (
@@ -18,7 +19,7 @@ export function TeamTabs({ active, onChange }: { active: Team; onChange: (slug: 
                 aria-selected={selected}
                 aria-controls="team-panel"
                 onClick={() => onChange(t.slug)}
-                className={`shrink-0 whitespace-nowrap rounded-xl border px-4 py-2 text-base leading-[1.4] tracking-[-0.16px] transition-colors ${
+                className={`shrink-0 whitespace-nowrap rounded-xl border px-4 py-2 text-base leading-[1.4] lg:px-3 lg:text-[15px] 2xl:px-4 2xl:text-base tracking-[-0.16px] transition-colors ${
                   selected ? 'border-bh-blue bg-bh-blue font-medium text-white' : 'border-bh-light-100 bg-white text-black hover:border-bh-blue'
                 }`}
               >
@@ -53,6 +54,10 @@ export function TeamTabs({ active, onChange }: { active: Team; onChange: (slug: 
               {formatOpenRoles(stats?.byTeam[active.slug])}
             </span>
           </div>
+        </div>
+        {/* Where the cube comes to rest once a function is picked (TeamCube, desktop only). */}
+        <div data-cube-dock aria-hidden className="relative -mt-5 hidden size-[190px] lg:block">
+          <span className="absolute inset-x-[-10%] bottom-[-14px] h-6 rounded-[50%] bg-[radial-gradient(closest-side,rgba(14,59,121,0.18),transparent)]" />
         </div>
       </div>
     </section>

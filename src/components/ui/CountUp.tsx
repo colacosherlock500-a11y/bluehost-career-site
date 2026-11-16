@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
  * ("By the Numbers": the numbers should count up, not appear static).
  * Reduced motion shows the final value straight away.
  */
-export function CountUp({ value, from = 0, prefix = '', suffix = '', duration = 1600 }: { value: number; from?: number; prefix?: string; suffix?: string; duration?: number }) {
+export function CountUp({ value, from = 0, prefix = '', suffix = '', duration = 2600 }: { value: number; from?: number; prefix?: string; suffix?: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null)
   const [shown, setShown] = useState(from)
 

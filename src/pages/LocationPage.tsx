@@ -25,7 +25,7 @@ export default function LocationPage() {
         </div>
       </section>
       <OpenRoles filter={{ country: country.slug }} />
-      <GlobeSection key={country.slug} />
+      <GlobeSection key={country.slug} initialCountry={country.slug} />
       <Testimonials />
       <JoinCta />
     </>

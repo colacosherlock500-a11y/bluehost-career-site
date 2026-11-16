@@ -13,8 +13,8 @@ import { useT } from '../../../i18n/I18n'
  * expands to the centre (height 480 → 560), the active card shrinks to the side, the far
  * card slides off-screen. Images stay centred with a 1.08 → 1.0 zoom on the new active card;
  * side cards carry a 45% navy overlay that fades to the top-to-bottom gradient when active.
- * Text: old content fades out (200 ms); counter, name and tagline slide up 24 px and fade in
- * (400 ms, delay ~300 ms, 60 ms stagger); "Discover the team" fades in last.
+ * Text: old content fades out (200 ms); once the card has nearly settled (~650 ms, HR feedback:
+ * delay the words) the counter, name, tagline and button rise 56 px and fade in, staggered ~90 ms.
  * Controls: arrows, swipe/drag, ← → keys; autoplay every 6 s, paused on hover/focus, the
  * active progress dash fills during the interval; infinite loop. Reduced motion: crossfade only.
  * Mobile: active card ~88% of the width, side cards peek ~16 px, team name 40 px.
@@ -41,10 +41,15 @@ function measure(width: number): Layout {
     // side cards peek ~16 px at each edge
     return { width, activeW, sideW: (width - activeW) / 2 - gap + 40, gap, mobile }
   }
+  // Full width (HR feedback): the side cards touch the page margins at any screen size.
   const sideW = 170
-  const gap = 32
-  return { width, activeW: Math.min(1100, width - 2 * (sideW + gap) - 32), sideW, gap, mobile }
+  const gap = 28
+  const margin = Math.min(48, Math.max(16, width * 0.03))
+  return { width, activeW: width - 2 * (margin + sideW + gap), sideW, gap, mobile }
 }
+
+/** Active card height on desktop: 560 at the old 1100 px width, growing with wider screens. */
+const desktopHeight = (activeW: number) => Math.round(Math.min(700, Math.max(480, activeW * 0.51)))
 
 export function TeamsCarousel() {
   const { data: stats } = useJobStats()
@@ -139,8 +144,8 @@ export function TeamsCarousel() {
     if (slot < -n / 2) slot += n
     const clamped = Math.max(-2, Math.min(2, slot))
     const { width, activeW, sideW, gap, mobile } = layout
-    const activeH = mobile ? Math.round(activeW * 1.15) : 560
-    const sideH = mobile ? Math.round(activeH * 0.86) : 480
+    const activeH = mobile ? Math.round(activeW * 1.15) : desktopHeight(activeW)
+    const sideH = Math.round(activeH * 0.86)
     const w = clamped === 0 ? activeW : sideW
     const h = clamped === 0 ? activeH : sideH
     const centre = width / 2
@@ -163,7 +168,7 @@ export function TeamsCarousel() {
     }
   }
 
-  const stageH = layout?.mobile ? Math.round(layout.activeW * 1.15) + 24 : 600
+  const stageH = !layout ? 600 : layout.mobile ? Math.round(layout.activeW * 1.15) + 24 : desktopHeight(layout.activeW) + 40
 
   return (
     <section className="flex flex-col items-center gap-10 overflow-hidden py-[100px]">
@@ -227,17 +232,17 @@ export function TeamsCarousel() {
                   key={`${tm.slug}-${active ? 'in' : 'out'}`}
                   className={`pointer-events-none absolute inset-0 z-[2] flex flex-col items-center justify-center gap-3 px-6 text-center text-white ${leaving ? 'animate-[textOut_200ms_ease-out_forwards]' : ''}`}
                 >
-                  <p className="team-line flex items-center gap-2 text-[13px] font-medium tracking-[1px] text-white/85" style={{ animationDelay: '300ms' }}>
+                  <p className="team-line flex items-center gap-2 text-[13px] font-medium tracking-[1px] text-white/85" style={{ animationDelay: '650ms' }}>
                     <span className="size-1.5 rounded-full bg-white" />
                     {pad(i + 1)} / {pad(n)}
                   </p>
-                  <h3 className="team-line text-[40px] font-semibold leading-[1.1] tracking-[-0.02em] md:text-[clamp(48px,5.4vw,76px)]" style={{ animationDelay: '360ms' }}>
+                  <h3 className="team-line text-[40px] font-semibold leading-[1.1] tracking-[-0.02em] md:text-[clamp(48px,5.4vw,76px)]" style={{ animationDelay: '740ms' }}>
                     {tm.name}
                   </h3>
-                  <p className="team-line max-w-[520px] text-base leading-[1.4] text-white/90 md:text-lg" style={{ animationDelay: '420ms' }}>
+                  <p className="team-line max-w-[520px] text-base leading-[1.4] text-white/90 md:text-lg" style={{ animationDelay: '830ms' }}>
                     {tm.tagline}
                   </p>
-                  <div className="team-line pointer-events-auto relative z-[3] mt-3 flex flex-col items-center gap-3" style={{ animationDelay: '600ms', animationName: 'fadeIn' }}>
+                  <div className="team-line pointer-events-auto relative z-[3] mt-3 flex flex-col items-center gap-3" style={{ animationDelay: '960ms' }}>
                     <Button to={`/our-teams/${tm.slug}`} variant="white" className="!min-w-0 !py-[12px] !text-[15px]">
                       {t('Discover the team')}
                     </Button>

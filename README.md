@@ -144,6 +144,8 @@ These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the cod
   full-card hover/photo state in `Testimonials` — higher-resolution portraits are needed.
 - **Brand video** (`VideoSection` on the home page): plays the preview banner from Newfold's Scene7
   (`banner-4`); swap the URL in `src/pages/HomePage.tsx` (or `VITE_BRAND_VIDEO_URL`) for the final cut.
+- **Life at Bluehost hero video:** the Figma "soft blue gradient light movement" video can't be exported from Figma, so the hero draws an animated CSS gradient (`src/components/ui/GradientMotion.tsx`). Set `VITE_LIFE_HERO_VIDEO_URL` to the MP4 to play the original instead.
+- **Testimonials:** every colleague story lives in `src/data/testimonials.ts` (home + Life stories + country quotes, de-duplicated by name).
 - **Employee counts per country** (`src/data/countries.ts`): Figma uses placeholder numbers; only
   US / Argentina / Philippines are filled in.
 - **Affinity group descriptions** (`src/data/affinityGroups.ts`): Figma only has text for *Able*;

@@ -1,13 +1,9 @@
+import { useRef } from 'react'
 import iconBelonging from '../assets/img/life/icon-belonging.svg'
 import iconGrowth from '../assets/img/life/icon-growth.svg'
 import iconOneTeam from '../assets/img/life/icon-oneteam.svg'
 import iconPurpose from '../assets/img/life/icon-purpose.svg'
-import heroSky from '../assets/img/life/hero-sky.jpg'
 import howWeWork from '../assets/img/life/how-we-work.jpg'
-import ashley from '../assets/img/people/ashley-pitts.jpg'
-import brittney from '../assets/img/people/brittney-baring.jpg'
-import candice from '../assets/img/people/candice-bethea.jpg'
-import chelsey from '../assets/img/people/chelsey-attia.jpg'
 import valBelonging from '../assets/img/values/belonging.svg'
 import valCustomer from '../assets/img/values/customer.svg'
 import valExcellence from '../assets/img/values/excellence.svg'
@@ -23,8 +19,10 @@ import { JoinCta } from '../components/sections/JoinCta'
 import { HostGatorLogo, LogoStrip } from '../components/sections/LogoStrip'
 import { BuildersBook } from '../components/sections/life/BuildersBook'
 import { PromiseCarousel } from '../components/sections/PromiseCarousel'
-import { ReviewCard, type Testimonial } from '../components/sections/Testimonials'
+import { Testimonials } from '../components/sections/Testimonials'
 import { Button } from '../components/ui/Button'
+import { GradientMotion } from '../components/ui/GradientMotion'
+import { useFlipOnScroll } from '../hooks/useFlipOnScroll'
 import { FeatureCard } from '../components/ui/FeatureCard'
 import { SectionHeader } from '../components/ui/SectionHeader'
 
@@ -62,18 +60,15 @@ const howWeWorkCards = [
   { title: 'Be the brand', body: 'We are passionate about what we build across all our brands, and we post with pride about our work. Every one of us helps make Bluehost Group the place small businesses choose to build, grow, and thrive.', bg: '#64a8f7' },
 ]
 
-const stories: Testimonial[] = [
-  { quote: '"Over a decade in and still growing" sums up my journey here. This is a place where customers come first, ideas are heard and acted on, and I feel supported not just at work but beyond it. Along the way, I\'ve found mentors and lifelong friends.', name: 'Ashley Pitts', role: 'Reputation Manager | United States', photo: ashley },
-  { quote: "I've felt most empowered in moments when I was trusted to take an idea, run with it, and turn it into real impact. Having both ownership and the freedom to experiment is where creativity and confidence really grow.", name: 'Chelsey Attia', role: 'Senior Social Media Manager | United States', photo: chelsey },
-  { quote: "Borrow someone else's belief in you. Sometimes your leaders or mentors see your potential long before you see it yourself. If you trust them, let their confidence carry you until yours catches up.", name: 'Brittney Baring', role: 'Talent Acquisition Supervisor | Philippines', photo: brittney },
-  { quote: "Don't wait until you feel 100% ready. Step forward, speak up, and trust the value of your perspective. Stay curious, build strong networks, and never underestimate the impact you can make.", name: 'Candice Bethea', role: 'Senior Director, Learning and Development | United States', photo: candice },
-]
 
 export default function LifeAtBluehostPage() {
+  const brandList = useRef<HTMLUListElement>(null)
+  useFlipOnScroll(brandList)
   return (
     <>
       <section className="relative overflow-hidden">
-        <img src={heroSky} alt="" className="absolute inset-0 size-full object-cover" />
+        {/* Soft blue gradient in motion (HR: "use the gradient animation video"). */}
+        <GradientMotion />
         <div className="relative mx-auto flex min-h-[679px] max-w-[700px] flex-col items-center justify-center gap-[26px] px-4 pb-16 pt-[140px] text-center">
           <div className="flex flex-col items-center gap-4">
             <p className="text-sm font-medium uppercase leading-[1.2] tracking-[2px]">life at bluehost</p>
@@ -96,7 +91,8 @@ export default function LifeAtBluehostPage() {
       </section>
       <LogoStrip />
 
-      <section className="px-4 py-[80px]">
+      {/* Who we are: light gradient background and hover on the stat cards (HR feedback). */}
+      <section className="bg-[linear-gradient(160deg,#ffffff_0%,#f1f7ff_45%,#e3f0ff_100%)] px-4 py-[80px]">
         <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[1fr_582px]">
           <div className="flex flex-col gap-5">
             <p className="eyebrow">who we are</p>
@@ -106,9 +102,10 @@ export default function LifeAtBluehostPage() {
           </div>
           <ul className="grid grid-cols-2 gap-[22px]">
             {stats.map(([n, l]) => (
-              <li key={l} className="flex aspect-[280/227] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-bh-300 bg-white p-4 text-center">
-                <span className="text-[clamp(40px,5vw,72px)] font-semibold leading-none text-bh-blue">{n}</span>
-                <span className="text-base leading-[1.4]">{l}</span>
+              <li key={l} className="group relative flex aspect-[280/227] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-bh-300 bg-white/80 p-4 text-center backdrop-blur-sm transition-[translate,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:border-bh-blue hover:shadow-[0_22px_44px_rgba(25,108,223,0.22)]">
+                <span aria-hidden className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,#dcebff,transparent_70%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <span className="relative text-[clamp(40px,5vw,72px)] font-semibold leading-none text-bh-blue transition-[scale] duration-300 ease-out group-hover:scale-110">{n}</span>
+                <span className="relative text-base leading-[1.4]">{l}</span>
               </li>
             ))}
           </ul>
@@ -118,7 +115,8 @@ export default function LifeAtBluehostPage() {
       <section className="bg-bh-light-0 px-4 py-[80px]">
         <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-10">
           <SectionHeader eyebrow="Our brands" title="Different brands working toward one shared vision" body="Wherever you work in Bluehost Group, you help business builders show up, stand out, and thrive in the AI era. Each brand serves its customers in its own way, and together they bring our three pillars to life." />
-          <ul className="grid w-full gap-[30px] sm:grid-cols-2 lg:grid-cols-4">
+          {/* cards flip into place while scrolling (HR feedback) */}
+          <ul ref={brandList} className="grid w-full gap-[30px] sm:grid-cols-2 lg:grid-cols-4">
             {brands.map(b => (
               <li key={b.cta} className="flex flex-col justify-between gap-6 rounded-2xl border border-bh-light-200 bg-white p-5 shadow-[0px_-8px_80px_0px_rgba(171,157,251,0.1),0px_8px_80px_0px_rgba(106,246,251,0.1)]">
                 <div className="flex flex-col gap-4">
@@ -189,12 +187,8 @@ export default function LifeAtBluehostPage() {
       <AffinityGroups id="affinity-groups" />
       <Awards id="awards" />
 
-      <section className="flex flex-col items-center gap-10 px-4 py-[100px]">
-        <SectionHeader eyebrow="Our People" title="Real stories from real people" body="Hear from colleagues who have found their place, their voice, and their next step at Bluehost." />
-        <div className="no-scrollbar -mx-4 flex w-[calc(100%+32px)] gap-[29px] overflow-x-auto px-4 xl:w-auto xl:justify-center">
-          {stories.map(s => <ReviewCard key={s.name} {...s} />)}
-        </div>
-      </section>
+      {/* All colleague stories, in the same layout as the home page (HR feedback). */}
+      <Testimonials />
 
       <JoinCta
         eyebrow="join us"

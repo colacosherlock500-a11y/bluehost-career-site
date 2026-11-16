@@ -1,28 +1,12 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import andrew from '../../assets/img/people/andrew-jackson.jpg'
-import jorge from '../../assets/img/people/jorge-tristan.png'
-import jose from '../../assets/img/people/jose-castellano.png'
-import maaz from '../../assets/img/people/maaz-mansoor.png'
-import rakshitha from '../../assets/img/people/rakshitha-rai.png'
 import ring from '../../assets/img/common/avatar-ring.svg'
 import star from '../../assets/img/common/star.svg'
 import { SectionHeader } from '../ui/SectionHeader'
 import { useT } from '../../i18n/I18n'
 
-export interface Testimonial {
-  quote: string
-  name: string
-  role: string
-  photo: string
-}
+import { testimonials, type Testimonial } from '../../data/testimonials'
 
-export const testimonials: Testimonial[] = [
-  { quote: 'My journey here started 14 years ago. What I love most is how the company has evolved so many times. It feels like starting a new job every few years, but with the same great people by your side. Roles may change, but the sense of community stays the same.', name: 'Jorge Tristan', role: 'System Administrator · Argentina', photo: jorge },
-  { quote: 'I joined Bluehost in 2016 and have seen firsthand how deeply the company lives its customer-first culture. What has kept me here is the people and the purpose. If you are looking for a place where you feel valued and proud of the difference your work makes, you will find it here.', name: 'Andrew Jackson', role: 'Director, Customer Advocacy · United States', photo: andrew },
-  { quote: "I joined as a Sales Agent, and less than a year later I was part of the Bluehost marketing team. Growth here isn't just possible, it's encouraged. This is a place where your ambition is matched by opportunity.", name: 'Maaz Mansoor', role: 'Product Marketing Specialist · Canada', photo: maaz },
-  { quote: 'My favorite part of my job is the people. I get to work with teams not just in India, but across the globe. Working with people from different cultural backgrounds brings fresh perspectives and little learning moments every day.', name: 'Rakshitha Rai', role: 'Content Marketing · India', photo: rakshitha },
-  { quote: 'What keeps me going is knowing that every effort we make, every customer we help, and every solution we find contributes to something bigger than ourselves. We are here to grow, support each other, and make a difference.', name: 'Jose Castellano', role: 'Product Support Specialist · Philippines', photo: jose },
-]
+export type { Testimonial }
 
 export function ReviewCard({ quote, name, role, photo }: Testimonial) {
   return (
@@ -63,8 +47,19 @@ const BLOBS: [string, string][] = [
  * fades out and the text turns white. Photo cards: full-colour photo under a navy overlay
  * (darker at top and bottom behind the text), subtle zoom 1.0 → 1.04 on hover.
  */
-function StoryCard({ t, index }: { t: Testimonial; index: number }) {
+function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: boolean }) {
   const tr = useT()
+  // Tilt towards the pointer (3D) while hovered.
+  const tilt = (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'mouse') return
+    const r = e.currentTarget.getBoundingClientRect()
+    const x = (e.clientX - r.left) / r.width - 0.5
+    const y = (e.clientY - r.top) / r.height - 0.5
+    e.currentTarget.style.transform = `perspective(900px) rotateX(${(-y * 8).toFixed(2)}deg) rotateY(${(x * 10).toFixed(2)}deg) translateY(-6px)`
+  }
+  const untilt = (e: React.PointerEvent<HTMLElement>) => {
+    e.currentTarget.style.transform = ''
+  }
   const photoCard = index % 2 === 1
   const [c1, c2] = BLOBS[index % BLOBS.length]
   const overlay = 'linear-gradient(180deg, rgba(1,24,56,0.88) 0%, rgba(1,24,56,0.25) 30%, rgba(1,24,56,0.25) 45%, rgba(1,24,56,0.92) 100%)'
@@ -72,7 +67,16 @@ function StoryCard({ t, index }: { t: Testimonial; index: number }) {
     <figure
       data-card
       tabIndex={0}
-      className="group relative flex h-[420px] w-[min(85vw,300px)] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-[14px] border border-bh-light-200 bg-white p-6 outline-none focus-visible:ring-2 focus-visible:ring-bh-blue md:w-[300px]"
+      onPointerMove={tilt}
+      onPointerLeave={untilt}
+      className="group relative flex h-[420px] w-[min(85vw,300px)] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-[14px] border border-bh-light-200 bg-white p-6 outline-none [transition:translate_900ms_cubic-bezier(0.22,1,0.36,1),rotate_900ms_cubic-bezier(0.22,1,0.36,1),opacity_600ms_ease,transform_300ms_ease-out,box-shadow_300ms_ease-out] hover:shadow-[0_24px_48px_rgba(0,42,102,0.22)] focus-visible:ring-2 focus-visible:ring-bh-blue motion-reduce:!translate-none motion-reduce:!rotate-none motion-reduce:!opacity-100 md:w-[300px]"
+      style={{
+        // entrance: cards rise in one after another as the section scrolls into view
+        translate: shown ? '0 0' : '0 90px',
+        rotate: shown ? '0deg' : `${index % 2 ? -3 : 3}deg`,
+        opacity: shown ? 1 : 0,
+        transitionDelay: shown ? `${Math.min(index, 6) * 90}ms, ${Math.min(index, 6) * 90}ms, ${Math.min(index, 6) * 90}ms, 0ms, 0ms` : '0ms',
+      }}
     >
       {/* photo layer: always shown on photo cards, crossfades in on gradient cards */}
       <div className={`absolute inset-0 transition-opacity duration-[400ms] ease-out ${photoCard ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
@@ -112,13 +116,34 @@ function glide(el: HTMLElement, to: number) {
   requestAnimationFrame(tick)
 }
 
-/** "Stories from the people who make Bluehost" — horizontal story carousel with snap, drag, arrows and a progress bar. */
+/** Autoplay: one card every few seconds, paused while the visitor interacts or the carousel is off screen. */
+const AUTOPLAY_MS = 4500
+
+/**
+ * "Stories from the people who make Bluehost" — every colleague story in one full-width
+ * carousel (HR feedback): cards rise in one by one, tilt towards the pointer, and the row
+ * advances on its own. Snap, drag, arrows and a progress bar as before.
+ */
 export function Testimonials({ title, eyebrow = 'Our People', items = testimonials }: { title?: ReactNode; eyebrow?: string; items?: Testimonial[] }) {
   const t = useT()
   const track = useRef<HTMLDivElement>(null)
   const [progress, setProgress] = useState({ start: 0, size: 1 })
   const [edges, setEdges] = useState({ atStart: true, atEnd: false })
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null)
+  const section = useRef<HTMLElement>(null)
+  const [shown, setShown] = useState(false)
+  const [onScreen, setOnScreen] = useState(false)
+  const [paused, setPaused] = useState(false)
+  useEffect(() => {
+    const el = section.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => {
+      setOnScreen(e.isIntersecting)
+      if (e.isIntersecting) setShown(true)
+    }, { threshold: 0.25 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   const sync = () => {
     const el = track.current
@@ -143,6 +168,17 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
     const max = el.scrollWidth - el.clientWidth
     glide(el, Math.max(0, Math.min(max, Math.round(el.scrollLeft / stepPx + dir) * stepPx)))
   }
+
+  useEffect(() => {
+    if (!onScreen || paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const id = window.setInterval(() => {
+      const el = track.current
+      if (!el) return
+      if (el.scrollLeft > el.scrollWidth - el.clientWidth - 4) glide(el, 0)
+      else move(1)
+    }, AUTOPLAY_MS)
+    return () => window.clearInterval(id)
+  }, [onScreen, paused])
 
   // Mouse drag (touch and trackpads scroll natively).
   const onPointerDown = (e: React.PointerEvent) => {
@@ -175,14 +211,21 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
   const arrow = 'flex size-9 items-center justify-center rounded-full border border-[#d5e2f5] bg-white text-bh-blue shadow-sm transition hover:bg-bh-light-0 disabled:opacity-40 disabled:hover:bg-white'
 
   return (
-    <section className="flex flex-col items-center gap-10 py-[100px]">
+    <section ref={section} className="flex flex-col items-center gap-10 py-[100px]">
       <SectionHeader
         className="px-4"
         eyebrow={t(eyebrow)}
         title={title ?? (<>{t('Stories from the people')} <span className="text-bh-blue">{t('who make Bluehost')}</span></>)}
         body={t('Hear from colleagues around the world about what it means to belong, build, grow, and shine here.')}
       />
-      <div className="flex w-full flex-col gap-6">
+      <div
+        className="flex w-full flex-col gap-6"
+        onPointerEnter={() => setPaused(true)}
+        onPointerLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+        onTouchStart={() => setPaused(true)}
+      >
         <div
           ref={track}
           onScroll={sync}
@@ -192,14 +235,13 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
           onPointerCancel={onPointerUp}
           role="region"
           aria-label={t('Stories from our people')}
-          className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-[22px] overflow-x-auto overscroll-x-contain py-4 [scroll-padding-inline:max(16px,calc((100vw-1200px)/2))] active:cursor-grabbing [&_img]:pointer-events-none"
-          style={{ paddingInline: 'max(16px, calc((100vw - 1200px) / 2))' }}
+          className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-[22px] overflow-x-auto overscroll-x-contain px-[clamp(16px,3vw,48px)] py-8 [scroll-padding-inline:clamp(16px,3vw,48px)] active:cursor-grabbing [&_img]:pointer-events-none"
         >
           {items.map((t, i) => (
-            <StoryCard key={t.name} t={t} index={i} />
+            <StoryCard key={t.name} t={t} index={i} shown={shown} />
           ))}
         </div>
-        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4">
+        <div className="flex w-full items-center justify-between px-[clamp(16px,3vw,48px)]">
           <div className="flex gap-2">
             <button type="button" onClick={() => move(-1)} disabled={edges.atStart} aria-label={t('Previous story')} className={arrow}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden><path d="m15 18-6-6 6-6" /></svg>
