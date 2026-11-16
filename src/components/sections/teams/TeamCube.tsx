@@ -1,139 +1,194 @@
-import { useEffect, useRef, useState, type RefObject } from 'react'
-import iconGrid from '../../../assets/img/teams-page/icon-grid.svg'
+import { useEffect, useRef, type RefObject } from 'react'
+import tile1 from '../../../assets/img/teams-page/cube/tile-1.svg'
+import tile2 from '../../../assets/img/teams-page/cube/tile-2.svg'
+import tile3 from '../../../assets/img/teams-page/cube/tile-3.svg'
+import tile4 from '../../../assets/img/teams-page/cube/tile-4.svg'
+import tile5 from '../../../assets/img/teams-page/cube/tile-5.svg'
+import tile6 from '../../../assets/img/teams-page/cube/tile-6.svg'
+import tile7 from '../../../assets/img/teams-page/cube/tile-7.svg'
+import tile8 from '../../../assets/img/teams-page/cube/tile-8.svg'
+import tile9 from '../../../assets/img/teams-page/cube/tile-9.svg'
 
 /*
- * Our Teams (QA feedback + cube reference video): the Bluehost 3×3 symbol in the hero
- * becomes a 3D cube that, as the visitor scrolls, tumbles, shrinks and travels down the page
- * into the corner of the team photo box. It then stays on the photo and turns to a new face
- * each time the visitor switches teams.
+ * Our Teams: the Bluehost 3×3 symbol in the hero becomes a 3D cube that floats down the page
+ * onto the team photo (Maryna's cube prototype, ornate-daffodil-4cfe35.netlify.app).
  *
- * The cube lives in `container`'s coordinate space (absolutely positioned), so once it has
- * landed it scrolls with the photo. Its start is the element marked [data-cube-start] (the
- * hero grid, hidden while the cube is shown), its end the element marked [data-cube-target].
- * Desktop only; phones and reduced motion keep the flat hero grid.
+ * - Hero: it shows the flat Figma layout (nine tiles with light gaps), floats gently and leans
+ *   towards the pointer.
+ * - Scrolling: it follows the scroll with heavy inertia (slow, floaty), makes one turn around
+ *   its vertical axis along a soft arc, the tiles lift apart mid-flight, the gaps fill in
+ *   and each face is shaded by a light from the top left.
+ * - It lands on the photo's bottom-left corner ([data-cube-target]) in a three-quarter view,
+ *   with a soft shadow growing under it, and turns a quarter turn each time the team changes
+ *   or the pointer touches it.
  *
- * HR feedback (following the cube reference): the cube is a little bigger, it trails the
- * scroll position with a soft lag so it moves more slowly, it spins a quarter turn when
- * hovered, and once a function name is clicked (`docked`) it glides to the bottom of the
- * teams section ([data-cube-dock]).
+ * The cube lives in `container`'s coordinate space. Its start is [data-cube-start] (hidden
+ * while the cube is shown). Reduced motion keeps the flat hero grid.
  */
 
-const BASE = 406 // px, the hero grid's size (the cube is built at this size and scaled)
-const END_SIZE = 168
-const DOCK_SIZE = 190
-/** Share of the remaining distance covered each frame: lower = slower, softer movement. */
-const FOLLOW = 0.06
-const END_ROT_X = -24
-const END_ROT_Y = 360 + 38 // one full turn on the way down, landing on a three-quarter view
+const TILES = [tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8, tile9]
+const BASE = 405.24 // px: the hero grid's size (the cube is built at this size and scaled)
+const TILE = 129.6
+const STEP = 137.82
+const H = BASE / 2
+/** Final resting pose on the photo: a three-quarter view so it reads as a cube. */
+const END_X = -22
+const END_Y = -32
 
-const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-
-const faces = [
-  { t: `translateZ(${BASE / 2}px)`, r: 0 }, // front: matches the hero grid exactly
-  { t: `rotateY(90deg) translateZ(${BASE / 2}px)`, r: 90 },
-  { t: `rotateY(180deg) translateZ(${BASE / 2}px)`, r: 180 },
-  { t: `rotateY(-90deg) translateZ(${BASE / 2}px)`, r: 270 },
-  { t: `rotateX(90deg) translateZ(${BASE / 2}px)`, r: 90 },
-  { t: `rotateX(-90deg) translateZ(${BASE / 2}px)`, r: 180 },
+// Six faces: the front is the hero illustration, the others are reshuffles so every side reads differently.
+const FACES: { n: [number, number, number]; t: string; order: number[] }[] = [
+  { n: [0, 0, 1], t: `translateZ(${H}px)`, order: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+  { n: [1, 0, 0], t: `rotateY(90deg) translateZ(${H}px)`, order: [4, 6, 1, 8, 0, 7, 2, 5, 3] },
+  { n: [0, 0, -1], t: `rotateY(180deg) translateZ(${H}px)`, order: [8, 3, 6, 1, 4, 2, 7, 0, 5] },
+  { n: [-1, 0, 0], t: `rotateY(-90deg) translateZ(${H}px)`, order: [5, 0, 7, 2, 8, 3, 4, 6, 1] },
+  { n: [0, -1, 0], t: `rotateX(90deg) translateZ(${H}px)`, order: [2, 7, 4, 6, 1, 5, 3, 8, 0] },
+  { n: [0, 1, 0], t: `rotateX(-90deg) translateZ(${H}px)`, order: [7, 5, 3, 0, 6, 8, 1, 4, 2] },
 ]
 
-export function TeamCube({ container, face, docked = false }: { container: RefObject<HTMLElement | null>; face: number; docked?: boolean }) {
-  const outer = useRef<HTMLDivElement>(null)
-  const [spin, setSpin] = useState(0)
-  const dockedRef = useRef(docked)
-  dockedRef.current = docked
-  const kick = useRef<() => void>(() => {})
-  useEffect(() => kick.current(), [docked])
+const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+const easeSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2
+const rad = (d: number) => (d * Math.PI) / 180
+// light from the top left, in front
+const LIGHT = (() => {
+  const v = [-0.45, -0.7, 0.75]
+  const m = Math.hypot(...v)
+  return v.map(x => x / m)
+})()
+
+/** Rotates a face normal by CSS rotateX(a) rotateY(b) (applied right to left). */
+function rotate([x, y, z]: [number, number, number], a: number, b: number): [number, number, number] {
+  a = rad(a)
+  b = rad(b)
+  ;[x, z] = [x * Math.cos(b) + z * Math.sin(b), -x * Math.sin(b) + z * Math.cos(b)]
+  ;[y, z] = [y * Math.cos(a) - z * Math.sin(a), y * Math.sin(a) + z * Math.cos(a)]
+  return [x, y, z]
+}
+
+export function TeamCube({ container, face }: { container: RefObject<HTMLElement | null>; face: number }) {
+  const cubeRef = useRef<HTMLDivElement>(null)
+  const turnTarget = useRef(0)
+  const lastFace = useRef(face)
+
+  // a quarter turn each time the team changes
+  useEffect(() => {
+    if (face !== lastFace.current) turnTarget.current += 90
+    lastFace.current = face
+  }, [face])
 
   useEffect(() => {
     const box = container.current
-    const el = outer.current
-    if (!box || !el) return
-    const enabled = window.matchMedia('(min-width: 1024px) and (prefers-reduced-motion: no-preference)')
-    let raf = 0
-    // current pose [x, y, size, rotX, rotY]; eased towards the scroll-driven target every frame
-    let cur: number[] | null = null
+    const cube = cubeRef.current
+    if (!box || !cube) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const faceEls = [...cube.querySelectorAll<HTMLElement>('[data-face]')].map((el, i) => ({
+      el,
+      n: FACES[i].n,
+      shade: el.querySelector<HTMLElement>('[data-shade]')!,
+      stickers: [...el.querySelectorAll<HTMLElement>('[data-sticker]')],
+    }))
 
-    const target = (): number[] | null => {
-      const start = box.querySelector<HTMLElement>('[data-cube-start]')
-      const photo = box.querySelector<HTMLElement>('[data-cube-target]')
-      const dock = box.querySelector<HTMLElement>('[data-cube-dock]')
-      if (!start || !photo || !enabled.matches) {
-        el.style.display = 'none'
-        if (start) start.style.visibility = ''
-        return null
-      }
-      el.style.display = ''
-      start.style.visibility = 'hidden'
-      const b = box.getBoundingClientRect()
-      const s = start.getBoundingClientRect()
-      const t = photo.getBoundingClientRect()
-      const vh = window.innerHeight
-      const sx = s.left - b.left + s.width / 2
-      const sy = s.top - b.top + s.height / 2
-      if (dockedRef.current && dock) {
-        const d = dock.getBoundingClientRect()
-        return [d.left - b.left + d.width / 2, d.top - b.top + d.height / 2, DOCK_SIZE, END_ROT_X, END_ROT_Y]
-      }
-      // end: inside the photo's bottom-left corner
-      const ex = t.left - b.left + END_SIZE * 0.7
-      const ey = t.bottom - b.top - END_SIZE * 0.7
-      // 0 at the top of the page, 1 once the photo box's middle reaches the middle of the screen
-      const travel = t.top + window.scrollY + t.height / 2 - vh / 2
-      const p = travel > 0 ? ease(Math.min(1, Math.max(0, window.scrollY / travel))) : 1
-      return [lerp(sx, ex, p), lerp(sy, ey, p), lerp(s.width * 1.08, END_SIZE, p), lerp(0, END_ROT_X, p), lerp(0, END_ROT_Y, p)]
+    let p = 0
+    let turn = 0
+    let mx = 0
+    let my = 0
+    let tmx = 0
+    let tmy = 0
+    const t0 = performance.now()
+    const onPointer = (e: PointerEvent) => {
+      tmx = e.clientX / window.innerWidth - 0.5
+      tmy = e.clientY / window.innerHeight - 0.5
     }
+    window.addEventListener('pointermove', onPointer, { passive: true })
 
-    const update = () => {
-      raf = 0
-      const tgt = target()
-      if (!tgt) {
-        cur = null
+    let raf = 0
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame)
+      const start = box.querySelector<HTMLElement>('[data-cube-start]')
+      const landing = box.querySelector<HTMLElement>('[data-cube-target]')
+      if (!start || !landing || reduce.matches) {
+        cube.style.display = 'none'
+        if (start) start.style.visibility = ''
         return
       }
-      cur = cur ? cur.map((v, i) => v + (tgt[i] - v) * FOLLOW) : tgt
-      const [x, y, size, rx, ry] = cur
-      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${size / BASE}) perspective(2400px) rotateX(${rx}deg) rotateY(${ry}deg)`
-      // keep easing until the cube has caught up
-      if (cur.some((v, i) => Math.abs(v - tgt[i]) > 0.05)) schedule()
+      cube.style.display = ''
+      start.style.visibility = 'hidden'
+      const b = box.getBoundingClientRect()
+      const A = start.getBoundingClientRect()
+      const B = landing.getBoundingClientRect()
+
+      // 0 at the top of the page → 1 when the landing spot reaches the middle of the screen
+      const end = Math.max(1, B.top + window.scrollY + B.height / 2 - window.innerHeight * 0.55)
+      const target = clamp(window.scrollY / end)
+      p += (target - p) * 0.045 // heavy inertia: a slower, floatier descent
+      if (Math.abs(target - p) < 1e-4) p = target
+      turn += (turnTarget.current - turn) * 0.06
+      mx += (tmx - mx) * 0.05
+      my += (tmy - my) * 0.05
+
+      const e = easeSine(p)
+      const arc = Math.sin(Math.PI * p)
+      const idle = 1 - clamp(p * 5)
+      const time = (now - t0) / 1000
+      const settled = clamp((p - 0.97) / 0.03)
+
+      // a gentle arc over the empty side of the page, then a glide onto the photo corner
+      const cx = lerp(A.left - b.left + A.width / 2, B.left - b.left + B.width / 2, e) + arc * Math.min(120, window.innerWidth * 0.07)
+      const cy = lerp(A.top - b.top + A.height / 2, B.top - b.top + B.height / 2, e) + Math.sin(time * 1.1) * 5 * (idle + settled)
+      const scale = lerp(A.width, B.width, e) / BASE
+      const rx = END_X * e - 10 * arc - my * 14 * idle + Math.sin(time * 0.9) * 1.5 * settled
+      const ry = (360 + END_Y) * e + mx * 20 * idle + turn
+
+      cube.style.transform = `translate3d(${cx - BASE / 2}px, ${cy - BASE / 2}px, 0) scale(${scale}) perspective(1500px) rotateX(${rx}deg) rotateY(${ry}deg)`
+
+      // the gaps fill in once it starts turning; the tiles lift apart mid-flight
+      const bed = clamp(p * 14 + (Math.abs(mx) + Math.abs(my)) * 1.5)
+      const lift = 10 * arc
+      for (const f of faceEls) {
+        f.el.style.setProperty('--bed', String(bed))
+        const n = rotate(f.n, rx, ry)
+        const d = n[0] * LIGHT[0] + n[1] * LIGHT[1] + n[2] * LIGHT[2]
+        f.shade.style.opacity = String(0.5 * (1 - clamp(d * 0.5 + 0.5)) * clamp(p * 6 + 0.4))
+        f.stickers.forEach((s, i) => (s.style.transform = `translateZ(${lift * (1 + (i % 2))}px)`))
+      }
+      const near = clamp((p - 0.8) / 0.2)
+      landing.style.setProperty('--pad-o', String(near))
+      landing.style.setProperty('--pad-s', String(0.3 + 0.7 * near))
     }
-    const schedule = () => {
-      raf ||= requestAnimationFrame(update)
-    }
-    kick.current = schedule
-    update()
-    const ro = new ResizeObserver(schedule)
-    ro.observe(box)
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule)
-    enabled.addEventListener('change', schedule)
+    raf = requestAnimationFrame(frame)
     return () => {
       cancelAnimationFrame(raf)
-      ro.disconnect()
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
-      enabled.removeEventListener('change', schedule)
+      window.removeEventListener('pointermove', onPointer)
       const start = box.querySelector<HTMLElement>('[data-cube-start]')
       if (start) start.style.visibility = ''
     }
   }, [container])
 
   return (
-    <div aria-hidden className="pointer-events-none absolute left-0 top-0 z-20 hidden lg:block" style={{ width: 0, height: 0 }}>
-      <div ref={outer} className="absolute left-0 top-0 will-change-transform [transform-style:preserve-3d]" style={{ width: BASE, height: BASE, display: 'none' }}>
-        {/* turns to a new face whenever the team changes, and a quarter turn more on hover */}
-        <div
-          onPointerEnter={() => setSpin(n => n + 1)}
-          className="pointer-events-auto absolute inset-0 transition-[transform,scale] duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] [transform-style:preserve-3d] hover:scale-[1.06]"
-          style={{ transform: `rotateY(${-90 * (face + spin)}deg)` }}
-        >
-          {faces.map((f, i) => (
-            <div key={i} className="absolute inset-0 overflow-hidden rounded-[10px] bg-[#e9f2ff] [backface-visibility:hidden]" style={{ transform: f.t }}>
-              <img src={iconGrid} alt="" className="size-full" style={{ rotate: `${f.r}deg` }} />
-            </div>
-          ))}
-        </div>
+    <div aria-hidden className="pointer-events-none absolute left-0 top-0 z-20" style={{ width: 0, height: 0 }}>
+      <div
+        ref={cubeRef}
+        onPointerEnter={() => (turnTarget.current += 90)}
+        className="pointer-events-auto absolute left-0 top-0 origin-center will-change-transform [transform-style:preserve-3d]"
+        style={{ width: BASE, height: BASE, display: 'none' }}
+      >
+        {FACES.map((f, fi) => (
+          <div key={fi} data-face className="absolute inset-0 [backface-visibility:hidden] [transform-style:preserve-3d]" style={{ transform: f.t }}>
+            <div className="absolute inset-0 bg-[#041d33] [opacity:var(--bed,0)]" />
+            {f.order.map((k, i) => (
+              <img
+                key={i}
+                data-sticker
+                src={TILES[k]}
+                alt=""
+                draggable={false}
+                className="absolute [backface-visibility:hidden]"
+                style={{ left: (i % 3) * STEP, top: Math.floor(i / 3) * STEP, width: TILE, height: TILE }}
+              />
+            ))}
+            <div data-shade className="pointer-events-none absolute inset-0 bg-[#00142e] opacity-0 [backface-visibility:hidden]" style={{ transform: 'translateZ(24px)' }} />
+          </div>
+        ))}
       </div>
     </div>
   )

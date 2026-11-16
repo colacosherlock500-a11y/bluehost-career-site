@@ -48,16 +48,18 @@ export function TeamTabs({ active, onChange }: { active: Team; onChange: (slug: 
               </div>
             </div>
           </div>
-          <div data-cube-target className="relative h-[449px] overflow-hidden rounded-[10.7px]">
-            <img src={active.image} alt={`${active.name} team at Bluehost`} className="absolute inset-0 size-full object-cover" />
-            <span className="absolute bottom-4 right-4 rounded-md bg-bh-blue-1100/60 px-2 py-1 text-[16.5px] leading-[1.4] text-gold backdrop-blur-sm">
-              {formatOpenRoles(stats?.byTeam[active.slug])}
-            </span>
+          <div className="relative">
+            <div className="relative h-[449px] overflow-hidden rounded-[10.7px]">
+              <img src={active.image} alt={`${active.name} team at Bluehost`} className="absolute inset-0 size-full object-cover" />
+              <span className="absolute bottom-4 right-4 rounded-md bg-bh-blue-1100/60 px-2 py-1 text-[16.5px] leading-[1.4] text-gold backdrop-blur-sm">
+                {formatOpenRoles(stats?.byTeam[active.slug])}
+              </span>
+            </div>
+            {/* Where the TeamCube lands: on the photo's bottom-left corner, with a soft shadow that grows as it arrives. */}
+            <div data-cube-target aria-hidden className="pointer-events-none absolute -bottom-7 -left-1.5 size-[72px] lg:-bottom-9 lg:-left-[46px] lg:size-[92px]">
+              <span className="absolute -bottom-[18px] left-1/2 h-5 w-[120px] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(1,41,87,0.35),transparent)] [opacity:var(--pad-o,0)] [scale:var(--pad-s,0.3)]" />
+            </div>
           </div>
-        </div>
-        {/* Where the cube comes to rest once a function is picked (TeamCube, desktop only). */}
-        <div data-cube-dock aria-hidden className="relative -mt-5 hidden size-[190px] lg:block">
-          <span className="absolute inset-x-[-10%] bottom-[-14px] h-6 rounded-[50%] bg-[radial-gradient(closest-side,rgba(14,59,121,0.18),transparent)]" />
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import heroBg from '../assets/img/teams-page/hero-bg.jpg'
 import iconGrid from '../assets/img/teams-page/icon-grid.svg'
@@ -18,8 +18,6 @@ const stats = [
 
 export default function OurTeamsPage() {
   const [params, setParams] = useSearchParams()
-  // Once a function is picked, the cube moves to the bottom of the teams section.
-  const [docked, setDocked] = useState(false)
   const active = getTeam(params.get('team') ?? undefined) ?? teams[0]
   const cubeArea = useRef<HTMLDivElement>(null)
 
@@ -27,7 +25,7 @@ export default function OurTeamsPage() {
     <>
       {/* The hero grid becomes a cube that travels down into the team photo (TeamCube). */}
       <div ref={cubeArea} className="relative">
-      <TeamCube container={cubeArea} face={teams.indexOf(active)} docked={docked} />
+      <TeamCube container={cubeArea} face={teams.indexOf(active)} />
       <section className="relative overflow-hidden pt-[78px]">
         <img src={heroBg} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="relative mx-auto flex max-w-[1218px] flex-col items-center gap-12 px-4 py-16 lg:h-[562px] lg:flex-row lg:gap-[111px] lg:py-0">
@@ -58,10 +56,7 @@ export default function OurTeamsPage() {
       <LogoStrip />
       <TeamTabs
         active={active}
-        onChange={slug => {
-          setDocked(true)
-          setParams({ team: slug }, { replace: true, preventScrollReset: true })
-        }}
+        onChange={slug => setParams({ team: slug }, { replace: true, preventScrollReset: true })}
       />
       </div>
       <JoinCta
