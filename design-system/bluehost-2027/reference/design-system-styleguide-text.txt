@@ -1,0 +1,548 @@
+One place for every rule in th
+BLUEHOST DESIGN SYSTEM
+Styleguide
+01
+Typography
+02
+Spacing
+03
+Grid
+04
+Color
+05
+Components
+06
+Product logo lockups
+07
+Icons
+08
+Rules applied: Homepage
+01 — TYPOGRAPHY
+Typography
+Poppins is the only typeface. 
+Key rules label
+Hierarchy
+Display is for the hero only. 
+No widows
+Headlines and body copy never 
+Headline punctuation
+One-sentence headlines have no
+Casing
+Sentence case everywhere. Titl
+Minimum size
+No text smaller than 10pt in a
+One typeface
+Poppins for all UI and marketi
+Style
+Desktop
+Mobile
+Use
+Sample
+SemiBold · 53/67
+SemiBold · 33/42
+Hero headline only
+Sample
+SemiBold · 42/53
+SemiBold · 26/33
+First headline in every sectio
+Sample
+SemiBold · 33/42
+SemiBold · 20/26
+Not used in layouts
+Sample
+SemiBold · 26/33
+SemiBold · 16/20
+Sub-headlines, columns, card t
+Sample
+SemiBold · 20/26
+—
+Not used in layouts
+Sample
+SemiBold · 16/26
+Medium · 13/21
+Labels above headlines, FAQ qu
+Sample
+Regular · 16/26
+Regular · 16/26
+Body copy
+Sample
+Medium · 16/26
+Medium · 16/26
+UI labels, emphasis
+Sample
+SemiBold · 16/26
+SemiBold · 16/26
+Links and CTAs in copy
+02 — SPACING
+Spacing
+All padding and gaps come from
+space/3xs · 4
+Text pairs (label + value)
+space/2xs · 6
+Icon → inline label, badge pad
+space/xs · 10
+Gaps inside cards, small butto
+space/sm · 16
+Button vertical padding, list 
+space/md · 26
+Card padding, grid gutters, bu
+space/lg · 42
+Heading → content, panel paddi
+space/xl · 68
+Mobile section padding, column
+space/2xl · 110
+Desktop section padding and pa
+space/3xl · 178
+Hero / page-level breathing ro
+Layout token
+Desktop
+Mobile
+layout/page-margin
+110
+16
+layout/section-y
+110
+68
+layout/hero-top
+110
+42
+layout/callout-y
+68
+42
+layout/heading-to-content
+42
+26
+layout/column-gap
+68
+26
+layout/heading-group-gap
+16
+16
+layout/content-stack
+26
+26
+layout/card-padding
+26
+26
+layout/panel-padding
+42
+26
+layout/grid-gutter
+26
+26
+layout/card-gap
+10
+10
+layout/list-gap
+16
+16
+layout/text-pair
+4
+4
+layout/button-x
+26
+26
+layout/button-y
+16
+16
+layout/column-gutter
+30
+30
+Radius token
+Value
+Use
+radius/control
+10
+Inputs, icon tiles
+radius/button
+10
+Buttons
+radius/card
+16
+Cards
+radius/panel
+26
+Large panels, callouts
+radius/pill
+999
+Badges, chips, avatars
+03 — GRID
+Grid
+Bootstrap-style 12-column grid
+Key rules label
+Text-wider split
+Two-column layouts give the te
+Golden media
+Images keep a 1.618 : 1 ratio 
+Card columns
+3-up cards are 389px, 4-up car
+Breakpoint
+Frame
+Columns
+Margin
+Gutter
+Content
+Desktop
+1440
+12
+110
+26
+1220
+Mobile
+375
+Stacked (1)
+16
+16
+343
+Header exception
+1475
+—
+110
+—
+1255
+04 — COLOR
+Color
+Bluehost Blue leads; secondary
+Key rules label
+Buttons &amp; links
+Primary: Blue 800 with white t
+Text
+Text on white or light backgro
+Cards on white
+Cards on white sections get a 
+Primary
+Bluehost Blue dark 1000
+#012957
+Bluehost Blue 800
+#196BDE
+Bluehost Blue Light 400
+#84C1FC
+White
+#FFFFFF
+Secondary
+Night Sky Blue
+#465D77
+Green Dark 700
+#19A27E
+Gold
+#F4C652
+Aqua
+#29C9E0
+Color role
+Value
+Swatch
+text/primary
+#041D33
+text/body
+#0C4A9C
+text/link
+#196BDE
+text/on-brand
+#FFFFFF
+text/on-accent
+#041D33
+text/muted
+#7A889D
+surface/page
+#FFFFFF
+surface/alt
+#F0FAFF
+surface/subtle
+#E8EDF3
+surface/placeholder
+#DBF1FC
+surface/brand
+#196BDE
+surface/inverse
+#041D33
+surface/accent
+#F4C652
+border/subtle
+#DCE1EA
+border/brand
+#196BDE
+button/primary/bg
+#196BDE
+button/primary/text
+#FFFFFF
+button/secondary/border
+#196BDE
+button/secondary/text
+#196BDE
+button/inverse/bg
+#FFFFFF
+button/inverse/text
+#196BDE
+icon/brand
+#196BDE
+Gradients
+Royal blue
+Sky to royal
+Light sky
+Sky fade
+Sage mint
+Dark blue fade
+Glass blue
+Deep blue to teal
+Sage to ocean
+Ocean depth
+Blue glow
+Navy core
+Teal glow
+Sky glow
+05 — COMPONENTS
+Components
+Buttons and cards are componen
+Key rules label
+Button spec
+52px tall: 16 × 26 padding (la
+Card / Feature
+16px radius, 26px padding, 10p
+Variants
+Buttons: Type × Breakpoint × I
+Button
+Fill
+Label
+Use
+Primary · Solid
+Blue 800
+White
+Main action on light sections
+Primary · Transparent
+#E6F2FE 25% + border
+White
+On dark, image or gradient bac
+Primary · Transparent Blue Tex
+#E6F2FE 25% + border
+Blue
+Secondary action on tinted bac
+Secondary · Solid
+White
+Blue
+Action on blue / dark panels (
+Orange · Solid
+Gold Light 500 + shadow
+#0D0349
+Promotional emphasis, used spa
+Link
+—
+Blue
+Inline links, phone numbers
+07 — PRODUCT LOGO LOCKUPS
+Product logo lockups
+Two approved product lockups (
+Key rules label
+Construction
+Descriptor sits ¼X below the l
+Descriptor type
+Lexend Medium, ALL CAPS, fixed
+Clear space
+Minimum X on all sides, measur
+Minimum size
+Descriptor at least 10px digit
+Color
+One color only: Bluehost Blue 
+Horizontal lockup
+Logo | product name separated 
+Product Lockup — Stacked
+Logo with the product name stacked below, left-aligned to the icon edge at a fixed size. Short names end before the wordmark; long names extend past it to the right. Default for square-ish and constrained-width placements.
+AGENT HOSTING
+AGENT HOSTING
+Product Lockup — Horizontal
+Logo | product name, separated by a vertical rule. Default for headers, nav bars, footers and other wide, short placements.
+AGENT HOSTING
+AGENT HOSTING
+08 — ICONS
+Icons
+One icon library (&quot;Certain&quot;), 
+Key rules label
+Use the library
+Only use icons from this libra
+Size &amp; tiles
+Icons sit at 24px inside icon 
+Color
+Icons take the color of the te
+Security / Privacy
+67 icons
+Common Actions
+359 icons
+UI Actions
+481 icons
+Business &amp; Ecommerce
+315 icons
+Communication
+247 icons
+Hardware
+284 icons
+Arrows
+314 icons
+Text Formatting
+759 icons
+Photo &amp; Image
+377 icons
+Audio &amp; Video
+298 icons
+Social
+474 icons
+Maps
+225 icons
+Android
+225 icons
+Home
+127 icons
+Household
+175 icons
+Activities
+159 icons
+Transportation
+99 icons
+Travel
+128 icons
+AI
+70 icons
+needs review
+17 icons
+Brands
+12 icons
+Products
+9 icons
+09 — RULES APPLIED
+Rules applied: Homepage
+The homepage from the Spacing 
+How to read the tags
+Each blue-outlined tag sits be
+Desktop · 1440 (header 1475)
+Promo bar → Announcement bar
+Spacing: padding 10 (xs) · sides 0 · gap 0
+Color: Background #041D33 · Bluehost Blue darker 1100
+Type: Body Medium 16/26
+Sale bar → Sale banner
+Spacing: padding 10 (xs) · sides 0 · gap 0
+Color: Background #196BDE · Bluehost Blue 800
+Type: Body Medium 16/26
+Header → Header
+Spacing: padding 0 · sides 0 · gap 0
+Hero → Hero
+Spacing: padding 110 (hero-top) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Color: Background #F0FAFF · Bluehost Blue Light 0
+Type: Display 53/67 · Title M 26/33 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Button · Card / Feature
+Build with WordPress → Split — Media right
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Type: Headline 42/53 · Title M 26/33 · Eyebrow 16/26 · Body Regular 16/26 · Body Medium 16/26
+Grid: 658 + 68 + 494 split
+Components: Button
+Build anything → Split — Media left
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Color: Background #F4F8FC · Night Sky Blue Light 0
+Type: Headline 42/53 · Title M 26/33 · Eyebrow 16/26 · Body Regular 16/26 · Body Medium 16/26
+Grid: 494 + 68 + 658 split
+Components: Button
+Host anything → Split — Media right (alt)
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Type: Headline 42/53 · Title M 26/33 · Eyebrow 16/26 · Body Regular 16/26 · Body Medium 16/26
+Grid: 658 + 68 + 494 split
+Components: Button
+AI Agents → Split — Media left
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Color: Background #F4F8FC · Night Sky Blue Light 0
+Type: Headline 42/53 · Title M 26/33 · Eyebrow 16/26 · Body Regular 16/26 · Body Medium 16/26
+Grid: 494 + 68 + 658 split
+Components: Button
+24/7 Expert Support → Card grid — 3 up
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Type: Headline 42/53 · Title M 26/33 · Eyebrow 16/26 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Card / Feature · Shadow/Card glow
+Testimonials → Testimonials
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Color: Background #012957 · Bluehost Blue dark 1000
+Type: Headline 42/53 · Body Regular 16/26 · Body SemiBold 16/26
+Growth Tools → Card grid — Product tiles
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Color: Background #F4F8FC · Night Sky Blue Light 0
+Type: Headline 42/53 · Title M 26/33 · Eyebrow 16/26 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Card / Feature
+Plans callout → CTA callout
+Spacing: padding 68 (callout-y) · sides 110 (page-margin) · gap 26 (md)
+Color: Background #196BDE · Bluehost Blue 800
+Type: Headline 42/53 · Body Regular 16/26
+Components: Button
+Consultation → Form — Consultation
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Type: Headline 42/53 · Eyebrow 16/26 · Body Regular 16/26 · Body Medium 16/26
+Grid: 440 + 68 + 712 split
+Components: Button
+FAQs → FAQ — Cards
+Spacing: padding 110 (section-y) · sides 110 (page-margin) · gap 42 (heading-to-content)
+Color: Background #F0FAFF · Bluehost Blue Light 0
+Type: Headline 42/53 · Eyebrow 16/26 · Body Regular 16/26
+Components: Shadow/Card glow
+Footer → Footer
+Spacing: padding 0 · sides 0 · gap 0
+Type: Title M 26/33 · Body Regular 16/26
+Mobile · 375
+Promo bar → Announcement bar
+Spacing: padding 10 (xs) · sides 16 (page-margin) · gap 0
+Color: Background #041D33 · Bluehost Blue darker 1100
+Type: Body Medium 16/26
+Sale bar → Sale banner
+Spacing: padding 10 (xs) · sides 16 (page-margin) · gap 0
+Color: Background #196BDE · Bluehost Blue 800
+Type: Body Medium 16/26
+Header → Header
+Spacing: padding 16 (sm) · sides 16 (page-margin) · gap 0
+Color: Background #FFFFFF · White
+Type: Body SemiBold 16/26
+Hero → Hero
+Spacing: padding 42 (hero-top) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #F0FAFF · Bluehost Blue Light 0
+Type: Display 33/42 · Title M 16/20 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Button · Card / Feature
+Build with WordPress → Split — Media right
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Type: Headline 26/33 · Title M 16/20 · Eyebrow 13/21 · Body Regular 16/26 · Body Medium 16/26 · Body SemiBold 16/26
+Components: Button
+Build anything → Split — Media left
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #F4F8FC · Night Sky Blue Light 0
+Type: Headline 26/33 · Title M 16/20 · Eyebrow 13/21 · Body Regular 16/26 · Body Medium 16/26 · Body SemiBold 16/26
+Components: Button
+Host anything → Split — Media right (alt)
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Type: Headline 26/33 · Title M 16/20 · Eyebrow 13/21 · Body Regular 16/26 · Body Medium 16/26 · Body SemiBold 16/26
+Components: Button
+AI Agents → Split — Media left
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #F4F8FC · Night Sky Blue Light 0
+Type: Headline 26/33 · Title M 16/20 · Eyebrow 13/21 · Body Regular 16/26 · Body Medium 16/26 · Body SemiBold 16/26
+Components: Button
+24/7 Expert Support → Card grid — 3 up
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Type: Headline 26/33 · Title M 16/20 · Eyebrow 13/21 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Card / Feature · Shadow/Card glow
+Testimonials → Testimonials
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #012957 · Bluehost Blue dark 1000
+Type: Headline 26/33 · Body Regular 16/26 · Body SemiBold 16/26
+Growth Tools → Card grid — Product tiles
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #F4F8FC · Night Sky Blue Light 0
+Type: Headline 26/33 · Title M 16/20 · Eyebrow 13/21 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Card / Feature
+Plans callout → CTA callout
+Spacing: padding 42 (callout-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #196BDE · Bluehost Blue 800
+Type: Headline 26/33 · Body Regular 16/26 · Body SemiBold 16/26
+Components: Button
+Consultation → Form — Consultation
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Type: Headline 26/33 · Eyebrow 13/21 · Body Regular 16/26 · Body Medium 16/26 · Body SemiBold 16/26
+Components: Button
+FAQs → FAQ — Cards
+Spacing: padding 68 (section-y) · sides 16 (page-margin) · gap 26 (heading-to-content)
+Color: Background #F0FAFF · Bluehost Blue Light 0
+Type: Headline 26/33 · Eyebrow 13/21 · Body Regular 16/26
+Components: Shadow/Card glow
+Footer → Footer
+Spacing: padding 0 · sides 0 · gap 0
+Type: Title M 16/20 · Body Regular 16/26

@@ -1,0 +1,193 @@
+Page number
+04
+Website
+TBD
+Our website should carry our brand tone and style, while being unobtrusive.  Every marketing page should have a  clear narrative and should drive people toward conversion. Copy should be short and to the point. Deliver the message,  and move aside.
+Hero styling
+Our heroes are made to draw a user's attention, showing relatable people in their respective environments. Graphics are woven in, representing Bluehost solutions. In terms of language, the hero's purpose is threefold: utilize keywords, engage the user, and tease the content of the page. Our brand standard for headings is using a Sentence case and period punctuation in headlines.
+100px padding between sections
+100 px padding from edge inside the Hero
+40px padding between heading and content
+15px padding between heading and subheading
+Padding rules
+Desktop
+Desktop width: 1475px Padding between sections: 100px Padding within sections: 40px Padding between columns: 30-40px 9depands on layout) Hero width: align w/ nav
+Mobile width 360px Padding between sections: 60px
+Padding within sections: 25px Padding between text: 15px
+Mobile
+Padding inside the hero: 15px Content inside tiles: 12px
+The Platform
+Performant. Simple. Interoperable.
+Build anywhere, host with us. Bluehost is designed for plug-and-play interoperability — connect your tools, stack, and workflows without friction.
+99%
+99.9%
+Great
+Global Performance Infrastructure
+NVMe SSD across 20+ global data centers, integrated CDN with 200+ edge nodes, and proprietary caching. Your site loads fast — everywhere, for everyone.
+AI-Powered Website Builder
+Describe your business in one sentence. AI generates a complete, launch-ready website with content, images, and SEO built in — in under 60 seconds.
+Enterprise Security Suite
+Free SSL on every plan, DDoS protection, daily malware scanning, and automated backups. Security that scales from blog to enterprise.
+Plug & Play Integrations
+Connect 200+ tools — Stripe, Mailchimp, Google Analytics, Zapier, and more. Built for interoperability, not lock-in.
+Professional Email & Productivity
+Domain-branded email, Google Workspace, and AI-powered email campaigns — all from your Bluehost dashboard.
+Built-in Analytics & SEO
+Real-time traffic analytics, keyword ranking, and AI-generated SEO recommendations without needing a third-party tool.
+Midfield Farm boosted sales by
+Infrastructure built for serious businesses.
+20+ years of uptime, speed, and global reach — at a price that doesn't punish growth.
+1 November 2025 | 2pm EST
+99.99%
+Uptime SLA guaranteed availability
+<2s
+Avg Load Time global average
+3M
+Websites Hosted worldwide
+20+
+Global Data Centers edge CDN coverage
+✦
+AI-Native Platform
+Your smartest team member never sleeps.
+AI isn't a bolt-on feature — it's woven into every layer of Bluehost. From building your site to closing sales while you sleep.
+For Business Owners
+For Developers
+........
+Search in progress
+xxx
+Bluehost AI - Your Business Dashboard
+Your agent
+AI Content & Copywriting
+Generate pages, blog posts, product descriptions, and email campaigns — in your brand voice, optimized for search.
+AI Sales Agent
+Engage visitors, answer questions, and collect leads 24/7. Your best sales rep, working all night.
+SEO Intelligence
+Real-time keyword analysis, on-page recommendations, and content scoring as you build.
+Agent Hosting (Developers)
+Deploy AI agents, vibe-coded apps, and automation workflows with one-click infrastructure.
+8px padding from edge frame
+25px in between Heading and content
+60px in between sections
+25 px in between the elements inside sections
+15px between the copy elements inside the tile
+Traffic
+Uptime (last 24 hours)
+Current Status
+UP
+Uptime
+100.00%
+(last 24 hours)
+(last 7 days)
+(last 30 days)
++615
+75,560
+TOTAL USER
+from 70,460
+12%
+Money Spent
+$4,750,00
++25,0%
+Bento Cards
+|
+Brand Guidelines 2026
+The high speed you need
+Experience high-speed connectivity using 100 Gbps port speed, with unmetered data transfer that caters to high-traffic websites and applications.
+Text
+Your plan
+Emails sent
+50 of 100
+SMS sent
+10 of 50
+Daily requests
+60 of 100
+Want more? Make an upgrade
+Dashboard
+Search here
+Hello James!
+This is your daily reports.
+$54,434.09
+340 sales
+This month
+5,77%
+7
+14
+21
+30
+$32,112
+You made an extra
+$1,235.12
+this month
+New Customers
+4,350
+2,5%
+Fast Provisioning
+Our team of specialists custom builds and racks your server, connecting it to the network within minutes.
+Better uptime
+Get 99.9% uptime, keeping your site and applications running smoothly. With our Tier 3 Data Center, enjoy high availability, redundancy, and robust infrastructure for your hosting.
+30-day money-back guarantee
+Order Summary
+4 items in cart
+Subtotal
+$132.00
+Total Savings
+-$12.00
+Sales Tax
+$0.00
+ICANN Fees
+Today’s Total:
+$120.00
+Deferred*
+By placing your order, you agree to Network Solutions Terms & Conditions and Privacy Policy.
+I do not want to hear about helpful tips and services that <brand> offers to help grow my website. Details
+By clicking submit, I agree to the Auto Renewal Terms, Terms of Service, Cancellations Policy, and Privacy Notice. All plans and products automatically renew unless you cancel. You may cancel at any time, prior to your renewal date, by logging into your account online or by calling customer support at +1 888 401 4678.
+*Deferred amount will be charged upon successful transfer.
+Enhanced security
+Get advanced security with DDoS protection, SSL, and regular offsite backups for disaster recovery, protecting your data against loss and corruption.
+Auto-renew
+expires on 24 March 2026
+Active
+SSL Certification
+Your website is secure
+Verified with SSL
+SSL
+Anytime resource boosts
+Easily scale your CPU, RAM and storage by upgrading to the next plan.
+Easy free migration
+DISCOVER
+MENU
+Square
+Stylish Collection for Your coffee shop
+Desol
+Home
+Our team
+Project
+Galleries
+Services
+Migrating your website
+Completed
+Root access when you want it
+Advanced user? Optional full root access gives you complete freedom to perform custom installs and more.
+Name Servers & IP Address
+ns1.bluehost.com
+ns2.bluehost.com
+50.6.155.155
+Name Servers
+SSH Keys
+glaroomy@50.6.155.155
+FTP Access
+IP Address
+Label
+label
+10
+Hosting
+E-commerce
+B2B
+Admin Wordpress
+you@yourbusiness.com
+Data protection with RAID storage
+Our high-quality storage configuration uses RAID1, mirroring your data for improved security and protection.
+Security
+Add Website
+Malware Detected on Your Website Your website is compromised. Act now to restore functionality.
+Ready-to-help experts
+Available 24/7 via chat and call, our experts are ready to assist. Get personalized help, enhanced support for critical issues, and proactive server monitoring with automatic issue detection and resolution.

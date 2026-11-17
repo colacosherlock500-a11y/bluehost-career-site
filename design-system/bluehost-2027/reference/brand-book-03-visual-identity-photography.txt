@@ -1,0 +1,409 @@
+03
+Visual Identity
+Bluehost is known for being blue, but our current aesthetic goes beyond basics for a fresh, modern feel. Our signature blue is now paired with calming, professional colors, lifestyle photography, and UI graphics.
+Page number
+Logo
+While Bluehost already powers millions of websites, our brand is still working on household name status. Making sure our logo is clearly visible and consistent will help us get into people’s search bars.
+9-grid
+Logo type
+Logo anatomy
+The Bluehost logo is composed of the 9-grid and our custom logo type. The horizontal logo is our primary logo and should be used in most instances. For consistency, always use the logo files provided in the logo pack.  Do not re-create or deviate from the specified Bluehost blue, black or white colors.
+The minimum clearspace around the icon and logo is equivalent to the 9-grid scaled down to 50%.
+50%
+Clearspace
+The importance of clearspace around brand elements and throughout all layouts cannot be overstated. It adds confidence and clarity to the visual messaging. The more, the better. These visuals are used to define minimums.
+White
+The white logo should sit on Bluehost blue or other dark brand colors.
+One-color black
+The black logo can be used when no other option is available.
+White over photography
+Always use the white Bluehost logo when placing over photography.
+Blue
+The primary logo should sit on a white or light gray background.
+Logo colors
+GRADIENT GENERATOR
+Only use for large blocks/ tiles
+Gradients
+A standard set of gradients is available for general usage.
+Do not distort the proportions of the logo.
+|
+Brand Guidelines 2025
+Do not add a drop shadow to the logo.
+Do not use the logo type without the icon.
+Do not change the colors of the icon.
+Do not outline the logo.
+Do not use the blue logo over a photo.
+Do not change the color of the logo.
+Do not alter the logo type.
+Bluehost
+What not to do
+The appearance of our logo must remain consistent. The logo should not be misinterpreted or modified. Its orientation, color and composition should remain as indicated in this style guide. No exceptions.
+Color Palette
+Blue symbolizes tranquility, trust, and our belief in “blue skies ahead.” Carl Sagan famously referred to Earth as the “pale blue dot,” our home in the cosmos. To us, Bluehost is just that. Home to a world of online possibilities.
+CMYK: 0, 0, 0, 0
+RGB: 255, 255, 255
+HEX: #FFFFFF
+Primary Button and links
+Bluehost Blue dark 900
+Pantone 2945C
+CMYK: 92, 53, 0, 39
+RGB: 12, 74, 156
+HEX: #0C4A9C
+Secondary Button and links
+Bluehost Blue 400
+Pantone 278C
+CMYK: 48, 23, 0, 1
+RGB: 132, 193, 252
+HEX: #84C1FC
+Bluehost Darker 1000
+Pantone 648C
+CMYK: 99, 53, 0, 66
+RGB: 1, 41, 87
+HEX: #012957
+Bluehost Blue 800
+Pantone 2727C
+CMYK: 89, 52, 0, 13
+RGB: 25, 108, 223
+HEX: #196CDF
+Primary colors
+Bluehost Blue is our primary brand color and needs a presence in most marketing communications. White is often unspoken, but an equally important brand color, adding clarity and lightness. Night Sky Blue is a dark gray, with a heavy dose of blue – used in type, illustrations or accents, and to provide structure for content. When printing materials, ask the printer to match the Pantone value as closely  as possible in the pre-press stage. Printer-provided proofs should be reviewed and approved for color matching before printing.
+Secondary colors
+The secondary palette adds vibrancy and variety  to our brand. These colors should be used selectively to add energetic variety to illustrations and compositions.
+#981C67
+Pantone 296C
+CMYK: 92, 43, 0, 80
+RGB: 4, 29, 51
+HEX: #041D33
+Fonts (white / light background)
+Night Sky Blue 1000
+Pantone 7545C
+CMYK: 41, 22, 0, 53
+RGB: 70, 93, 119
+HEX: #465D77
+Night Sky Blue 800
+Pantone 311C
+CMYK: 82, 10, 0, 12
+RGB: 41, 201, 224
+HEX: #29C9E0
+Aqua
+Pantone 3278C
+CMYK: 85, 0, 22, 36
+RGB: 25, 162, 126
+HEX: #19A27E
+Green
+Pantone 141C
+CMYK: 0, 19, 66, 4
+RGB: 244, 198, 82
+HEX: #F4C652
+Gold
+Color proportion
+When applying the color palette, we balance usage of the colors to preserve brand recognition. Bluehost Blue 800 remains the hero color in every layout.
+Left/right/center
+In marketing communications and ads, the logo should be placed at the bottom or top of the composition.
+Switch to Bluehost and get money back
+Top-left corner
+Digital applications: website, email product
+Placement rules
+The logo placement depends on the type of communication and use. Left and center are the two allowed placements. The logo should always be anchored to the top edge, taking in mind to abide to the Clearspace guidance at minimum.
+Color tints
+Each color tint provides color flexibility without departing from the brand system.
+Nano
+Accessibility & Contrast
+Every color pairing we use must be readable by everyone, meeting WCAG 2.2 AA as our minimum compliance standard.
+Pass
+—
+Large Text Only
+Against White (#FFFFFF)
+Against Black (#000000)
+Typography
+Fonts have feelings. They speak with personality, even before a word is read. Our brand uses san serif typography exclusively, creating easy reading that translates to ease of use.
+03.Visual Identity
+VPS Hosting
+Get full control with a virtual private server
+Absolute freedom on your virtual private server — full root access, NVMe SSD speed, effortless upscaling, and flat-rate pricing.
+Aa
+AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz01234567890•&@£$%()/!?*“”
+Poppins Medium
+Poppins SemiBold
+Poppins Regular
+Poppins
+Poppins is Bluehost’s primary typeface.  Its clean, modern, and highly legible design bridges the gap between classic geometric typefaces and contemporary digital readability. Selected for its versatility and friendly sophistication, Poppins reflects Bluehost’s commitment to providing a seamless, approachable, and professional experience. With clarity and warmth, it communicates trust, simplicity, and reliability across each brand touchpoint.
+eyebrow / Poppins medium / 14pt
+Hero (H1) / Poppins Semibold/ 50pt / LH 120%
+Section title (H2) / Poppins Semibold/ 48pt / LH 120%
+Section subtitle / Poppings Semibold / 32pt / LH 130%
+H4 / Poppings Semibold / 28pt / LH Auto
+Body / Poppins Regular / 16pt / LH 140%
+Body / Poppins Medium / 16pt / LH 140%
+eyebrow / Poppins medium / 12pt
+Hero (H1) / Poppins Semibold/ 32pt / LH 120%
+Section title (H2) / Poppins Semibold/ 35pt / LH 120%
+Section subtitle / Poppings Semibold / 24pt / LH Auto
+H4 / Poppings Semibold / 22pt
+Body / Poppins Regular / 14pt / LH Auto
+Body / Poppins Medium / 14pt / LH Auto
+desktop
+Mobile
+Hierarchy and Sizing
+In the past, we've used a variety of typefaces across each page. Our effort to simplify — not just branding but the entire user experience — has led us to pare down the types we use. In losing the formal serif style, our brand becomes much more approachable, modern, and youthful.
+Screen Fallbacks
+Photography
+Real moments, real passion, real people. Our photography should evoke emotion and provoke engagement. While composition, subject matter,  and diversity are important, the feelings our images stir are essential. Our bullseye is photography which captures the heart and soul of our subjects.
+Environments
+Environments tell the story of what our customers build. Choose real workplaces that reflect the breadth of businesses running on our platform, from a three-person agency to a global engineering floor.
+Look For:
+Real working spaces such as offices, studios, retail back rooms, co-working spaces, home offices, labs and operations centers. A mix of scale and industry across multiple business verticals Bright interiors with natural light, clean lines and depth Neutral or naturally cool tones (white walls, wood, glass, slate) that harmonize with our blues
+Avoid:
+Server rooms with glowing blue lights, abstract "data" imagery and sci-fi tech clichés. Spaces that look like stock sets: empty glass boardrooms, staged desks, unused props. Visible competitor branding, third-party logos, readable confidential screens or documents. Strong color casts (heavy red, orange or magenta lighting)
+| Brand Guidelines 2024
+Lighting and Composition
+Light should feel like it belongs to the place: bright, warm and believable, as if the subject chose a good moment in their own day.
+Natural window light or open shade, with soft fill matched to the ambient color Warm-neutral white balance (roughly 4800–5600K) and true skin tones Generous negative space on at least one side Subject on a thirds line, with eyes in the upper third Shallow-to-moderate depth  of field (around f/2.8–f/5.6) Camera at or slightly below eye level Calm backgrounds that do not distract from the subject matter
+Hard on-camera flash, heavy contrast and moody low-key looks Faces in silhouette Oversaturated or heavily graded color Skin that reads orange or gray Shooting down on subjects from above
+Model Diversity
+Our customers are developers, founders, marketers, creatives, IT leads and operators in every part of the world. Casting should reflect that range naturally across a shoot and across the library, not by arranging it within a single frame. For shoots and stock selection, lean into diversity.
+Range across ethnicity and skin tone, age, gender identity and expression, body type, height and ability (including assistive technology), style of dress and seniority Real customers and employees first; talent or stock who could credibly do the job shown Every demographic in leading, expert and decision-making roles Individual styling and grooming
+Token compositions, with one of each demographic lined up in the frame Underrepresented groups only in supporting or background roles Stereotyped pairings of person and role Matching wardrobes Retouching that alters skin tone, body shape or features
+People in Environments
+These images place our customers at the center of the businesses they've built. The frame should say "this is theirs" before any copy does.
+Subjects positioned as owners of their space: at their office, at their storefront, on their floor, at their workbench Clear, uncluttered space on at least one side, plus headroom for wide-to-vertical crops Environment adding context in the mid- and background, softened behind the subject One clear hero in group shots, led by focus, light, position or a speaking role Small, believable groups of 2–5 people engaged with the hero or the task
+Arms-crossed power poses, high fives and staged handshakes Everyone smiling at camera at once Subjects pressed against frame edges Backgrounds busy enough to compete with the hero subject
+People With Devices
+The person is the story; the device is how they get it done. Show customers absorbed in meaningful work: launching a site, checking performance, collaborating on a fix.
+Faces and body language prioritized over the screen Focus, satisfaction or quiet confidence Real devices in a realistic mix of brands and ages Natural interactions: typing, scrolling, pointing a colleague to a screen, glancing up mid-task Screens visible but not readable, flat and evenly lit for UI placement in post In groups, one person driving the moment while others lean in
+Pointing and smiling at blank screens, holograms or floating icons Real customer data or competitor products on screen Logos on device lids Glare, screen moiré, and/or blue screen glow on faces Excessive device stacks (phone, tablet and laptop shown all at once) Copy space placed across the device
+Brand Guidelines 2026
+Event/On-Location Photography
+Event coverage should make viewers feel they missed something worthwhile. Document the energy of real exchange: customers learning, sharing and connecting, represented as the people actually in attendance.
+Speakers in action: gesturing, engaging the room, mid-sentence Audience reactions focused on one engaged face rather than rows of attendees Hallway and booth moments: demos, introductions, small-group conversations Environmental wides with brand presence visible but not dominant Details: badges, swag, stage set, hands on keyboards Range across the crowd, without staging it
+Empty seats, people on phones, eating and backs of heads as hero images Unflattering mid-speech expressions Magenta or green stage casts Direct flash Interrupting a session for a photo
+Company Headshots
+Headshots should look like the person on their best ordinary day: approachable, confident and recognizable on a video call. One consistent setup across all employees keeps leadership pages and directories unified.
+A soft, out-of-focus office or a light gray or white seamless backdrop Soft, broad key light with warm-neutral white balance and a subtle catchlight Eye-level camera with an  85–105mm equivalent lens Mid-chest-up framing with generous space above and on both sides Everyday work wardrobe in solid mid-tones; palette-complementary tones encouraged but optional Glasses on if worn daily,  angled to reduce glare
+Dramatic shadows Tight crops that limit avatar and tile use Fine patterns and logos Retouching beyond temporary blemishes, stray hairs and lint (leadership portraits may be refined further at the leader's discretion) Altering face or body shape
+Event/Speaker Headshots
+Speaker headshots arrive from many sources and are styled to each event's brand, so they must look like they belong to one lineup. The goal is consistency of feel, not identical photos.
+A standardized light gray or white backdrop when we shoot Lighting matched to Company Headshots (when possible) Two framings when we shoot:  a mid-chest headshot and a looser half-body frame with room for session titles Supplied photos that are recent (within 2–3 years), at least 1500px on the short edge, evenly lit, with eyes to camera Consistent crop, head size and eye line across the lineup
+Mixing heavily retouched studio portraits with casual snapshots Group crops, sunglasses or heavy filters Stylizing or recoloring Duotone or brand-color treatments that obscure skin tone Tight cropping or photos without additional space in frame
+Approach
+How we work on set and in post, across every type of shoot.
+Directing
+Direct with activities, not poses: "walk Sam through the new release" rather than "smile at each other." Shoot continuously through conversations to catch laughter, nods and thinking. Use light direction (positioning, speaking roles) to establish a hero in group shots.
+Coverage
+Capture wide, medium and detail frames from every setup, in both horizontal and vertical orientation. Shoot each environment with and without people; empty plates give designers flexible backgrounds. Look for leading lines, doorways and windows that create natural copy space.
+Casting & Lighting
+Rotate who plays the hero, and track casting across shoots so the library stays balanced. Light and expose for every skin tone in the frame; adjust when different tones share a scene.
+On Location and At Events
+Use fast lenses and higher ISO before flash; bounce flash when needed. Frame key moments loosely to preserve crop and copy space. Confirm photo-release signage, honor opt-out indicators such as colored lanyards, and ask before close portraits.
+Headshot Sessions
+Allow 3–5 minutes per person and shoot conversationally. Capture a few expressions, from a relaxed closed-mouth smile to an open smile, and let people choose.
+Post-Production
+Apply one consistent, light grade per shoot with realistic saturation. Gently balance white balance and exposure across headshot lineups. Designers mask and retouch supplied speaker headshots to fit the event brand, keeping edges, including hair, natural.
+Deliverable Formats
+Deliverable
+Format
+Color
+Resolution
+Source photos (Masters)
+Full-resolution TIFF or highest-quality JPG; RAW on request
+Adobe RGB or ProPhoto
+Native camera resolution
+Web-ready
+JPG, quality 80–90%
+sRGB
+2560px on the long edge
+Headshots
+JPG, master plus square crop
+2000 × 2000px minimum
+Event selects
+JPG
+2048px on the long edge
+Considerations:
+Plan for source photos to be cropped to 16:9, 4:3, 1:1, 4:5 and 9:16 Do not include watermarks, borders, vignettes, text, or other additional styling on source photos IPTC metadata with photographer credit, copyright, usage rights, release status and keywords should be included A release log matching every identifiable person to a signed release must be obtained Event selects should be prepared for usage within 24–48 hours; full edited sets should be prepared within 10 business days Photo folders should be organized by shoot, then by setup or location
+File Naming Convention:
+YYYYMMDD_Project_Location_###  (for example, 20261014_CustomerStories_Austin_014)
+Do’s and Don’ts
+Do
+Don’t
+Photograph real customers and employees in their own spaces
+Use generic stock that could belong to any brand
+Use soft, warm, natural light with true-to-life color
+Use hard flash, heavy contrast or oversaturated grades
+Leave clear space around subjects for copy and cropping
+Crop tightly or let subjects touch the frame edge
+Make one person the clear hero of every frame
+Spread focus evenly across a group with no lead
+Direct with real tasks and conversation
+Ask for poses, thumbs-ups or forced laughter
+Show a natural range of people in leading roles
+Line up one of each demographic in a single frame
+Keep retouching minimal and skin texture intact
+Smooth skin, reshape bodies or alter skin tone
+Choose backgrounds that sit calmly beside our blues
+Allow strong color casts that clash with the palette
+Show real devices with editable screens
+Show readable data, competitor logos or blank-screen pointing
+Capture horizontal and vertical versions of every setup
+Deliver only one orientation or pre-cropped files
+Obtain releases for every identifiable person
+Publish images without documented consent
+Show technology through what people achieve
+Rely on server racks, glowing code or abstract cloud imagery
+Graphics
+Graphic illustrations that extend the color bar language, ranging from abstract representations to more detailed compositions incorporating photography and UI elements. These illustrations allow for adaptable storytelling and stronger visual associations to our products and real-world digital experiences. UI product components are also integrated to reinforce the website creation context while maintaining visual clarity. ​
+DISCOVER
+MENU
+Square
+Stylish Collection for Your coffee shop
+Desol
+Home
+Our team
+Project
+Galleries
+Services
+Migrating your website
+Completed
+Text
+Your plan
+Emails sent
+50 of 100
+SMS sent
+10 of 50
+Daily requests
+60 of 100
+Want more? Make an upgrade
+Dashboard
+Search here
+Hello James!
+This is your daily reports.
+$54,434.09
+340 sales
+This month
+5,77%
+7
+14
+21
+30
+$32,112
+You made an extra
+$1,235.12
+this month
+New Customers
+4,350
+2,5%
+99.9%
+Graphic Examples
+Don’t settle for “meh.” Select photos that make you feel something.
+Create emotion
+Keep images simple with one center of attention.
+Find your focus
+When showing people using devices, emphasize the people first.
+Users over devices
+Choose candid, “in the moment” photosthat depict natural warmth and charm over posed or forced smiles.
+Relax and enjoy
+Aim for natural glances over stares and be sure to capture a moment in time.
+A little eye contact is okay
+Images should be as diverse and distinct as the people who use Bluehost.
+Build for everyone
+Our images should capture a range of professions and places to mirror the variety of our users. Depict their passion, which usually isn’t building a website.
+Break away from the desk
+Consider where your photo will appear. Ask yourself if adding a photo is actually helpful or necessary for your user.
+Focus on the user
+View all projects
+All projects
+THE NEW FUTURE OF ARCHITECTURE
+WE PROMISE TO BUILD
+[Copy] MOST EXPERIENCED ARCHITECTS & DESIGNERS
+Rules to live by
+When choosing photos for your design, this checklist is here to provide confidence. Our photography guidelines uphold Bluehost values, helping you carefully curate images.
+When to Use
+TBD
+Lifestyle
+Environment
+Traffic
+Uptime (last 24 hours)
+Current Status
+UP
+Uptime
+100.00%
+(last 24 hours)
+(last 7 days)
+(last 30 days)
++615
+75,560
+TOTAL USER
+from 70,460
+12%
+Money Spent
+$4,750,00
++25,0%
+Iconography
+More icons and graphic elements
+UI Elements
+Customize your server
+Storage
+200 GB
+8 GB
+RAM
+Customize
+Your website performance is Great
+99%
+0-49
+50-89
+90-100
+Website storage
+0
+100%
+Server Usage
+File count
+65% used
+60% used
+you@yourbusiness.com
+E-commerce
+B2B
+Admin Wordpress
+AI
+Site Creator
+Get a site created in seconds!
+Content & design generated by AI, fully customizable by you.
+Setting label
+Hang tight while we create some wonderful options for you.
+Connect WordPress
+How it all Comes Together
+Our VPS hosting is flexible and self-managed 
+Made for automation, containers, and custom workflows. 
+Control without complexity. 
+Built for small businesses
+Our AI-powered website creator tools make building and updating sites a seamless process that requires zero coding knowledge.
+Creative section
+Add a carousel that show off some highlighted projects
+...adjusting the composition
+home
+projects
+about
+volunteers
+news
+CONTACT
+We take the fear out of navigating the legal system, giving the underrepresented a clear path to equality.
+Take Action Now
+Explore Our Projects
+Your trusted voice for a greener planet.
+Solid security
+Protect your data and prevent unauthorized transfers with domain locks, DNS management, and advanced security.
+Your website is safe
+No malware found
+See malware scanner
+Case Study
+Blog
+Let’s talk
+Creative Marketing Agency
+We craft impactful work through data, strategy and collaborative creativity
+book now
+play video
+Email
+Password
+Name
+Josh Hoyer
+joshhoyel.com
+joshabcd@
+Infographics, Diagrams, and Charts

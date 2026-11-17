@@ -1,0 +1,360 @@
+Bluehost brand guidelines
+Typography
+Poppins is the Bluehost typeface. Every size and line height
+Aa
+Typeface
+Poppins
+Geometric sans-serif. The type scale use
+Aa
+Regular · 400
+Aa
+Medium · 500
+Aa
+SemiBold · 600
+Character set
+Line height method
+How line heights are set
+Line heights follow the golden ratio gui
+Body copy and eyebrows
+×1.618
+16pt × 1.618 = 25.9 → 26px
+The full golden ratio gives running text
+Display and titles
+×1.272 (√φ)
+53pt × 1.272 = 67.4 → 67px
+Display and title styles use √φ, so each style’s line height
+Smallest text
+÷1.618
+16pt ÷ 1.618 ≈ 10pt
+One golden ratio step below body size, w
+Type scale at a glance
+Text style
+Weight
+Size
+Line height
+Desktop/Eyebrow
+SemiBold
+type-sm · 16pt
+26px
+Desktop/Display
+SemiBold
+type-3xl · 53pt
+67px
+Desktop/Headline
+SemiBold
+type-2xl · 42pt
+53px
+Desktop/Title L
+SemiBold
+type-xl · 33pt
+42px
+Desktop/Title M
+SemiBold
+type-lg · 26pt
+33px
+Desktop/Title S
+SemiBold
+type-md · 20pt
+26px
+Desktop/Body Regular
+Regular
+type-sm · 16pt
+26px
+Desktop/Body Medium
+Medium
+type-sm · 16pt
+26px
+Desktop/Body SemiBold
+SemiBold
+type-sm · 16pt
+26px
+Mobile/Eyebrow
+Medium
+type-xs · 13pt
+21px
+Mobile/Display
+SemiBold
+type-xl · 33pt
+42px
+Mobile/Headline
+SemiBold
+type-lg · 26pt
+33px
+Mobile/Title L
+SemiBold
+type-md · 20pt
+26px
+Mobile/Title M
+SemiBold
+type-sm · 16pt
+20px
+Mobile/Body Regular
+Regular
+type-sm · 16pt
+26px
+Mobile/Body Medium
+Medium
+type-sm · 16pt
+26px
+Mobile/Body SemiBold
+SemiBold
+type-sm · 16pt
+26px
+DESKTOP
+Desktop type scale
+Use these styles for desktop layouts only. Apply them throug
+Style
+Specs
+Preview
+Eyebrow
+Desktop/Eyebrow
+Poppins SemiBold
+16pt  ·  LH Auto
+Sample
+Display
+Desktop/Display
+Poppins SemiBold
+48pt  ·  LH 120%
+Sample
+Headline
+Desktop/Headline
+Poppins SemiBold
+32pt  ·  LH 130%
+Sample
+Title L
+Desktop/Title L
+Poppins SemiBold
+28pt  ·  LH 130%
+Sample
+Title M
+Desktop/Title M
+Poppins SemiBold
+20pt  ·  LH 130%
+Sample
+Title S
+Desktop/Title S
+Poppins SemiBold
+18pt  ·  LH 130%
+Sample
+Body
+Desktop/Body Regular
+Poppins Regular
+16pt  ·  LH 140%
+Sample
+Body
+Desktop/Body Medium
+Poppins Medium
+16pt  ·  LH 140%
+Sample
+Body
+Desktop/Body SemiBold
+Poppins SemiBold
+16pt  ·  LH 140%
+Sample
+MOBILE
+Mobile type scale
+Use these styles for mobile layouts only. Apply them through
+Style
+Specs
+Preview (375px mobile width)
+Eyebrow
+Mobile/Eyebrow
+Poppins Medium
+14pt  ·  LH Auto
+Sample
+Mobile display
+Mobile/Display
+Poppins SemiBold
+32pt  ·  LH 130%
+Sample
+Mobile headline
+Mobile/Headline
+Poppins SemiBold
+28pt  ·  LH 130%
+Sample
+Mobile title L
+Mobile/Title L
+Poppins SemiBold
+20pt  ·  LH 130%
+Sample
+Mobile title M
+Mobile/Title M
+Poppins SemiBold
+18pt  ·  LH 130%
+Sample
+Body
+Mobile/Body Regular
+Poppins Regular
+16pt  ·  LH 140%
+Sample
+Body
+Mobile/Body Medium
+Poppins Medium
+16pt  ·  LH 140%
+Sample
+Body
+Mobile/Body SemiBold
+Poppins SemiBold
+16pt  ·  LH 140%
+Sample
+Usage rules
+These rules apply to every Bluehost desi
+01
+Minimum font size: 10pt
+No text in any design asset may be set s
+Smallest allowed size
+10pt example
+02
+Casing: sentence case by default
+Write headings, eyebrows and body copy i
+Do
+Heading
+Build your website with Bluehost
+Don’t
+Heading
+Build Your Website With Bluehost
+Do
+Button / CTA
+Get Started Now
+Do
+Product names &amp; proper nouns
+Try Bluehost Cloud for your WordPress si
+03
+Match the style to the view
+Use Desktop/ styles only in desktop layo
+Desktop to mobile mapping
+When adapting a desktop layout for mobil
+Role
+Desktop
+Mobile
+Eyebrow
+SemiBold · 16pt · LH 26px
+Medium · 13pt · LH 21px
+Display
+SemiBold · 53pt · LH 67px
+SemiBold · 33pt · LH 42px
+Headline
+SemiBold · 42pt · LH 53px
+SemiBold · 26pt · LH 33px
+Title L
+SemiBold · 33pt · LH 42px
+SemiBold · 20pt · LH 26px
+Title M
+SemiBold · 26pt · LH 33px
+SemiBold · 16pt · LH 20px
+Title S
+SemiBold · 20pt · LH 26px
+Not defined for mobile
+Body Regular
+Regular · 16pt · LH 26px
+Regular · 16pt · LH 26px (unchanged)
+Body Medium
+Medium · 16pt · LH 26px
+Medium · 16pt · LH 26px (unchanged)
+Body SemiBold
+SemiBold · 16pt · LH 26px
+SemiBold · 16pt · LH 26px (unchanged)
+Layout type hierarchy
+Type hierarchy in layouts
+Every layout component uses th
+Role
+Rule
+Desktop
+Mobile
+Hero headline
+Only the hero uses Display. No
+Display · 53 / 67
+Display · 33 / 42
+Section headline
+The first headline in every se
+Headline · 42 / 53
+Headline · 26 / 33
+Sub-headlines, columns and car
+Every headline after the first
+Title M · 26 / 33
+Title M · 16 / 20
+Eyebrows and FAQ questions
+Short labels above a headline,
+Eyebrow · 16 / 26
+Eyebrow · 13 / 21
+Body copy
+Descriptions, paragraphs, list
+Body Regular · 16 / 26
+Body Regular · 16 / 26
+Links and emphasis
+CTA links and emphasised phras
+Body SemiBold · 16 / 26
+Body SemiBold · 16 / 26
+Headline punctuation
+CTA links and emphasised phras
+All headline styles
+All headline styles
+Title L and Title S are not us
+Headline punctuation
+A headline that is one sentenc
+Do
+WordPress, without the mainten
+One sentence: no closing perio
+Don’t
+WordPress, without the mainten
+One sentence should not end wi
+Do
+Choose your infrastructure. Bu
+Two sentences: keep the punctu
+Layout example
+Desktop · 1440 (shown at 85%; labels show real sizes)
+Display · 53/67
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 26/33
+Body Regular · 16/26
+Body SemiBold · 16/26
+Body Regular · 16/26
+Title M · 26/33
+Body Regular · 16/26
+Eyebrow · 16/26
+Headline · 42/53
+Body Regular · 16/26
+Title M · 26/33
+Body Regular · 16/26
+Body SemiBold · 16/26
+Mobile · 375
+Display · 33/42
+Body Regular · 16/26
+Body SemiBold · 16/26
+Body SemiBold · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Eyebrow · 13/21
+Headline · 26/33
+Body Regular · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26
+Title M · 16/20
+Body Regular · 16/26
+Body SemiBold · 16/26

@@ -1,0 +1,334 @@
+Bluehost brand guidelines
+Color
+The Bluehost palette is built on Bluehos
+Primary colors
+The core brand colors. Bluehost Blue 800
+Bluehost Blue dark 1000
+#012957
+Bluehost Blue 800
+#196CDF
+Primary buttons and links
+Bluehost Blue Light 400
+#84C1FC
+White
+#FFFFFF
+Primary button text · Secondary button b
+Secondary colors
+Supporting colors that add variety along
+Night Sky Blue
+#465D77
+Green Dark 700
+#19A27E
+Gold
+#F4C652
+Accent used to balance the page
+Aqua
+#29C9E0
+Buttons, links and text
+Interactive elements and body copy alway
+Buttons
+Get Started Now
+Learn More
+Primary button
+Background Bluehost Blue 800 (#196BDE) w
+Secondary button
+White (#FFFFFF) background with Bluehost
+Links and text
+Launch your site in minutes with one-cli
+Primary links
+Bluehost Blue 800 (#196BDE). Contrast on
+Secondary links
+Bluehost Blue dark 900 (#0C4A9C). Contra
+Text on white / light backgrounds
+Bluehost Blue darker 1100 (#041D33). Con
+Gold as a balancing accent
+Gold (#F4C652) can be used interchangeab
+Best value
+Hosting built for WordPress
+Blue section with a Gold highlight
+Free domain for the first year
+Get Started Now
+Gold section balancing a blue-heavy page
+Do
+Use Bluehost Blue darker 1100 (#041D33) 
+Dark text on Gold
+Don’t
+Don’t put white text on Gold. Contrast 1
+White text on Gold
+Do
+Use Gold in place of a blue background, 
+Full color range
+Every tint and shade available in the pa
+Bluehost Blue
+Bluehost Blue darker 1100
+#041D33
+Bluehost Blue dark 1000
+#012957
+Bluehost Blue dark 900
+#0C4A9C
+Bluehost Blue 800
+#196CDF
+Bluehost Blue Mid 700
+#3782E7
+Bluehost Blue Light 600
+#519AF2
+Bluehost Blue Light 500
+#6EB3FC
+Bluehost Blue Light 400
+#84C1FC
+Bluehost Blue Light 300
+#A1D1FA
+Bluehost Blue Light 200
+#BADEFA
+Bluehost Blue Light 100
+#DBF1FC
+Bluehost Blue Light 0
+#F0FAFF
+Night Sky Blue
+Night Sky Blue Darker 1100
+#0B1015
+Night Sky Blue Dark 1000
+#1E293A
+Night Sky Blue Dark 900
+#314662
+Night Sky Blue
+#465D77
+Night Sky Blue Mid 700
+#617389
+Night Sky Blue Light 600
+#7A889D
+Night Sky Blue Light 500
+#939FB0
+Night Sky Blue Light 400
+#C3C9D6
+Night Sky Blue Light 300
+#D0D5E0
+Night Sky Blue Light 200
+#DCE1EA
+Night Sky Blue Light 100
+#E8EDF3
+Night Sky Blue Light 0
+#F4F8FC
+Aqua
+Aqua Darker 1000
+#0B3345
+Aqua Dark 900
+#11586B
+Aqua Dark 800
+#1B7D95
+Aqua Dark 700
+#26A2BA
+Aqua
+#29C9E0
+Aqua Light 500
+#60D7EB
+Aqua Light 400
+#95E0F6
+Aqua Light 300
+#A8E6F7
+Aqua Light 200
+#BAE7FC
+Aqua Light 100
+#CDEDFF
+Aqua Light 0
+#E5F7FF
+Green
+Green Darker 1000
+#0A362F
+Green Dark 900
+#0B624F
+Green Dark 800
+#108265
+Green Dark 700
+#19A27E
+Green
+#1FC294
+Green Light 500
+#61D5B3
+Green Light 400
+#7ADBBF
+Green Light 300
+#93E3CC
+Green Light 200
+#B1E8DA
+Green Light 100
+#C9F0E6
+Green Light 0
+#E2F8F2
+Gold
+Gold Darker 1000
+#69400B
+Gold Dark 900
+#8C621C
+Gold Dark 800
+#B0842F
+Gold Dark 700
+#D4A53F
+Gold
+#F4C652
+Gold Light 500
+#FFD662
+Gold Light 400
+#FFE391
+Gold Light 300
+#FFE8AB
+Gold Light 200
+#FFF0C2
+Gold Light 100
+#FDF3DC
+Gold Light 0
+#FCF7F0
+Usage summary
+Element
+Color
+HEX
+Primary button background
+Bluehost Blue 800
+#196BDE
+Primary button text
+White
+#FFFFFF
+Secondary button background
+White
+#FFFFFF
+Secondary button text
+Bluehost Blue 800
+#196BDE
+Primary links
+Bluehost Blue 800
+#196BDE
+Secondary links
+Bluehost Blue dark 900
+#0C4A9C
+Text on white / light backgrounds
+Bluehost Blue darker 1100
+#041D33
+Balancing accent
+Gold
+#F4C652
+Gradients
+Gradient palette
+The exact gradients used in th
+Linear gradients
+Backgrounds, hero sections and
+Royal blue
+Linear · style Gradient/Royal 
+#044AE2  ·  100%  ·  stop 0%
+#4881FF  ·  100%  ·  stop 100%
+Source: WooCommerce Customize 
+Sky to royal
+Linear · style Gradient/Sky to
+#84C1FC  ·  100%  ·  stop 0%
+#4881FF  ·  100%  ·  stop 100%
+Source: HERO - 1 › Additional 
+Light sky
+Linear · style Gradient/Light 
+#84C1FC  ·  100%  ·  stop 0%
+#BEDAFF  ·  100%  ·  stop 100%
+Source: HERO - 1
+Sky fade
+Linear · style Gradient/Sky fa
+#83C0FC  ·  100%  ·  stop 16%
+#CDE5FE  ·  100%  ·  stop 100%
+Source: WooCommerce Customize 
+Sage mint
+Linear · style Gradient/Sage m
+#8DBFBB  ·  100%  ·  stop 0%
+#B1D6D1  ·  100%  ·  stop 100%
+Source: 4:5 OPT 2
+Dark blue fade
+Linear · style Gradient/Dark b
+#0C4A9C  ·  100%  ·  stop 0%
+#0C4A9C  ·  33%  ·  stop 100%
+Source: VPS Hosting_7 › Rectan
+Glass blue
+Linear · layer opacity 50% · s
+#196BDE  ·  50%  ·  stop 0%
+#D1E2FA  ·  100%  ·  stop 100%
+Source: HERO - 1 › Vector 1981
+Radial gradients
+Feature backgrounds with a lig
+Deep blue to teal
+Radial · style Gradient/Deep b
+#0C4A9C  ·  100%  ·  stop 0%
+#196CDF  ·  100%  ·  stop 74%
+#009CA2  ·  100%  ·  stop 100%
+Source: Best WooCommerce Drops
+Sage to ocean
+Radial · style Gradient/Sage t
+#ACC4AC  ·  100%  ·  stop 7%
+#4AB0ED  ·  100%  ·  stop 47%
+#0E6CDB  ·  100%  ·  stop 100%
+Source: WooCommerce Customize 
+Ocean depth
+Radial · style Gradient/Ocean 
+#0073CB  ·  100%  ·  stop 7%
+#5FA6E1  ·  100%  ·  stop 47%
+#001A39  ·  100%  ·  stop 100%
+Source: 4:5 OPT 2 › Rectangle 
+Glows
+Soft radial fades to transpare
+Blue glow
+Radial · layer opacity 53% · s
+#419DF2  ·  100%  ·  stop 0%
+#419DF2  ·  0%  ·  stop 100%
+Source: 1440x1080 (Reddit) › E
+Navy core
+Radial · style Gradient/Navy c
+#001129  ·  100%  ·  stop 0%
+#00409B  ·  0%  ·  stop 100%
+Source: 1440x1080 (Reddit) › E
+Teal glow
+Radial · style Gradient/Teal g
+#2BD7BD  ·  100%  ·  stop 0%
+#C6E6E2  ·  0%  ·  stop 100%
+Source: 1440x1080 (Reddit) › E
+Sky glow
+Radial · style Gradient/Sky gl
+#67AEDE  ·  59%  ·  stop 0%
+#60B5EE  ·  0%  ·  stop 100%
+Source: 1440x1080 (Reddit) › E
+Mesh gradients
+Thirty mesh gradients built only from the Bluehost palette. Each one has a shade of Bluehost Blue; Gold appears in five, always as a single small swatch in a corner. Generated with the Learn UI Mesh Gradient Generator (Figma SVG export, noise off) and imported as components, with every color linked to a Bluehost colors variable.
+01 · Bluehost Core Bluehost Blue 800 · Bluehost Blue dark 1000 · Bluehost Blue Light 500 · Bluehost Blue Mid 700 · Bluehost Blue dark 900
+02 · Deep Night Bluehost Blue darker 1100 · Bluehost Blue dark 900 · Aqua · Night Sky Blue Dark 1000 · Bluehost Blue 800
+03 · Sky Light Bluehost Blue Light 0 · Aqua Light 100 · Bluehost Blue Light 400 · Bluehost Blue Light 100 · Bluehost Blue Light 300
+04 · Aqua Wave Bluehost Blue 800 · Bluehost Blue Light 600 · Bluehost Blue dark 900 · Aqua Light 400 · Aqua
+05 · Fresh Growth Bluehost Blue dark 900 · Green Light 400 · Bluehost Blue 800 · Aqua · Green
+06 · Mint Mist Night Sky Blue Light 0 · Bluehost Blue Light 100 · Aqua Light 400 · Bluehost Blue Light 200 · Green Light 100
+07 · Night Sky Steel Night Sky Blue Dark 900 · Bluehost Blue Light 500 · Night Sky Blue Dark 1000 · Bluehost Blue 800 · Night Sky Blue
+08 · Sunrise Bluehost Blue 800 · Bluehost Blue dark 900 · Bluehost Blue Light 400 · Bluehost Blue Mid 700 · Gold
+09 · Lagoon Aqua Darker 1000 · Green Dark 900 · Bluehost Blue 800 · Aqua · Aqua Dark 800
+10 · Soft Glow Bluehost Blue Light 0 · Aqua Light 100 · Bluehost Blue Light 100 · Bluehost Blue Light 300 · Gold Light 400
+11 · Midnight Blue Bluehost Blue dark 1000 · Bluehost Blue dark 900 · Bluehost Blue Mid 700 · Bluehost Blue darker 1100 · Bluehost Blue 800
+12 · Electric Bluehost Blue Mid 700 · Aqua · Bluehost Blue dark 1000 · Bluehost Blue Light 500 · Bluehost Blue 800
+13 · Ice Bluehost Blue Light 0 · Bluehost Blue Light 100 · Aqua Light 300 · Aqua Light 0 · Bluehost Blue Light 200
+14 · Ocean Depth Aqua Dark 900 · Bluehost Blue dark 900 · Aqua Dark 700 · Aqua Darker 1000 · Bluehost Blue 800
+15 · Teal Bloom Aqua Dark 700 · Bluehost Blue dark 900 · Green Dark 700 · Aqua Light 500 · Bluehost Blue 800
+16 · Cloud Night Sky Blue Light 0 · Night Sky Blue Light 100 · Bluehost Blue Light 200 · Bluehost Blue Light 100 · Night Sky Blue Light 200
+17 · Twilight Night Sky Blue Dark 1000 · Bluehost Blue dark 1000 · Bluehost Blue Light 600 · Night Sky Blue Dark 900 · Bluehost Blue dark 900
+18 · Spring Green Light 0 · Bluehost Blue Light 100 · Green Light 300 · Bluehost Blue Light 200 · Green Light 200
+19 · Horizon Bluehost Blue dark 900 · Gold Light 400 · Bluehost Blue Mid 700 · Bluehost Blue Light 300 · Bluehost Blue 800
+20 · Glacier Bluehost Blue Light 100 · Bluehost Blue Light 400 · Night Sky Blue Light 400 · Aqua Light 0 · Bluehost Blue Light 300
+21 · Neon Aqua Bluehost Blue darker 1100 · Aqua Darker 1000 · Aqua Light 500 · Bluehost Blue 800 · Aqua
+22 · Emerald Night Green Darker 1000 · Green · Bluehost Blue dark 900 · Bluehost Blue 800 · Green Dark 800
+23 · Slate Night Sky Blue · Night Sky Blue Light 500 · Night Sky Blue Dark 900 · Bluehost Blue Mid 700 · Night Sky Blue Mid 700
+24 · Morning Bluehost Blue Light 0 · Gold Light 200 · Bluehost Blue Light 300 · Bluehost Blue Light 100 · Bluehost Blue Light 200
+25 · Cobalt Bluehost Blue dark 900 · Aqua Dark 900 · Bluehost Blue Light 600 · Bluehost Blue 800 · Bluehost Blue dark 1000
+26 · Seafoam Aqua Light 100 · Green Light 0 · Bluehost Blue Light 400 · Aqua Light 300 · Green Light 300
+27 · Storm Night Sky Blue Dark 900 · Bluehost Blue Light 400 · Night Sky Blue Dark 1000 · Night Sky Blue · Bluehost Blue dark 900
+28 · Daybreak Bluehost Blue 800 · Gold Light 500 · Bluehost Blue Mid 700 · Bluehost Blue Light 200 · Bluehost Blue Light 500
+29 · Aurora Bluehost Blue dark 1000 · Bluehost Blue dark 900 · Bluehost Blue 800 · Aqua · Green
+30 · Pearl Night Sky Blue Light 0 · Bluehost Blue Light 200 · Bluehost Blue Light 100 · Aqua Light 100 · Night Sky Blue Light 100
+Smooth gradients
+Built natively in Figma with no blurred shapes: a two- or three-stop linear base plus one or two large, soft radial glows that fade to transparent. Every transition is continuous, so there are no splotches. Colors come from neighbouring shades and every opaque stop is linked to a Bluehost colors variable.
+01 · Blue Silk Bluehost Blue dark 900 · Bluehost Blue 800 · Bluehost Blue Mid 700 · Bluehost Blue Light 500
+02 · Night Fade Bluehost Blue darker 1100 · Bluehost Blue dark 1000 · Bluehost Blue dark 900 · Bluehost Blue 800
+03 · Morning Haze Bluehost Blue Light 0 · Bluehost Blue Light 100 · Bluehost Blue Light 200 · Aqua Light 0
+04 · Aqua Drift Bluehost Blue 800 · Bluehost Blue Mid 700 · Aqua · Bluehost Blue Light 500
+05 · Ocean Fade Bluehost Blue dark 900 · Aqua Dark 900 · Aqua Dark 700
+06 · Mint Breeze Aqua Light 0 · Green Light 0 · Bluehost Blue Light 100 · Green Light 100
+07 · Dusk Night Sky Blue Dark 1000 · Night Sky Blue Dark 900 · Bluehost Blue dark 900
+08 · Soft Sky Bluehost Blue Light 200 · Bluehost Blue Light 100 · Bluehost Blue Light 400 · Bluehost Blue Light 0
+09 · Teal Glow Bluehost Blue 800 · Bluehost Blue dark 900 · Aqua Dark 700 · Aqua
+10 · Pale Dawn Bluehost Blue Light 0 · Bluehost Blue Light 100 · Gold Light 200 · Bluehost Blue Light 200

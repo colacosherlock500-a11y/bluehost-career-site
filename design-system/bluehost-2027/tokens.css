@@ -1,0 +1,249 @@
+/* =====================================================================
+   Bluehost 2027 Design System — tokens
+   Source: Figma "2027 Bluehost Design System" (FiivRViQYqZXUjhmZN0Ak9)
+   Styleguide page + Color/Typography/Spacing/Grid pages + variables.
+   Import this file, then build ONLY with these variables.
+   ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lexend:wght@500&display=swap");
+
+:root {
+  /* ---------- Bluehost Blue (primary) ---------- */
+  --color-bluehost-blue-darker-1100: #041d33; /* text on white/light */
+  --color-bluehost-blue-dark-1000:   #012957;
+  --color-bluehost-blue-dark-900:    #0c4a9c; /* secondary links */
+  --color-bluehost-blue-800:         #196bde; /* HERO COLOR: buttons, links (swatch page shows #196CDF; variables use #196BDE) */
+  --color-bluehost-blue-mid-700:     #3782e7;
+  --color-bluehost-blue-light-600:   #519af2;
+  --color-bluehost-blue-light-500:   #6eb3fc;
+  --color-bluehost-blue-light-400:   #84c1fc;
+  --color-bluehost-blue-light-300:   #a1d1fa;
+  --color-bluehost-blue-light-200:   #badefa;
+  --color-bluehost-blue-light-100:   #dbf1fc;
+  --color-bluehost-blue-light-0:     #f0faff;
+
+  /* ---------- Night Sky Blue (neutral) ---------- */
+  --color-night-sky-blue-darker-1100: #0b1015;
+  --color-night-sky-blue-dark-1000:   #1e293a;
+  --color-night-sky-blue-dark-900:    #314662;
+  --color-night-sky-blue:             #465d77;
+  --color-night-sky-blue-mid-700:     #617389;
+  --color-night-sky-blue-light-600:   #7a889d;
+  --color-night-sky-blue-light-500:   #939fb0;
+  --color-night-sky-blue-light-400:   #c3c9d6;
+  --color-night-sky-blue-light-300:   #d0d5e0;
+  --color-night-sky-blue-light-200:   #dce1ea;
+  --color-night-sky-blue-light-100:   #e8edf3;
+  --color-night-sky-blue-light-0:     #f4f8fc;
+
+  /* ---------- Aqua ---------- */
+  --color-aqua-darker-1000: #0b3345;
+  --color-aqua-dark-900:    #11586b;
+  --color-aqua-dark-800:    #1b7d95;
+  --color-aqua-dark-700:    #26a2ba;
+  --color-aqua:             #29c9e0;
+  --color-aqua-light-500:   #60d7eb;
+  --color-aqua-light-400:   #95e0f6;
+  --color-aqua-light-300:   #a8e6f7;
+  --color-aqua-light-200:   #bae7fc;
+  --color-aqua-light-100:   #cdedff;
+  --color-aqua-light-0:     #e5f7ff;
+
+  /* ---------- Green ---------- */
+  --color-green-darker-1000: #0a362f;
+  --color-green-dark-900:    #0b624f;
+  --color-green-dark-800:    #108265;
+  --color-green-dark-700:    #19a27e;
+  --color-green:             #1fc294;
+  --color-green-light-500:   #61d5b3;
+  --color-green-light-400:   #7adbbf;
+  --color-green-light-300:   #93e3cc;
+  --color-green-light-200:   #b1e8da;
+  --color-green-light-100:   #c9f0e6;
+  --color-green-light-0:     #e2f8f2;
+
+  /* ---------- Gold (balancing accent) ---------- */
+  --color-gold-darker-1000: #69400b;
+  --color-gold-dark-900:    #8c621c;
+  --color-gold-dark-800:    #b0842f;
+  --color-gold-dark-700:    #d4a53f;
+  --color-gold:             #f4c652;
+  --color-gold-light-500:   #ffd662;
+  --color-gold-light-400:   #ffe391;
+  --color-gold-light-300:   #ffe8ab;
+  --color-gold-light-200:   #fff0c2;
+  --color-gold-light-100:   #fdf3dc;
+  --color-gold-light-0:     #fcf7f0;
+
+  --color-white: #ffffff;
+
+  /* ---------- Color roles (use these in components) ---------- */
+  --text-primary:   #041d33;
+  --text-body:      #0c4a9c;
+  --text-link:      #196bde;
+  --text-on-brand:  #ffffff;
+  --text-on-accent: #041d33; /* never white on Gold */
+  --text-muted:     #7a889d;
+
+  --surface-page:        #ffffff;
+  --surface-alt:         #f0faff; /* Blue Light 0 — hero bg */
+  --surface-subtle:      #e8edf3;
+  --surface-section-alt: #f4f8fc; /* Night Sky Light 0 — alternating sections */
+  --surface-placeholder: #dbf1fc; /* icon tiles / image placeholders */
+  --surface-brand:       #196bde;
+  --surface-inverse:     #041d33;
+  --surface-deep:        #012957; /* testimonials band */
+  --surface-accent:      #f4c652;
+
+  --border-subtle: #dce1ea;
+  --border-brand:  #196bde;
+  --border-card:   #badefa; /* Shadow/Card glow 2px inside border */
+
+  --button-primary-bg:       #196bde;
+  --button-primary-text:     #ffffff;
+  --button-secondary-border: #196bde;
+  --button-secondary-text:   #196bde;
+  --button-inverse-bg:       #ffffff;
+  --button-inverse-text:     #196bde;
+  --button-transparent-bg:   rgba(230, 242, 254, 0.25); /* #E6F2FE @25% + border */
+  --button-orange-bg:        #ffd662; /* Gold Light 500 + shadow */
+  --button-orange-text:      #0d0349;
+  --icon-brand:              #196bde;
+
+  /* ---------- Typography (Poppins only) ---------- */
+  --font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-lockup: "Lexend", "Poppins", sans-serif; /* product lockup descriptor only */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  /* Desktop scale (size / line-height, golden-ratio LH) */
+  --type-display-size: 53px;  --type-display-lh: 67px;   /* hero only */
+  --type-headline-size: 42px; --type-headline-lh: 53px;  /* first headline per section */
+  --type-title-l-size: 33px;  --type-title-l-lh: 42px;   /* not used in layouts */
+  --type-title-m-size: 26px;  --type-title-m-lh: 33px;   /* sub-heads, columns, card titles */
+  --type-title-s-size: 20px;  --type-title-s-lh: 26px;   /* not used in layouts */
+  --type-eyebrow-size: 16px;  --type-eyebrow-lh: 26px;   /* SemiBold, CAPS */
+  --type-body-size: 16px;     --type-body-lh: 26px;
+  --type-button-size: 14px;                              /* Medium, Title Case */
+  --type-min-size: 10px;                                 /* absolute floor */
+
+  /* ---------- Spacing scale ---------- */
+  --space-3xs: 4px;   /* text pairs */
+  --space-2xs: 6px;   /* icon → label, badge pad */
+  --space-xs: 10px;   /* gaps in cards, small buttons */
+  --space-sm: 16px;   /* button vertical pad, list gap */
+  --space-md: 26px;   /* card padding, grid gutter */
+  --space-lg: 42px;   /* heading → content, panel padding */
+  --space-xl: 68px;   /* mobile section padding, column gap */
+  --space-2xl: 110px; /* desktop section padding, page margin */
+  --space-3xl: 178px; /* hero / page-level breathing room */
+
+  /* ---------- Layout tokens (desktop) ---------- */
+  --layout-page-margin: 110px;
+  --layout-section-y: 110px;
+  --layout-hero-top: 110px;
+  --layout-callout-y: 68px;
+  --layout-heading-to-content: 42px;
+  --layout-column-gap: 68px;
+  --layout-heading-group-gap: 16px;
+  --layout-content-stack: 26px;
+  --layout-card-padding: 26px;
+  --layout-panel-padding: 42px;
+  --layout-grid-gutter: 26px;
+  --layout-card-gap: 10px;
+  --layout-list-gap: 16px;
+  --layout-text-pair: 4px;
+  --layout-button-x: 26px;
+  --layout-button-y: 16px;
+  --layout-column-gutter: 30px;
+  --layout-content-width: 1220px; /* 1440 frame − 2×110 */
+  --layout-header-width: 1255px;  /* header exception: 1475 frame */
+  --plan-card-min-height: 570px;
+
+  /* ---------- Radius ---------- */
+  --radius-control: 10px; /* inputs, icon tiles */
+  --radius-button: 10px;
+  --radius-card: 16px;
+  --radius-panel: 26px;   /* large panels, callouts */
+  --radius-pill: 999px;   /* badges, chips, avatars */
+
+  /* ---------- Effects ---------- */
+  --shadow-card-glow:
+    0 8px 80px 0 rgba(106, 246, 251, 0.10),
+    0 -8px 80px 0 rgba(171, 157, 251, 0.10);
+
+  /* ---------- Gradients ---------- */
+  --gradient-royal-blue:   linear-gradient(135deg, #044ae2 0%, #4881ff 100%);
+  --gradient-sky-to-royal: linear-gradient(135deg, #84c1fc 0%, #4881ff 100%);
+  --gradient-light-sky:    linear-gradient(180deg, #84c1fc 0%, #bedaff 100%);
+  --gradient-sky-fade:     linear-gradient(180deg, #83c0fc 16%, #cde5fe 100%);
+  --gradient-sage-mint:    linear-gradient(180deg, #8dbfbb 0%, #b1d6d1 100%);
+  --gradient-dark-blue-fade: linear-gradient(180deg, #0c4a9c 0%, rgba(12, 74, 156, 0.33) 100%);
+  --gradient-glass-blue:   linear-gradient(180deg, rgba(25, 107, 222, 0.5) 0%, #d1e2fa 100%);
+  --gradient-deep-blue-to-teal: radial-gradient(circle, #0c4a9c 0%, #196cdf 74%, #009ca2 100%);
+  --gradient-sage-to-ocean:     radial-gradient(circle, #acc4ac 7%, #4ab0ed 47%, #0e6cdb 100%);
+  --gradient-ocean-depth:       radial-gradient(circle, #0073cb 7%, #5fa6e1 47%, #001a39 100%);
+  --glow-blue:  radial-gradient(circle, rgba(65, 157, 242, 0.53) 0%, rgba(65, 157, 242, 0) 100%);
+  --glow-navy:  radial-gradient(circle, #001129 0%, rgba(0, 64, 155, 0) 100%);
+  --glow-teal:  radial-gradient(circle, #2bd7bd 0%, rgba(198, 230, 226, 0) 100%);
+  --glow-sky:   radial-gradient(circle, rgba(103, 174, 222, 0.59) 0%, rgba(96, 181, 238, 0) 100%);
+}
+
+/* Mobile (375 frame): 16px margins, stacked single column */
+@media (max-width: 767px) {
+  :root {
+    --type-display-size: 33px;  --type-display-lh: 42px;
+    --type-headline-size: 26px; --type-headline-lh: 33px;
+    --type-title-l-size: 20px;  --type-title-l-lh: 26px;
+    --type-title-m-size: 16px;  --type-title-m-lh: 20px;
+    --type-eyebrow-size: 13px;  --type-eyebrow-lh: 21px; /* Medium on mobile */
+
+    --layout-page-margin: 16px;
+    --layout-section-y: 68px;
+    --layout-hero-top: 42px;
+    --layout-callout-y: 42px;
+    --layout-heading-to-content: 26px;
+    --layout-column-gap: 26px;
+    --layout-panel-padding: 26px;
+    --layout-grid-gutter: 16px;
+  }
+}
+
+/* =====================================================================
+   Base text styles (map 1:1 to Figma Desktop/ & Mobile/ styles)
+   ===================================================================== */
+.bh-display  { font: var(--fw-semibold) var(--type-display-size)/var(--type-display-lh) var(--font-family); color: var(--text-primary); }
+.bh-headline { font: var(--fw-semibold) var(--type-headline-size)/var(--type-headline-lh) var(--font-family); color: var(--text-primary); }
+.bh-title-m  { font: var(--fw-semibold) var(--type-title-m-size)/var(--type-title-m-lh) var(--font-family); color: var(--text-primary); }
+.bh-eyebrow  { font: var(--fw-semibold) var(--type-eyebrow-size)/var(--type-eyebrow-lh) var(--font-family); text-transform: uppercase; color: var(--text-link); }
+.bh-body     { font: var(--fw-regular) var(--type-body-size)/var(--type-body-lh) var(--font-family); color: var(--text-body); }
+.bh-body-medium   { font: var(--fw-medium) var(--type-body-size)/var(--type-body-lh) var(--font-family); }
+.bh-body-semibold { font: var(--fw-semibold) var(--type-body-size)/var(--type-body-lh) var(--font-family); }
+@media (max-width: 767px) { .bh-eyebrow { font-weight: var(--fw-medium); } }
+
+/* Buttons: 52px tall, 16×26 padding, 6px label→icon gap, 10px radius, Poppins Medium 14 Title Case */
+.bh-btn {
+  display: inline-flex; align-items: center; gap: var(--space-2xs);
+  min-height: 52px; padding: var(--layout-button-y) var(--layout-button-x);
+  border-radius: var(--radius-button); border: 1px solid transparent;
+  font: var(--fw-medium) var(--type-button-size)/1 var(--font-family);
+  text-decoration: none; cursor: pointer;
+}
+.bh-btn--primary     { background: var(--button-primary-bg); color: var(--button-primary-text); }
+.bh-btn--secondary   { background: var(--button-inverse-bg); color: var(--button-inverse-text); } /* on blue/dark panels */
+.bh-btn--transparent { background: var(--button-transparent-bg); border-color: rgba(255,255,255,.5); color: #fff; } /* on dark/image/gradient */
+.bh-btn--transparent-blue { background: var(--button-transparent-bg); border-color: var(--border-card); color: var(--text-link); } /* on tinted bg */
+.bh-btn--orange      { background: var(--button-orange-bg); color: var(--button-orange-text); box-shadow: 0 4px 12px rgba(212,165,63,.35); } /* promo, sparingly */
+.bh-btn--link        { background: none; padding: 0; min-height: 0; color: var(--text-link); font-weight: var(--fw-semibold); font-size: 16px; }
+@media (max-width: 767px) { .bh-btn:not(.bh-btn--link) { width: 100%; justify-content: center; } }
+
+/* Card / Feature: 16 radius, 26 padding, 10 gap, CTA pinned bottom */
+.bh-card {
+  display: flex; flex-direction: column; gap: var(--layout-card-gap);
+  padding: var(--layout-card-padding); border-radius: var(--radius-card);
+  background: var(--surface-page); border: 1px solid var(--border-subtle);
+}
+.bh-card--glow { border: 2px solid var(--border-card); box-shadow: var(--shadow-card-glow); } /* cards in white sections */
+.bh-card > .bh-card__cta { margin-top: auto; }
+.bh-icon-tile { width: 48px; height: 48px; padding: 10px; border-radius: var(--radius-control); background: var(--surface-placeholder); color: var(--icon-brand); }
