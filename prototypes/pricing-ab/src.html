@@ -39,13 +39,6 @@ img,svg{display:block}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 :focus-visible{outline:3px solid #84c1fc;outline-offset:2px;border-radius:8px}
 
-/* ---------- Promo bar ---------- */
-.promo{background:var(--navy-2);color:#fff;font-size:14px}
-.promo .wrap{display:flex;gap:12px;align-items:center;justify-content:center;min-height:44px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px;text-align:center}
-.promo b{color:var(--gold);font-weight:600}
-.promo .timer{font-variant-numeric:tabular-nums;background:rgba(255,255,255,.1);padding:2px 10px;border-radius:99px;font-size:13px}
-.promo a{color:#fff;font-weight:500}
-
 /* ---------- Header ---------- */
 .hdr{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
 .hdr .wrap{display:flex;align-items:center;gap:28px;height:68px}
@@ -170,8 +163,6 @@ img,svg{display:block}
 .card .cta{display:flex;flex-direction:column;gap:8px}
 .card .cta small{text-align:center;font-size:12.5px;color:var(--ink-3)}
 .card .divider{height:1px;background:var(--line)}
-.offer{display:flex;gap:10px;align-items:center;background:#fff8e6;border:1px dashed #ebc767;border-radius:12px;padding:10px 12px;font-size:13px}
-.offer code{font-weight:600;background:#fff;border:1px solid #ebc767;padding:2px 6px;border-radius:6px}
 
 /* Cross-sell rail (AI <-> hosting) */
 .xsell{margin-top:22px;border-radius:var(--r-lg);padding:22px 26px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:space-between}
@@ -212,18 +203,6 @@ img,svg{display:block}
 .vs dd{margin:0;font-weight:500}
 @media (max-width:760px){.vs{grid-template-columns:1fr}.vs > div + div{border-left:0;border-top:1.5px solid var(--line)}}
 
-/* ---------- Bundle band ---------- */
-.bundle{background:var(--navy);color:#fff;border-radius:var(--r-xl);padding:40px;display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center;position:relative;overflow:hidden}
-.bundle::after{content:"";position:absolute;inset:auto -120px -160px auto;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(109,74,255,.55),transparent 70%)}
-.bundle h2{color:#fff;margin-top:6px}
-.bundle p{color:#c3d3ea;margin:0}
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;z-index:1}
-.tier{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px;text-align:center}
-.tier b{display:block;font-size:30px;letter-spacing:-.02em}
-.tier span{font-size:13px;color:#c3d3ea}
-.tier.hot{background:#fff;color:var(--navy)}
-.tier.hot span{color:var(--ink-2)}
-@media (max-width:820px){.bundle{grid-template-columns:1fr;padding:28px}}
 
 /* ---------- Proof ---------- */
 .proof{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
@@ -306,15 +285,6 @@ body.show-verify [data-verify]::after{content:"verify";position:absolute;top:-10
 </style>
 </head>
 <body>
-
-<!-- ============ PROMO BAR ============ -->
-<div class="promo" role="region" aria-label="Current offer">
-  <div class="wrap">
-    <span><b>Buy More, Save More:</b> 15% off 1 product · 20% off 2 · 25% off 3+ — hosting <em>and</em> AI tools.</span>
-    <span class="timer" id="timer" aria-live="off">Ends Nov 30</span>
-    <a href="#bundle" data-track="promo_bar" data-goal="bundle">How it works</a>
-  </div>
-</div>
 
 <!-- ============ HEADER (mirrors the nav taxonomy the page is built around) ============ -->
 <header class="hdr">
@@ -408,28 +378,6 @@ body.show-verify [data-verify]::after{content:"verify";position:absolute;top:-10
   </div>
 </section>
 
-<!-- ============ BUNDLE ============ -->
-<section class="section" id="bundle">
-  <div class="wrap">
-    <div class="bundle">
-      <div style="position:relative;z-index:1">
-        <span class="badge gold">Ends Nov 30</span>
-        <h2>Hosting + AI in one cart saves up to 25%</h2>
-        <p>Pair WordPress or VPS hosting with AI Builder, AI Store or the AI All-Access Pack. The discount applies automatically at checkout to the first 12-month term.</p>
-        <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-white" data-goto="ai" data-track="bundle_ai">Start with AI Builder</button>
-          <button class="btn btn-ghost" style="color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)" data-goto="wp" data-track="bundle_wp">Start with hosting</button>
-        </div>
-      </div>
-      <div class="tiers">
-        <div class="tier"><b>15%</b><span>1 product</span></div>
-        <div class="tier"><b>20%</b><span>2 products</span></div>
-        <div class="tier hot"><b>25%</b><span>3+ products</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ INCLUDED EVERYWHERE ============ -->
 <section class="section soft" style="padding:56px 0">
   <div class="wrap">
@@ -456,7 +404,7 @@ body.show-verify [data-verify]::after{content:"verify";position:absolute;top:-10
 
 <footer class="ftr">
   <div class="wrap">
-    <p>Prototype for an A/B test — not a live page. Hosting prices shown are for a 36-month term, billed upfront, and renew at the regular rate. AI Builder plans are billed monthly; credits and top-ups expire after 30 days, and running out of credits only pauses new changes. Buy More, Save More: valid Oct 1–Nov 30, 2026, 11:59 p.m. ET for new purchases, first 12-month term only, cannot be combined with other offers. 30-day money-back guarantee applies to hosting; domains are non-refundable.</p>
+    <p>Prototype for an A/B test — not a live page. Hosting prices shown are for a 36-month term, billed upfront, and renew at the regular rate. AI Builder plans are billed monthly; credits and top-ups expire after 30 days, and running out of credits only pauses new changes. 30-day money-back guarantee applies to hosting; domains are non-refundable.</p>
     <p>Prices marked as placeholders in QA mode must be confirmed with the catalog before launch.</p>
   </div>
 </footer>
@@ -562,7 +510,6 @@ var GOALS = {
        feats:["10 websites · 10GB NVMe","~40k visits/month","Free domain (1st yr) + SSL + CDN","Malware scanning","24/7 chat support"]},
       {id:"wp_business", name:"Business", featured:true, ribbon:"Recommended", for:"A business site customers trust — protected, private, phone support", amt:"$6.99", per:"/mo", was:"$13.99", note:'<span class="save">Save 50%</span> · 36-month term · renews at $13.99/mo',
        cta:"Choose Business", style:"primary", sub:"Best value per website",
-       offer:'Holiday sale: extra 50% off with <code>BUSINESSHOSTING2026</code>',
        feats:[["hl","50 websites · 50GB NVMe"],"~200k visits/month","Malware removal + domain privacy (1st yr)","Phone support + 24/7 chat","Staging site"]},
       {id:"wp_ecom", name:"eCommerce Essentials", for:"Sell products and content online", amt:"$14.99", per:"/mo", was:"$21.99", note:'<span class="save">Save 32%</span> · 36-month term · renews at $21.99/mo',
        cta:"Choose eCommerce", style:"ghost",
@@ -595,7 +542,7 @@ var GOALS = {
   aitools: {
     key:"aitools", ai:true, icon:I.tools, tab:"AI tools", tabSub:"Grow with AI agents",
     eyebrow:"✦ AI tools", title:"AI that works while you don't",
-    sub:"Add AI to any plan — or get everything in one pack. Each counts toward Buy More, Save More.",
+    sub:"Add AI to any plan — or get everything in one pack.",
     tools:[
       {id:"ai_lite", name:"AI Builder", desc:"Describe it, AI builds your site or app.", amt:"$20", per:"/mo", tag:"Most popular", featured:true},
       {id:"ai_pack", name:"AI All-Access Pack", desc:"Every Bluehost AI tool in one subscription.", amt:"$20", per:"/mo", verify:true, tag:"Best value"},
@@ -700,7 +647,6 @@ function planCard(p,goal){
     '<div class="pr">'+(p.was?'<s>'+p.was+'</s>':'')+'<span class="amt">'+p.amt+'</span><span class="per">'+p.per+'</span></div>'+
     '<div class="pr-note">'+p.note+'</div>'+
     '<div class="cta"><a class="btn '+btnCls+' btn-block" href="'+LINKS[p.id].href+'"'+v(p.id)+' data-cta="'+(isCart?'cart':'free')+'" data-goal="'+goal.key+'" data-plan="'+p.id+'" data-pos="plan_card">'+p.cta+'</a>'+(p.sub?'<small>'+p.sub+'</small>':'')+'</div>'+
-    (p.offer?'<div class="offer">🎁 <span>'+p.offer+'</span></div>':'')+
     '<div class="divider"></div>'+
     '<ul class="feat">'+p.feats.map(function(f){var hl=Array.isArray(f);return '<li'+(hl?' class="hl"':'')+'>'+I.check+'<span>'+(hl?f[1]:f)+'</span></li>'}).join("")+'</ul>'+
   '</article>';
@@ -752,7 +698,7 @@ function renderPlans(){
       '</div></article>'+
       '<article class="card fade" style="background:linear-gradient(140deg,#f3efff,#eaf3ff);border-color:#ddd3ff">'+
         '<span class="badge ai" style="align-self:flex-start">✦ Pair with AI</span>'+
-        '<h3>Add AI Builder</h3><p class="for" style="min-height:0">Spin up landing pages, internal tools and client apps without code — counts toward Buy More, Save More.</p>'+
+        '<h3>Add AI Builder</h3><p class="for" style="min-height:0">Spin up landing pages, internal tools and client apps without code, on the same account as your hosting.</p>'+
         '<div class="pr"><span class="amt" style="font-size:34px">$20</span><span class="per">/mo</span></div>'+
         '<a class="btn btn-ai" href="'+LINKS.ai_lite.href+'"'+v("ai_lite")+' data-cta="cart" data-goal="'+g.key+'" data-plan="ai_lite" data-pos="panel_pair">Add AI Builder Lite</a>'+
         (i.pitch?'<p style="margin:4px 0 0;font-size:14px;color:var(--ink-2)">'+i.pitch+' <a class="link" href="'+LINKS[i.pitchId].href+'" data-cta="page" data-goal="'+g.key+'" data-plan="'+i.pitchId+'" data-pos="panel_pitch">Learn more</a></p>':'')+
@@ -869,7 +815,7 @@ function closeQuiz(){$("#quiz").classList.remove("open");if(lastFocus)lastFocus.
    6. FAQ — leads with the AI-vs-hosting questions shoppers now ask
    ================================================================= */
 var FAQ=[
-  ["Should I use AI Builder or WordPress hosting?","Choose AI Builder if you want to describe your site and have it built for you — including apps with forms, bookings and logins. Choose WordPress if you want full control with themes and plugins. Both include 24/7 human support, and you can bundle them to save."],
+  ["Should I use AI Builder or WordPress hosting?","Choose AI Builder if you want to describe your site and have it built for you — including apps with forms, bookings and logins. Choose WordPress if you want full control with themes and plugins. Both include 24/7 human support, and you can run both from one Bluehost account."],
   ["Is AI Builder really free to start?","Yes. The Free plan needs no credit card and gives you 5 credits a day (up to 30 a month) on a bluehost.ai address. Upgrade to Lite ($20/mo) to use your own domain and remove the Bluehost badge."],
   ["What happens if I run out of AI credits?","Your live site stays online — running out only pauses new AI changes. Credits refresh monthly, and Lite and Standard can buy top-ups on demand. Hosting never uses credits."],
   ["Are there hidden fees?","No. Hosting prices are for the term shown and renew at the regular rate listed on each plan. Optional add-ons at checkout may change your total."],
@@ -881,13 +827,6 @@ var FAQ=[
    7. WIRING
    ================================================================= */
 function scrollToPlans(){var p=$("#plans");if(p)p.scrollIntoView({behavior:"smooth",block:"start"})}
-function countdown(){
-  var end=new Date("2026-12-01T04:59:00Z").getTime(); var el=$("#timer");
-  function tick(){var d=end-Date.now(); if(d<=0){el.textContent="Offer ended";return}
-    var dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4);
-    el.textContent="Ends in "+dd+"d "+hh+"h "+mm+"m"}
-  tick(); setInterval(tick,30000);
-}
 
 function init(){
   renderPicker();
@@ -895,7 +834,7 @@ function init(){
   if(V.defaultGoal)selectGoal(V.defaultGoal,null); else renderPlans();
   if(V.picker==="doors"){ // headline tuned to the two-door choice
     $("#heroTitle").innerHTML='Two ways to get online. <span class="grad">Pick yours.</span>';
-    $("#heroLead").textContent="Let AI build your website or app from a sentence — or host WordPress with full control. Same 24/7 human support, bundle both and save.";
+    $("#heroLead").textContent="Let AI build your website or app from a sentence — or host WordPress with full control. Same 24/7 human support either way.";
   }
 
   // Delegated clicks
@@ -927,7 +866,7 @@ function init(){
   $("#showVerify").addEventListener("change",function(){document.body.classList.toggle("show-verify",this.checked)});
   if(qs.has("qa")){$("#qa").classList.add("open");$("#showVerify").checked=true;document.body.classList.add("show-verify")}
 
-  countdown(); watchSticky();
+  watchSticky();
   track("experiment_exposure",{default_goal:V.defaultGoal||"none",picker:V.picker});
 }
 function flash(el){

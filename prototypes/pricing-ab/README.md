@@ -21,13 +21,13 @@ AI Builder gets few clicks because it sits in the last tab ("AI Tools") of a hos
 | **C — Goal tabs, AI first** | Six nav-style goal tabs; *Website or app (no code)* is first and pre-selected, so AI Builder plans are the first thing on screen. | Could cannibalise hosting; watch revenue/visitor |
 | **D — Goal tabs, WordPress first + inline AI card** | Same tabs, WordPress pre-selected; AI Builder Lite is a 4th, visually distinct "No-code option" card in the hosting plan row. | Lowest risk; most likely the safe winner |
 
-Shared across B–D: an AI ↔ hosting cross-sell rail under every plan grid, a 2-question "Help me choose" quiz, an "AI Builder or WordPress?" side-by-side, a Buy More Save More bundle band, a sticky decision bar that always offers the other path, and trust and guarantee lines above the fold.
+Shared across B–D: an AI ↔ hosting cross-sell rail under every plan grid, a 2-question "Help me choose" quiz, an "AI Builder or WordPress?" side-by-side, a sticky decision bar that always offers the other path, and trust and guarantee lines above the fold.
 
 ## Metrics
 
 - **Primary:** AI Builder cart-click rate per visitor (`pricing_cta_click` with `plan` = `ai_*` and `cta_type` = `cart`).
 - **Guardrail:** total hosting cart-click rate and revenue per visitor (must not drop more than 3% relative).
-- **Secondary:** goal-selection rate, quiz start and completion, bundle (hosting + AI) orders, and bounce from `/pricing`.
+- **Secondary:** goal-selection rate, quiz start and completion, and bounce from `/pricing`.
 
 Events are pushed to `window.dataLayer`: `experiment_exposure`, `pricing_goal_select`, `pricing_cta_click`, `pricing_quiz_open`, `pricing_quiz_complete`, `pricing_term_toggle` and `pricing_nav_click`. Every event carries `experiment` and `variant`; CTA clicks also carry `goal`, `plan`, `position` and `href`.
 
