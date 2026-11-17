@@ -420,7 +420,7 @@ body.show-verify [data-verify]::after{content:"verify";position:absolute;top:-10
       <div style="position:relative;z-index:1">
         <span class="badge gold">Ends Nov 30</span>
         <h2>Hosting + AI in one cart saves up to 25%</h2>
-        <p>Pair WordPress or VPS hosting with AI Website Builder, AI Store or the AI All-Access Pack. The discount applies automatically at checkout to the first 12-month term.</p>
+        <p>Pair WordPress or VPS hosting with AI Builder, AI Store or the AI All-Access Pack. The discount applies automatically at checkout to the first 12-month term.</p>
         <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-white" data-goto="ai" data-track="bundle_ai">Start with AI Builder</button>
           <button class="btn btn-ghost" style="color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)" data-goto="wp" data-track="bundle_wp">Start with hosting</button>
@@ -461,7 +461,7 @@ body.show-verify [data-verify]::after{content:"verify";position:absolute;top:-10
 
 <footer class="ftr">
   <div class="wrap">
-    <p>Prototype for an A/B test — not a live page. Hosting prices shown are for a 36-month term, billed upfront, and renew at the regular rate. AI Website Builder plans are billed monthly; credits and top-ups expire after 30 days, and running out of credits only pauses new changes. Buy More, Save More: valid Oct 1–Nov 30, 2026, 11:59 p.m. ET for new purchases, first 12-month term only, cannot be combined with other offers. 30-day money-back guarantee applies to hosting; domains are non-refundable.</p>
+    <p>Prototype for an A/B test — not a live page. Hosting prices shown are for a 36-month term, billed upfront, and renew at the regular rate. AI Builder plans are billed monthly; credits and top-ups expire after 30 days, and running out of credits only pauses new changes. Buy More, Save More: valid Oct 1–Nov 30, 2026, 11:59 p.m. ET for new purchases, first 12-month term only, cannot be combined with other offers. 30-day money-back guarantee applies to hosting; domains are non-refundable.</p>
     <p>Prices marked as placeholders in QA mode must be confirmed with the catalog before launch.</p>
   </div>
 </footer>
@@ -539,7 +539,7 @@ var I = { // small inline icons
 var GOALS = {
   ai: {
     key:"ai", ai:true, icon:I.spark, tab:"Website or app", tabSub:"No coding — AI builds it",
-    eyebrow:"✦ AI Website Builder",
+    eyebrow:"✦ AI Builder",
     title:"Describe it. AI builds it. You publish.",
     sub:"Tell us about your business in a sentence. Get an SEO-ready website — or a working app with forms, bookings and logins — in minutes. Hosting is included and never uses credits.",
     plans:[
@@ -602,7 +602,7 @@ var GOALS = {
     eyebrow:"✦ AI tools", title:"AI that works while you don't",
     sub:"Add AI to any plan — or get everything in one pack. Each counts toward Buy More, Save More.",
     tools:[
-      {id:"ai_lite", name:"AI Website Builder", desc:"Describe it, AI builds your site or app.", amt:"$20", per:"/mo", tag:"Most popular", featured:true},
+      {id:"ai_lite", name:"AI Builder", desc:"Describe it, AI builds your site or app.", amt:"$20", per:"/mo", tag:"Most popular", featured:true},
       {id:"ai_pack", name:"AI All-Access Pack", desc:"Every Bluehost AI tool in one subscription.", amt:"$20", per:"/mo", verify:true, tag:"Best value"},
       {id:"ai_store", name:"AI Store", desc:"Launch an online store from a prompt.", amt:null},
       {id:"ai_recept", name:"AI Receptionist", desc:"Answers calls and books appointments 24/7.", amt:null},
@@ -714,7 +714,7 @@ function planCard(p,goal){
 function inlineAICard(){
   return '<article class="card inline-ai fade">'+
     '<span class="ribbon badge ai">✦ No-code option</span>'+
-    '<div><h3>AI Website Builder</h3></div>'+
+    '<div><h3>AI Builder</h3></div>'+
     '<p class="for">Skip WordPress. Describe your business — AI builds and hosts it.</p>'+
     '<div class="pr"><span class="amt">$20</span><span class="per">/mo</span></div>'+
     '<div class="pr-note">Lite · billed monthly · cancel anytime</div>'+
@@ -757,7 +757,7 @@ function renderPlans(){
       '</div></article>'+
       '<article class="card fade" style="background:linear-gradient(140deg,#f3efff,#eaf3ff);border-color:#ddd3ff">'+
         '<span class="badge ai" style="align-self:flex-start">✦ Pair with AI</span>'+
-        '<h3>Add AI Website Builder</h3><p class="for" style="min-height:0">Spin up landing pages, internal tools and client apps without code — counts toward Buy More, Save More.</p>'+
+        '<h3>Add AI Builder</h3><p class="for" style="min-height:0">Spin up landing pages, internal tools and client apps without code — counts toward Buy More, Save More.</p>'+
         '<div class="pr"><span class="amt" style="font-size:34px">$20</span><span class="per">/mo</span></div>'+
         '<a class="btn btn-ai" href="'+LINKS.ai_lite.href+'"'+v("ai_lite")+' data-cta="cart" data-goal="'+g.key+'" data-plan="ai_lite" data-pos="panel_pair">Add AI Builder Lite</a>'+
         (i.pitch?'<p style="margin:4px 0 0;font-size:14px;color:var(--ink-2)">'+i.pitch+' <a class="link" href="'+LINKS[i.pitchId].href+'" data-cta="page" data-goal="'+g.key+'" data-plan="'+i.pitchId+'" data-pos="panel_pitch">Learn more</a></p>':'')+
@@ -862,7 +862,7 @@ function recommend(a){
   var what=a[0],how=a[1];
   if(how==="dev"||what==="server")return {goal:"vps",name:"VPS hosting",why:"Root access and dedicated resources for your own stack. Outgrow it? Move to Dedicated.",plan:null};
   if(what==="agency")return {goal:"agency",name:"Agency hosting + AI Builder",why:"Manage every client site in one place, and use AI Builder to ship new ones in minutes.",plan:null};
-  if(how==="ai"||what==="app")return {goal:"ai",name:"AI Website Builder — Lite",why:(what==="app"?"Apps with forms, bookings and logins are exactly what AI Builder makes — no code. ":"Describe your business and get an SEO-ready site in minutes. ")+"Lite puts it on your own domain for $20/mo.",plan:"ai_lite",cta:"Get Lite — $20/mo"};
+  if(how==="ai"||what==="app")return {goal:"ai",name:"AI Builder — Lite",why:(what==="app"?"Apps with forms, bookings and logins are exactly what AI Builder makes — no code. ":"Describe your business and get an SEO-ready site in minutes. ")+"Lite puts it on your own domain for $20/mo.",plan:"ai_lite",cta:"Get Lite — $20/mo"};
   if(what==="wpsite"&&how==="wp")return {goal:"wp",name:"WordPress eCommerce Essentials",why:"WooCommerce included, 100GB NVMe and room for ~400k visits a month.",plan:"wp_ecom",cta:"Choose eCommerce — $14.99/mo"};
   return {goal:"wp",name:"WordPress Business",why:"Our most-chosen plan: 50 sites, malware removal, domain privacy and phone support.",plan:"wp_business",cta:"Choose Business — $6.99/mo"};
 }
@@ -875,7 +875,7 @@ function closeQuiz(){$("#quiz").classList.remove("open");if(lastFocus)lastFocus.
    ================================================================= */
 var FAQ=[
   ["Should I use AI Builder or WordPress hosting?","Choose AI Builder if you want to describe your site and have it built for you — including apps with forms, bookings and logins. Choose WordPress if you want full control with themes and plugins. Both include 24/7 human support, and you can bundle them to save."],
-  ["Is AI Website Builder really free to start?","Yes. The Free plan needs no credit card and gives you 5 credits a day (up to 30 a month) on a bluehost.ai address. Upgrade to Lite ($20/mo) to use your own domain and remove the Bluehost badge."],
+  ["Is AI Builder really free to start?","Yes. The Free plan needs no credit card and gives you 5 credits a day (up to 30 a month) on a bluehost.ai address. Upgrade to Lite ($20/mo) to use your own domain and remove the Bluehost badge."],
   ["What happens if I run out of AI credits?","Your live site stays online — running out only pauses new AI changes. Credits refresh monthly, and Lite and Standard can buy top-ups on demand. Hosting never uses credits."],
   ["Are there hidden fees?","No. Hosting prices are for the term shown and renew at the regular rate listed on each plan. Optional add-ons at checkout may change your total."],
   ["Can I upgrade or switch plans later?","Yes — move from shared to VPS or dedicated, or between AI Builder plans, at any time."],
