@@ -7,6 +7,7 @@ import { TeamsCarousel } from '../components/sections/home/TeamsCarousel'
 import { WhyBluehost } from '../components/sections/home/WhyBluehost'
 import { JoinCta } from '../components/sections/JoinCta'
 import { Testimonials } from '../components/sections/Testimonials'
+import { PullUp } from '../components/ui/PullUp'
 import { VideoSection } from '../components/sections/VideoSection'
 
 // Brand banner video, served from Newfold's Scene7 media server.
@@ -20,8 +21,10 @@ export default function HomePage() {
       <WhyBluehost />
       <VideoSection src={BRAND_VIDEO} title="Life at Bluehost" autoPlay />
       <Numbers />
-      <TeamsCarousel />
-      <GlobeSection />
+      {/* the globe's section slides up over the frozen functions carousel (ref. jobs.uber.com) */}
+      <PullUp under={<TeamsCarousel />}>
+        <GlobeSection />
+      </PullUp>
       <CountryTiles />
       <LifeBanner />
       <Testimonials />

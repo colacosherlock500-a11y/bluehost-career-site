@@ -60,7 +60,7 @@ function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: 
   const untilt = (e: React.PointerEvent<HTMLElement>) => {
     e.currentTarget.style.transform = ''
   }
-  const photoCard = index % 2 === 1
+  const photoCard = index % 2 === 1 && !!t.photo
   const [c1, c2] = BLOBS[index % BLOBS.length]
   const overlay = 'linear-gradient(180deg, rgba(1,24,56,0.88) 0%, rgba(1,24,56,0.25) 30%, rgba(1,24,56,0.25) 45%, rgba(1,24,56,0.92) 100%)'
   return (
@@ -69,7 +69,7 @@ function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: 
       tabIndex={0}
       onPointerMove={tilt}
       onPointerLeave={untilt}
-      className="group relative flex h-[420px] w-[min(85vw,300px)] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-[14px] border border-bh-light-200 bg-white p-6 outline-none [transition:translate_900ms_cubic-bezier(0.22,1,0.36,1),rotate_900ms_cubic-bezier(0.22,1,0.36,1),opacity_600ms_ease,transform_300ms_ease-out,box-shadow_300ms_ease-out] hover:shadow-[0_24px_48px_rgba(0,42,102,0.22)] focus-visible:ring-2 focus-visible:ring-bh-blue motion-reduce:!translate-none motion-reduce:!rotate-none motion-reduce:!opacity-100 md:w-[300px]"
+      className="group relative flex h-[420px] w-[min(85vw,300px)] shrink-0 flex-col justify-between overflow-hidden rounded-[14px] border border-bh-light-200 bg-white p-6 outline-none [transition:translate_900ms_cubic-bezier(0.22,1,0.36,1),rotate_900ms_cubic-bezier(0.22,1,0.36,1),opacity_600ms_ease,transform_300ms_ease-out,box-shadow_300ms_ease-out] hover:shadow-[0_24px_48px_rgba(0,42,102,0.22)] focus-visible:ring-2 focus-visible:ring-bh-blue motion-reduce:!translate-none motion-reduce:!rotate-none motion-reduce:!opacity-100 md:w-[300px]"
       style={{
         // entrance: cards rise in one after another as the section scrolls into view
         translate: shown ? '0 0' : '0 90px',
@@ -80,7 +80,7 @@ function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: 
     >
       {/* photo layer: always shown on photo cards, crossfades in on gradient cards */}
       <div className={`absolute inset-0 transition-opacity duration-[400ms] ease-out ${photoCard ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
-        <img src={t.photo} alt="" draggable={false} className={`size-full object-cover object-top transition-[scale] duration-[400ms] ease-out ${photoCard ? 'group-hover:scale-[1.04]' : ''}`} />
+        {t.photo && <img src={t.photo} alt="" draggable={false} className={`size-full object-cover object-top transition-[scale] duration-[400ms] ease-out ${photoCard ? 'group-hover:scale-[1.04]' : ''}`} />}
         <span className="absolute inset-0" style={{ backgroundImage: overlay }} />
       </div>
       {!photoCard && (
@@ -121,8 +121,8 @@ const AUTOPLAY_MS = 4500
 
 /**
  * "Stories from the people who make Bluehost" — every colleague story in one full-width
- * carousel (HR feedback): cards rise in one by one, tilt towards the pointer, and the row
- * advances on its own. Snap, drag, arrows and a progress bar as before.
+ * carousel (HR feedback): cards rise in one by one, ride an arc that follows the scroll, tilt
+ * towards the pointer, and the row advances on its own. Snap, drag, arrows and a progress bar as before.
  */
 export function Testimonials({ title, eyebrow = 'Our People', items = testimonials }: { title?: ReactNode; eyebrow?: string; items?: Testimonial[] }) {
   const t = useT()
@@ -143,6 +143,42 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
     }, { threshold: 0.25 })
     io.observe(el)
     return () => io.disconnect()
+  }, [])
+
+  // "Flow" (HR: make the cards more dynamic): the row rides a gentle arc. The card in the
+  // middle of the screen sits highest and largest; cards towards the edges dip, shrink and
+  // lean outwards, and a soft wave runs through the row as the page scrolls. Recomputed on
+  // every horizontal or vertical scroll, so autoplay, arrows and drag all animate it.
+  useEffect(() => {
+    const el = track.current
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let raf = 0
+    const render = () => {
+      raf = 0
+      const r = el.getBoundingClientRect()
+      if (r.bottom < 0 || r.top > window.innerHeight) return
+      const mid = r.left + r.width / 2
+      const page = (window.innerHeight - r.top) / (window.innerHeight + r.height) // 0 → 1 through the screen
+      el.querySelectorAll<HTMLElement>('[data-flow]').forEach((c, i) => {
+        const b = c.getBoundingClientRect()
+        const d = Math.max(-1, Math.min(1, (b.left + b.width / 2 - mid) / r.width)) // -0.5 … 0.5 on screen
+        const y = d * d * 150 + Math.sin(i * 1.15 + page * Math.PI * 3) * 14
+        c.style.transform = `translateY(${y.toFixed(1)}px) rotate(${(d * 7).toFixed(2)}deg) scale(${(1 - Math.abs(d) * 0.14).toFixed(3)})`
+      })
+    }
+    const schedule = () => {
+      raf ||= requestAnimationFrame(render)
+    }
+    render()
+    el.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener('scroll', schedule)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
   }, [])
 
   const sync = () => {
@@ -235,10 +271,12 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
           onPointerCancel={onPointerUp}
           role="region"
           aria-label={t('Stories from our people')}
-          className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-[22px] overflow-x-auto overscroll-x-contain px-[clamp(16px,3vw,48px)] py-8 [scroll-padding-inline:clamp(16px,3vw,48px)] active:cursor-grabbing [&_img]:pointer-events-none"
+          className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-[22px] overflow-x-auto overscroll-x-contain px-[clamp(16px,3vw,48px)] pb-20 pt-8 [scroll-padding-inline:clamp(16px,3vw,48px)] active:cursor-grabbing [&_img]:pointer-events-none"
         >
           {items.map((t, i) => (
-            <StoryCard key={t.name} t={t} index={i} shown={shown} />
+            <div key={t.name} data-flow className="shrink-0 snap-start will-change-transform">
+              <StoryCard t={t} index={i} shown={shown} />
+            </div>
           ))}
         </div>
         <div className="flex w-full items-center justify-between px-[clamp(16px,3vw,48px)]">

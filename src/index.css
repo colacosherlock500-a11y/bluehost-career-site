@@ -170,3 +170,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .blob-a, .blob-b, .blob-c { animation: none; }
 }
+
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+/* Title Case is an English convention: Portuguese labels keep the sentence case they are written in. */
+html[lang='pt-BR'] .capitalize {
+  text-transform: none;
+}

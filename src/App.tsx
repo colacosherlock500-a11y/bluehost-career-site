@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
 import HomePage from './pages/HomePage'
+import { PT_BASE, useI18n } from './i18n/I18n'
 
 const LifeAtBluehostPage = lazy(() => import('./pages/LifeAtBluehostPage'))
 const OurTeamsPage = lazy(() => import('./pages/OurTeamsPage'))
@@ -17,8 +18,11 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const Router = import.meta.env.VITE_ROUTER === 'memory' ? MemoryRouter : BrowserRouter
 
 export default function App() {
+  const { lang } = useI18n()
+  // Portuguese pages are served under /pt; remount the router when the base changes.
+  const base = Router === BrowserRouter && lang === 'pt' ? PT_BASE : undefined
   return (
-    <Router>
+    <Router key={base ?? '/'} basename={base}>
       <Suspense fallback={<div className="min-h-screen" />}>
         <Routes>
           <Route element={<Layout />}>

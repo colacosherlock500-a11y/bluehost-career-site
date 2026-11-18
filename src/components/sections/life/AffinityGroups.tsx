@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { affinityCategories, affinityGroups, type AffinityGroup } from '../../../data/affinityGroups'
 import { Marquee } from '../../ui/Marquee'
 
@@ -30,8 +31,46 @@ function AffinityCard({ group }: { group: AffinityGroup }) {
   )
 }
 
+/**
+ * The card rows arrive from depth as the section slides up (HR: "add the new animation", the
+ * Uber-style motion used on Our promise): they start tipped back, smaller and lower, and come
+ * forward to face the visitor, the second row a beat behind the first.
+ */
+function useRowsFromDepth(rows: React.RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const el = rows.current
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const items = [...el.children] as HTMLElement[]
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const vh = window.innerHeight
+      const top = el.getBoundingClientRect().top
+      items.forEach((row, i) => {
+        const p = Math.min(1, Math.max(0, (vh - top) / (vh * 0.75) - i * 0.12))
+        const e = 1 - (1 - p) ** 3
+        row.style.transform = `perspective(1200px) translateY(${(1 - e) * 140}px) rotateX(${(1 - e) * 38}deg) scale(${0.8 + 0.2 * e})`
+        row.style.opacity = String(0.2 + 0.8 * e)
+      })
+    }
+    const schedule = () => {
+      raf ||= requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+  }, [rows])
+}
+
 export function AffinityGroups({ id }: { id?: string }) {
   const half = Math.ceil(affinityGroups.length / 2)
+  const rows = useRef<HTMLDivElement>(null)
+  useRowsFromDepth(rows)
   return (
     <section id={id} className="scroll-mt-24 py-[60px]">
       <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-10 px-4">
@@ -51,7 +90,7 @@ export function AffinityGroups({ id }: { id?: string }) {
           ))}
         </div>
       </div>
-      <div className="mt-10 flex flex-col gap-[33px]">
+      <div ref={rows} className="mt-10 flex flex-col gap-[33px] [&>*]:origin-[50%_0%] [&>*]:will-change-transform">
         <Marquee gap={25} scrollLinked>
           {affinityGroups.slice(0, half).map(g => <AffinityCard key={g.name} group={g} />)}
         </Marquee>

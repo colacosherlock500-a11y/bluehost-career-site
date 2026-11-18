@@ -6,6 +6,8 @@ import { type Country, type Office, type Quote } from '../../../data/countries'
 import { getTeam } from '../../../data/teams'
 import { Button } from '../../ui/Button'
 
+const initials = (name: string) => name.split(' ').map(w => w[0]).slice(0, 2).join('')
+
 export function QuoteCard({ quote }: { quote: Quote }) {
   return (
     <figure className="relative flex min-h-[291px] w-full max-w-[460px] flex-col justify-between gap-6 overflow-hidden rounded-[10.7px] p-7 pr-[75px] text-white" style={{ backgroundImage: 'linear-gradient(123deg, #4a9cff 1%, #196cdf 96%)' }}>
@@ -13,7 +15,13 @@ export function QuoteCard({ quote }: { quote: Quote }) {
       <blockquote className="max-w-[333px] text-sm leading-[1.37]">{quote.text}</blockquote>
       <figcaption className="flex items-center gap-[18px]">
         <span className="flex shrink-0 items-center justify-center rounded-[9.8px] border border-white p-1 shadow-[13px_6.5px_26px_0px_rgba(0,0,0,0.08)] backdrop-blur-[3.4px]" style={{ backgroundImage: 'linear-gradient(138deg, rgba(248,251,255,0.17) 0%, rgba(255,255,255,0.17) 100%)' }}>
-          <img src={quote.photo} alt="" className="h-[62.7px] w-[70.9px] rounded-[7.6px] border-[0.1px] border-bh-light-400 bg-bh-light-200 object-cover" />
+          {quote.photo ? (
+            <img src={quote.photo} alt="" className="h-[62.7px] w-[70.9px] rounded-[7.6px] border-[0.1px] border-bh-light-400 bg-bh-light-200 object-cover" />
+          ) : (
+            <span aria-hidden className="flex h-[62.7px] w-[70.9px] items-center justify-center rounded-[7.6px] bg-white/20 text-xl font-semibold">
+              {initials(quote.name)}
+            </span>
+          )}
         </span>
         <span className="flex flex-col gap-[7px] leading-[1.2]">
           <span className="text-[17px] font-medium">{quote.name}</span>

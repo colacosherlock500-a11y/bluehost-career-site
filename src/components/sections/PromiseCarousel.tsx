@@ -17,92 +17,118 @@ const pillars = [
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-const Intro = () => (
-  <div className="flex max-w-[909px] flex-col items-center gap-5 text-center">
-    <p className="eyebrow">Our promise to you</p>
-    <h2 className="h-section">What belonging, building, growing, and shining look like here</h2>
-    <p className="text-lead max-w-[712px]">Our employee value proposition is more than words on a page. Here is how it shows up in your everyday work.</p>
-  </div>
-)
+/** Scroll distance (in viewport heights) for each move from one pillar to the next. */
+const STEP_VH = 0.75
 
 /**
- * Where a photo sits along its path, by slot `s` relative to the active pillar.
- * Perspective (HR feedback, ref. jobs.uber.com): photos arrive big, as if close to the
- * viewer (s = 2, off-screen right), shrink as they settle into the active slot on the left
- * (s = 0) and keep shrinking into the distance as they leave (s = -1, up and to the left).
- * s = 1 is the next photo waiting on the right, s = 0.5 swooping past behind the logo.
- * x is a fraction of the stage width from its centre; y is in px.
+ * Where each pillar's photo sits at its focal point (when it is the active pillar): a side of
+ * the screen and a height, as fractions of the stage from its centre. Photos fly in from deep
+ * in the starfield (small, near the centre), land here, then rush past the viewer.
  */
-const PATH: { s: number; x: number; y: number; scale: number; rot: number; blur: number; opacity: number }[] = [
-  { s: -1, x: -0.62, y: -70, scale: 0.42, rot: -8, blur: 3, opacity: 0 },
-  { s: 0, x: -0.355, y: 0, scale: 1, rot: 0, blur: 0, opacity: 1 },
-  { s: 0.5, x: 0.0, y: 40, scale: 1.08, rot: -3, blur: 0.5, opacity: 1 },
-  { s: 1, x: 0.3, y: 30, scale: 0.78, rot: 6, blur: 1, opacity: 0.95 },
-  { s: 2, x: 0.78, y: 90, scale: 1.55, rot: 10, blur: 4, opacity: 0 },
+const SLOTS = [
+  { x: -0.33, y: 0.18, rot: -4 },
+  { x: 0.33, y: -0.16, rot: 4 },
+  { x: -0.31, y: -0.2, rot: 3 },
+  { x: 0.32, y: 0.2, rot: -3 },
+  { x: -0.32, y: 0.02, rot: -2 },
 ]
-const smooth = (t: number) => t * t * (3 - 2 * t)
+/** Depth (px, CSS perspective space) between one pillar's photo and the next. */
+const DEPTH = 1500
+const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
 
-function pathAt(s: number) {
-  const c = Math.min(PATH[PATH.length - 1].s, Math.max(PATH[0].s, s))
-  const k = Math.max(0, PATH.findIndex((_, i) => i < PATH.length - 1 && c <= PATH[i + 1].s))
-  const a = PATH[k]
-  const b = PATH[k + 1]
-  const t = smooth((c - a.s) / (b.s - a.s))
-  const mix = (key: 'x' | 'y' | 'scale' | 'rot' | 'blur' | 'opacity') => a[key] + (b[key] - a[key]) * t
-  return { x: mix('x'), y: mix('y'), scale: mix('scale'), rot: mix('rot'), blur: mix('blur'), opacity: mix('opacity') }
+/** Stars in a box in front of the camera; flying forward pushes them out from the centre. */
+function makeStars(n: number) {
+  return Array.from({ length: n }, () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random(), r: 0.4 + Math.random() * 1.1, tw: Math.random() * Math.PI * 2 }))
 }
 
-/** Scroll distance (in viewport heights) for each move from one pillar to the next. */
-const STEP_VH = 0.7
-
 /**
- * Desktop (jobs.uber.com "Every step toward your next move"): the section pins while
- * you scroll; the 3D logo stays put as each pillar's photo sweeps in from the right,
- * curves past behind the logo into the left slot and exits as the next arrives.
+ * Desktop (HR, ref. jobs.uber.com "Every step toward your next move"): a dark starfield that
+ * pins while you scroll. The promise stays in the middle; each pillar's photo flies in from
+ * deep space, settles beside the text while its pillar is active, then rushes past the camera
+ * as the next one arrives, and the stars stream outwards with the scroll.
  */
 function PromiseScroll({ id }: { id?: string }) {
   const section = useRef<HTMLElement>(null)
   const stage = useRef<HTMLDivElement>(null)
+  const canvas = useRef<HTMLCanvasElement>(null)
   const cards = useRef<(HTMLButtonElement | null)[]>([])
   const [active, setActive] = useState(0)
 
   useEffect(() => {
+    const cv = canvas.current
+    const ctx = cv?.getContext('2d')
+    const stars = makeStars(260)
     let raf = 0
-    const update = () => {
-      raf = 0
-      const sec = section.current
+    let progress = 0
+    let shown = progress
+    let visible = false
+    const draw = (now: number) => {
+      if (!cv || !ctx) return
+      const w = cv.clientWidth
+      const h = cv.clientHeight
+      const dpr = Math.min(2, window.devicePixelRatio || 1)
+      if (cv.width !== Math.round(w * dpr)) {
+        cv.width = Math.round(w * dpr)
+        cv.height = Math.round(h * dpr)
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, w, h)
+      const travel = shown * 0.55
+      for (const s of stars) {
+        let z = (s.z - travel) % 1
+        if (z <= 0) z += 1
+        const k = 0.18 / (z + 0.04)
+        const x = w / 2 + s.x * w * 0.5 * k
+        const y = h / 2 + s.y * h * 0.5 * k
+        if (x < -4 || x > w + 4 || y < -4 || y > h + 4) continue
+        const a = clamp((1 - z) * 1.3) * (0.65 + 0.35 * Math.sin(now / 900 + s.tw))
+        ctx.fillStyle = `rgba(214,233,255,${a.toFixed(3)})`
+        ctx.beginPath()
+        ctx.arc(x, y, s.r * (0.6 + (1 - z) * 1.2), 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+    const place = () => {
       const st = stage.current
-      if (!sec || !st) return
-      const step = window.innerHeight * STEP_VH
-      const progress = Math.min(pillars.length - 1, Math.max(0, (78 - sec.getBoundingClientRect().top) / step))
+      if (!st) return
       const w = st.clientWidth
+      const h = st.clientHeight
       cards.current.forEach((card, i) => {
         if (!card) return
-        const p = pathAt(i - progress)
-        card.style.transform = `translate(-50%, -50%) translate3d(${p.x * w}px, ${p.y}px, 0) rotate(${p.rot}deg) scale(${p.scale})`
-        card.style.filter = p.blur > 0.05 ? `blur(${p.blur}px)` : ''
-        card.style.opacity = String(p.opacity)
-        card.style.visibility = p.opacity < 0.01 ? 'hidden' : ''
-        // number sits top-left on the large card and bottom-right on the small one (Figma)
-        const small = Math.min(1, Math.max(0, i - progress))
-        card.style.setProperty('--small', String(small))
+        const d = i - shown // > 0: still ahead in the distance, 0: active, < 0: flown past
+        const slot = SLOTS[i % SLOTS.length]
+        const z = -d * DEPTH
+        const o = d > 0 ? clamp((2.2 - d) / 0.8) : clamp(1 + d / 0.55)
+        card.style.transform = `translate(-50%, -50%) translate3d(${slot.x * w}px, ${slot.y * h}px, ${z}px) rotate(${slot.rot * (1 - Math.min(1, Math.abs(d)))}deg)`
+        card.style.opacity = o.toFixed(3)
+        card.style.visibility = o < 0.01 ? 'hidden' : ''
+        card.style.filter = d < -0.08 ? `blur(${Math.min(8, -d * 14).toFixed(1)}px)` : d > 1 ? `blur(${Math.min(2, (d - 1) * 2).toFixed(1)}px)` : ''
+        card.style.zIndex = String(100 - Math.round(d * 10))
       })
-      setActive(Math.round(progress))
     }
-    const schedule = () => {
-      raf ||= requestAnimationFrame(update)
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame)
+      if (!visible) return
+      const sec = section.current
+      if (!sec) return
+      const step = window.innerHeight * STEP_VH
+      progress = clamp((78 - sec.getBoundingClientRect().top) / step, -0.6, pillars.length - 1 + 0.4)
+      shown += (progress - shown) * 0.12 // a touch of inertia so the flight feels smooth
+      if (Math.abs(progress - shown) < 1e-4) shown = progress
+      place()
+      draw(now)
+      setActive(Math.round(clamp(shown, 0, pillars.length - 1)))
     }
-    update()
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule)
+    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting))
+    if (section.current) io.observe(section.current)
+    raf = requestAnimationFrame(frame)
     return () => {
       cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
+      io.disconnect()
     }
   }, [])
 
-  // Dots and cards jump to a pillar by scrolling to its point in the section.
+  // Dots and photos jump to a pillar by scrolling to its point in the section.
   const goTo = (n: number) => {
     const sec = section.current
     if (!sec) return
@@ -111,12 +137,10 @@ function PromiseScroll({ id }: { id?: string }) {
   const p = pillars[active]
 
   return (
-    <section id={id} ref={section} className="relative scroll-mt-24 bg-gradient-to-b from-[#e6f3ff] to-[#d4e9ff]" style={{ height: `calc(100vh + ${(pillars.length - 1) * STEP_VH * 100}vh)` }}>
-      <div className="sticky top-[78px] flex h-[calc(100vh-78px)] flex-col items-center justify-center gap-[clamp(16px,3vh,40px)] overflow-hidden px-4">
-        <Intro />
-
-        <div ref={stage} className="relative h-[clamp(200px,32vh,300px)] w-full max-w-[1200px]">
-          <img src={logo3d} alt="" className="absolute left-1/2 top-1/2 z-10 h-full w-auto max-w-[442px] -translate-x-1/2 -translate-y-1/2 object-contain" />
+    <section id={id} ref={section} className="relative scroll-mt-24 bg-[#020c1f]" style={{ height: `calc(100vh + ${(pillars.length - 1) * STEP_VH * 100 + 40}vh)` }}>
+      <div className="sticky top-[78px] h-[calc(100vh-78px)] overflow-hidden bg-[radial-gradient(ellipse_at_50%_55%,#0b2a5c_0%,#041431_45%,#020c1f_80%)] text-white">
+        <canvas ref={canvas} aria-hidden className="absolute inset-0 size-full" />
+        <div ref={stage} className="absolute inset-0 [perspective-origin:50%_50%] [perspective:900px] [transform-style:preserve-3d]">
           {pillars.map((x, i) => (
             <button
               key={x.title}
@@ -125,26 +149,32 @@ function PromiseScroll({ id }: { id?: string }) {
               }}
               onClick={() => goTo(i)}
               aria-label={`${pad(i + 1)} ${x.title}`}
-              className="absolute left-1/2 top-1/2 z-[5] aspect-[348/253] w-[min(348px,29%)] overflow-hidden rounded-[14px] shadow-[0_20px_50px_rgba(0,42,102,0.2)] will-change-transform [--small:0]"
+              className="absolute left-1/2 top-1/2 aspect-[348/253] w-[clamp(220px,22vw,340px)] overflow-hidden rounded-[14px] shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/15 will-change-transform"
             >
               <img src={x.image} alt="" className="size-full object-cover" />
-              <span className="absolute left-4 top-3 text-[25px] font-semibold text-white drop-shadow [opacity:calc(1-var(--small))]">{pad(i + 1)}</span>
-              <span className="absolute bottom-2 right-3 text-[30px] font-semibold text-white drop-shadow [opacity:var(--small)]">{pad(i + 1)}</span>
+              <span className="absolute left-4 top-3 text-[25px] font-semibold text-white drop-shadow">{pad(i + 1)}</span>
             </button>
           ))}
         </div>
 
-        <div key={active} className="flex min-h-[150px] max-w-[702px] flex-col items-center gap-[10px] text-center animate-[fadeUp_0.45s_ease-out]" aria-live="polite">
-          <p className="text-[15px] font-semibold">
-            <span className="text-bh-blue">{pad(active + 1)}</span>/<span className="text-[12px] text-night-sky">{pad(pillars.length)}</span>
-          </p>
-          <h3 className="text-[25px] font-semibold leading-[1.33]">{p.title}</h3>
-          <p className="text-base leading-[1.4] tracking-[-0.16px]">{p.body}</p>
-        </div>
-        <div className="flex gap-2" role="tablist" aria-label="Our promise">
-          {pillars.map((x, n) => (
-            <button key={x.title} role="tab" aria-selected={n === active} aria-label={x.title} onClick={() => goTo(n)} className={`h-2 rounded-full transition-all ${n === active ? 'w-8 bg-bh-blue' : 'w-2 bg-bh-light-300'}`} />
-          ))}
+        <div className="pointer-events-none relative z-[200] mx-auto flex h-full max-w-[560px] flex-col items-center justify-center gap-[clamp(14px,2.6vh,28px)] px-4 text-center">
+          <div className="flex flex-col items-center gap-4">
+            <p className="eyebrow !text-[#83c0fc]">Our promise to you</p>
+            <h2 className="h-section !text-white">What belonging, building, growing, and shining look like here</h2>
+          </div>
+          <img src={logo3d} alt="" className="h-[clamp(70px,12vh,130px)] w-auto animate-[float_6s_ease-in-out_infinite] object-contain drop-shadow-[0_10px_40px_rgba(81,191,242,0.35)]" />
+          <div key={active} className="flex min-h-[150px] flex-col items-center gap-[10px] animate-[fadeUp_0.45s_ease-out]" aria-live="polite">
+            <p className="text-[15px] font-semibold">
+              <span className="text-[#83c0fc]">{pad(active + 1)}</span>/<span className="text-[12px] text-white/60">{pad(pillars.length)}</span>
+            </p>
+            <h3 className="text-[25px] font-semibold leading-[1.33]">{p.title}</h3>
+            <p className="text-base leading-[1.45] tracking-[-0.16px] text-white/80">{p.body}</p>
+          </div>
+          <div className="pointer-events-auto flex gap-2" role="tablist" aria-label="Our promise">
+            {pillars.map((x, n) => (
+              <button key={x.title} role="tab" aria-selected={n === active} aria-label={x.title} onClick={() => goTo(n)} className={`h-2 rounded-full transition-all ${n === active ? 'w-8 bg-[#83c0fc]' : 'w-2 bg-white/30'}`} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

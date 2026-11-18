@@ -35,10 +35,9 @@ import tenerife from '../assets/img/offices/tenerife.jpg'
 import ukRemote from '../assets/img/offices/uk-remote.jpg'
 import wijchen from '../assets/img/offices/wijchen.jpg'
 import blairPenney from '../assets/img/people/blair-penney.png'
-import douglasReis from '../assets/img/people/douglas-reis.png'
+import douglasReis from '../assets/img/people/douglas-reis.jpg'
 import judith from '../assets/img/people/judith-terbeek-arts.png'
-import mariaMarcondes from '../assets/img/people/maria-marcondes.png'
-import mikielhyn from '../assets/img/people/mikielhyn-geniston.jpg'
+import mariaMarcondes from '../assets/img/people/maria-marcondes.jpg'
 import nikhilSharma from '../assets/img/people/nikhil-sharma.png'
 import saraKlosterman from '../assets/img/people/sara-klosterman.png'
 import ulises from '../assets/img/people/ulises-di-toro.png'
@@ -58,7 +57,8 @@ export interface Quote {
   text: string
   name: string
   role: string
-  photo: string
+  /** Omitted while HR has no photo for the colleague: an initials badge is shown instead. */
+  photo?: string
 }
 
 export interface Country {
@@ -242,7 +242,7 @@ export const countries: Country[] = [
         text: "It's great working with such a collaborative team. You will not feel left out or unseen. Everyone has the opportunity to voice their concerns and be heard, and the Support team loves helping each other, especially new hires.",
         name: 'Mikielhyn Geniston',
         role: 'Support Engineer | Philippines',
-        photo: mikielhyn,
+        // photo pending from HR (the one in the designs is another colleague): initials until then
       },
     ],
     employees: 308,

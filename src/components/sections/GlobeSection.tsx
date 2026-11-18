@@ -4,39 +4,58 @@ import { useT } from '../../i18n/I18n'
 import { SectionHeader } from '../ui/SectionHeader'
 import { Globe } from './Globe'
 
-/** How big the globe starts when it scrolls into view (QA: "animate it from large to small"). */
-const START_SCALE = 2.1
-/** How far below its resting place the globe starts (HR: "position animation, moving up the page"). */
-const START_Y = 220
+/** How big the globe starts (QA: "animate it from large to small"). */
+const START_SCALE = 1.9
+/** How far below its resting place the globe starts, as a share of the screen height. */
+const START_Y = 0.62
+/** Scroll distance (share of the screen height) the section stays pinned while the globe rises. */
+const PIN = 0.9
+const HEADER_H = 78
 
 /**
- * Scales the globe from large to its resting size and slides it up into place as it
- * scrolls into view (ref. jobs.uber.com). Driven straight from the scroll position, so it
- * reverses when scrolling back up. Calls `onSettled(true)` once the motion has finished
- * (and `false` if the visitor scrolls back before it). Reduced motion: no animation.
+ * "Pull up" (HR, ref. jobs.uber.com): the section pins and the globe rises from below the
+ * fold like a planet coming over the horizon, shrinking to its resting size as it climbs.
+ * Driven straight from the scroll position, so it reverses when scrolling back up.
+ * Calls `onSettled(true)` once it has landed (and `false` if the visitor scrolls back).
+ * Reduced motion: no pin, no animation.
  */
-function useArriveOnScroll(ref: React.RefObject<HTMLDivElement | null>, onSettled: (settled: boolean) => void) {
+function usePullUp(
+  section: React.RefObject<HTMLElement | null>,
+  stage: React.RefObject<HTMLDivElement | null>,
+  globe: React.RefObject<HTMLDivElement | null>,
+  onSettled: (settled: boolean) => void,
+) {
   const cb = useRef(onSettled)
   cb.current = onSettled
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const sec = section.current
+    const st = stage.current
+    const el = globe.current
+    if (!sec || !st || !el) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       cb.current(true)
       return
     }
     let raf = 0
     let settled: boolean | null = null
+    let top = HEADER_H
+    const layout = () => {
+      const vh = window.innerHeight
+      const h = st.offsetHeight
+      // centred under the header when it fits; otherwise pinned with its bottom on the screen's
+      top = h <= vh - HEADER_H ? Math.max(HEADER_H, (vh + HEADER_H - h) / 2) : vh - h
+      st.style.top = `${top}px`
+      sec.style.height = `${h + vh * PIN}px`
+    }
     const update = () => {
       raf = 0
       const vh = window.innerHeight
-      const top = el.parentElement!.getBoundingClientRect().top
-      // 0 when the globe's slot enters the bottom of the screen, 1 once it reaches ~20% from the top
-      const p = Math.min(1, Math.max(0, (vh - top) / (vh * 0.8)))
-      const e = 1 - (1 - p) ** 3
+      const r = sec.getBoundingClientRect()
+      // 0 as the section enters the bottom of the screen → 1 at the end of the pin
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh - top + vh * PIN)))
+      const e = 1 - (1 - p) ** 2.4
       el.style.scale = String(START_SCALE - (START_SCALE - 1) * e)
-      el.style.translate = `0 ${Math.round(START_Y * (1 - e))}px`
-      el.style.opacity = String(0.35 + 0.65 * Math.min(1, p * 1.6))
+      el.style.translate = `0 ${Math.round(vh * START_Y * (1 - e))}px`
       const now = p >= 0.995
       if (now !== settled) {
         settled = now
@@ -46,15 +65,24 @@ function useArriveOnScroll(ref: React.RefObject<HTMLDivElement | null>, onSettle
     const schedule = () => {
       raf ||= requestAnimationFrame(update)
     }
+    const ro = new ResizeObserver(() => {
+      layout()
+      schedule()
+    })
+    ro.observe(st)
+    layout()
     update()
     window.addEventListener('scroll', schedule, { passive: true })
     window.addEventListener('resize', schedule)
     return () => {
+      ro.disconnect()
       cancelAnimationFrame(raf)
       window.removeEventListener('scroll', schedule)
       window.removeEventListener('resize', schedule)
+      sec.style.height = ''
+      st.style.top = ''
     }
-  }, [ref])
+  }, [section, stage, globe])
 }
 
 export function GlobeSection({
@@ -75,12 +103,14 @@ export function GlobeSection({
   initialCountry?: string
   id?: string
 }) {
+  const section = useRef<HTMLDivElement>(null)
+  const stage = useRef<HTMLDivElement>(null)
   const globe = useRef<HTMLDivElement>(null)
   const [settled, setSettled] = useState(false)
   // Uncontrolled use (home, team and location pages): pick a country right when the globe settles.
   const [own, setOwn] = useState<string | null>(null)
   const picked = useRef(false)
-  useArriveOnScroll(globe, s => {
+  usePullUp(section, stage, globe, s => {
     setSettled(s)
     if (s && !picked.current && selected === undefined) {
       picked.current = true
@@ -89,11 +119,13 @@ export function GlobeSection({
   })
   const t = useT()
   return (
-    <section id={id} className="overflow-x-clip px-4 pb-[60px] pt-[100px]">
-      <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-10">
-        <SectionHeader className="relative z-[1]" eyebrow={t(eyebrow)} title={typeof title === 'string' ? t(title) : title} body={<span className="text-base leading-[1.4] tracking-[-0.08px] text-bh-blue-950">{t(body)}</span>} />
+    <section id={id} className="relative px-4 pt-[100px]">
+      <SectionHeader className="relative z-[1] mx-auto" eyebrow={t(eyebrow)} title={typeof title === 'string' ? t(title) : title} body={<span className="text-base leading-[1.4] tracking-[-0.08px] text-bh-blue-950">{t(body)}</span>} />
+      {/* the title scrolls by; the globe's stage pins while the globe pulls up */}
+      <div ref={section}>
+      <div ref={stage} className="sticky mx-auto flex max-w-[1440px] flex-col items-center gap-10 overflow-hidden pb-[60px] pt-10 motion-reduce:static">
         <div className="w-full">
-          <div ref={globe} className="w-full origin-[50%_35%] will-change-[scale,translate]">
+          <div ref={globe} className="w-full origin-[50%_0%] will-change-[scale,translate]">
             <Globe
               selected={selected !== undefined ? selected : own}
               onSelect={slug => {
@@ -105,6 +137,7 @@ export function GlobeSection({
           </div>
         </div>
         <hr className="mt-6 w-full max-w-[1200px] border-[#e8ecf2]" />
+      </div>
       </div>
     </section>
   )

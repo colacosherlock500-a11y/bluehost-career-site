@@ -3,7 +3,10 @@
  * "{n} …" keys translate counted labels such as "15 open roles".
  * Text without an entry falls back to English.
  */
-export const pt: Record<string, string> = {
+import { ptLife } from './ptLife'
+import { ptPlaces } from './ptPlaces'
+
+const core: Record<string, string> = {
   // Global / header / menus
   'Careers at Bluehost': 'Carreiras na Bluehost',
   'Life at Bluehost': 'Vida na Bluehost',
@@ -255,3 +258,6 @@ export const pt: Record<string, string> = {
     'O acesso à localização está bloqueado. Permita nas configurações do navegador ou digite uma cidade.',
   "We couldn't get your location right now. Try again, or type a city instead.": 'Não foi possível obter sua localização agora. Tente novamente ou digite uma cidade.',
 }
+
+/** Every translation: interface labels plus page copy (ptLife.ts, ptPlaces.ts). */
+export const pt: Record<string, string> = { ...ptLife, ...ptPlaces, ...core }

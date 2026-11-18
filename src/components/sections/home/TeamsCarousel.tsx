@@ -213,8 +213,8 @@ export function TeamsCarousel() {
                 src={tm.image}
                 alt=""
                 draggable={false}
-                className="absolute inset-0 size-full object-cover object-center"
-                style={{ scale: active || reduceMotion ? '1' : '1.08', transition: `scale ${DURATION}ms ${EASE}` }}
+                className="absolute inset-0 size-full object-cover"
+                style={{ objectPosition: tm.imageFocus ?? 'center 20%', scale: active || reduceMotion ? '1' : '1.08', transition: `scale ${DURATION}ms ${EASE}` }}
               />
               {/* 45% navy on side cards, fading to the top-to-bottom gradient on the active card */}
               <span className="absolute inset-0 bg-[rgba(1,33,70,0.45)]" style={{ opacity: active ? 0 : 1, transition: `opacity ${DURATION}ms ${EASE}` }} />

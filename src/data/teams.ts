@@ -23,6 +23,8 @@ export interface Team {
   ctaLabel: string
   buildAreas: [string[], string[]]
   image: string
+  /** CSS object-position for wide crops, so faces stay in frame (default: centre, 20% from the top). */
+  imageFocus?: string
 }
 
 export const teams: Team[] = [
@@ -70,6 +72,7 @@ export const teams: Team[] = [
       ['Space Planning', 'Sustainability'],
     ],
     image: facilities,
+    imageFocus: 'center 70%',
   },
   {
     slug: 'finance',

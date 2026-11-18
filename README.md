@@ -126,22 +126,29 @@ Adding a team or country is a data change only: add an entry to `src/data/teams.
 
 ## Translations (Portuguese)
 
-The flags in the header switch between English and Portuguese (Brazil); `?lang=pt` / `?lang=en`
-also works and the choice is remembered. `src/i18n/I18n.tsx` provides `useT()`, and the English text
-itself is the key: `t('Search Roles')` looks it up in `src/i18n/pt.ts` and falls back to English
-when there is no entry. Counted labels use `{n}` entries (e.g. `'{n} open roles'`).
+The flags in the header switch between English and Portuguese (Brazil). Portuguese pages live
+under `/pt` (e.g. `/pt/jobs`, `/pt/life-at-bluehost`), so they can be linked and indexed on their
+own; the flags move between the two URLs. `?lang=pt` / `?lang=en` also works and the choice is
+remembered. (The in-page preview build, `VITE_ROUTER=memory`, has no URLs and just switches text.)
 
-Translated so far: header and menus, the whole home page, the job search page, job cards and the
-chat widget. Other pages (Life at Bluehost, Our teams, team/country pages, the role page) and data
-such as benefits lists still show English until their text is added to `pt.ts`. Job titles and
-descriptions come from Workday and should be requested in the visitor's language there.
+The English text itself is the key. Components use `useT()` (`t('Search Roles')`), and while
+Portuguese is on, `src/i18n/domTranslate.ts` also swaps every other text fragment and accessible
+label on the page that has an entry, so page copy and data (teams, countries, benefits, stories)
+need no code changes, only a dictionary entry. Dictionaries: `src/i18n/pt.ts` (interface),
+`ptLife.ts` (Life at Bluehost, benefits, affinity groups, awards, stories) and `ptPlaces.ts` (teams,
+Around the World, country pages). Counted labels use `{n}` entries (e.g. `'{n} open roles'`).
+When you change English copy, update its key too, or that text shows in English. People's names,
+brand names and affinity group names stay as they are. Job titles and descriptions come from
+Workday and should be requested in the visitor's language there.
 
 ## Content & media still needed
 
 These are marked with `CONTENT:` / `MEDIA:` / `INTEGRATION:` comments in the code.
 
 - **Testimonial portraits**: Jorge Tristan's (159 px) and Maaz Mansoor's (300 px) photos are too small for the
-  full-card hover/photo state in `Testimonials` — higher-resolution portraits are needed.
+  full-card hover/photo state in `Testimonials` — higher-resolution portraits are needed (Maria).
+- **Mikielhyn Geniston's photo** (Philippines): the designs show another colleague, so the card shows initials
+  until HR sends the right photo (`photo` in `src/data/countries.ts`).
 - **Brand video** (`VideoSection` on the home page): plays the preview banner from Newfold's Scene7
   (`banner-4`); swap the URL in `src/pages/HomePage.tsx` (or `VITE_BRAND_VIDEO_URL`) for the final cut.
 - **Life at Bluehost hero video:** the Figma "soft blue gradient light movement" video can't be exported from Figma, so the hero draws an animated CSS gradient (`src/components/ui/GradientMotion.tsx`). Set `VITE_LIFE_HERO_VIDEO_URL` to the MP4 to play the original instead.

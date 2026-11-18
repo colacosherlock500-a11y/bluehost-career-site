@@ -32,11 +32,8 @@ export default function AroundTheWorldPage() {
   return (
     <>
       <VideoHero className="h-[600px] md:h-[894px]">
-        <div className="absolute inset-x-0 top-[120px] flex flex-col items-center px-4 text-center md:top-[130px]">
-          <h1 className="text-[clamp(34px,4vw,52px)] font-semibold leading-[1.2] tracking-[-0.5px] text-white">
-            One team, <span className="text-bh-light-300">a world of possibilities.</span>
-          </h1>
-        </div>
+        {/* HR: no headline over the video ("A world of possibilities" removed); kept for screen readers */}
+        <h1 className="sr-only">Bluehost around the world</h1>
         <div className="absolute inset-x-0 bottom-[110px] flex justify-center md:bottom-[150px]">
           <Button to="/jobs" variant="white">View open roles</Button>
         </div>

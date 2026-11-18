@@ -44,79 +44,121 @@ function SocialSpinner() {
 }
 
 /*
- * LinkedIn posts fanned out as in the Figma ("Come build what's next with us", node 1163:36775):
- * seven portrait cards overlapping towards a larger centre card. Positions are the Figma ones
- * on a 1199 x 453 stage, scaled to the available width. When the row scrolls into view the
- * cards fan out from the centre one by one; hovering a card brings it to the front.
- * Reduced motion: the fan is shown as is.
+ * LinkedIn posts fanned out on a curve (HR: "fanned out like before"): tall post cards sit on a wide arc
+ * (a wheel whose hub is far below), each tilted along the curve. As the section scrolls in,
+ * the cards fan out from a stack; scrolling on turns the wheel, and it can also be dragged.
+ * It loops, so posts keep coming round. Hover lifts a card forward. Reduced motion: a still fan.
  */
-const STAGE_W = 1199
-const STAGE_H = 453
-const FAN = [
-  { src: liPost1, x: 49, y: 40, w: 275, h: 374, z: 2 },
-  { src: liPost2, x: 118, y: 29, w: 289, h: 393, z: 3 },
-  { src: liPost3, x: 249, y: 23, w: 299, h: 407, z: 5 },
-  { src: liPost4, x: 440, y: 10, w: 319, h: 433, z: 6 },
-  { src: liPost5, x: 651, y: 23, w: 299, h: 407, z: 4 },
-  { src: liPost6, x: 792, y: 29, w: 289, h: 393, z: 1 },
-  { src: liPost7, x: 875, y: 40, w: 275, h: 374, z: 0 },
-]
-const CENTER = FAN[3]
+const CARD_W = 290
+const CARD_H = 396
+const RADIUS = 1500 // distance from a card's centre to the wheel's hub
+const STEP = 11.5 // degrees between neighbouring cards
+const POSTS = [liPost4, liPost5, liPost6, liPost7, liPost1, liPost2, liPost3]
+const CARDS = Array.from({ length: 14 }, (_, i) => POSTS[i % POSTS.length])
 
 export function SocialCards() {
-  const wrap = useRef<HTMLDivElement>(null)
-  const [scale, setScale] = useState(1)
-  const [open, setOpen] = useState(false)
+  const stage = useRef<HTMLDivElement>(null)
+  const cards = useRef<(HTMLAnchorElement | null)[]>([])
 
   useEffect(() => {
-    const el = wrap.current
+    const el = stage.current
     if (!el) return
-    const fit = () => setScale(Math.max(0.5, Math.min(1.15, el.clientWidth / STAGE_W)))
-    fit()
-    const ro = new ResizeObserver(fit)
-    ro.observe(el)
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setOpen(true)
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setOpen(true), { threshold: 0.3 })
-    io.observe(el)
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const loop = CARDS.length * STEP
+    let dragDeg = 0
+    let drag: { x: number; deg: number; moved: boolean } | null = null
+    let raf = 0
+
+    const render = () => {
+      raf = 0
+      const vh = window.innerHeight
+      const r = el.getBoundingClientRect()
+      // 0 → 1 while the stage scrolls from the bottom of the screen to its middle: fan out
+      const spread = reduce ? 1 : Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.7)))
+      // then the wheel keeps turning with the scroll
+      const turn = reduce ? 0 : ((vh * 0.5 - (r.top + r.height / 2)) / vh) * 28
+      const scale = Math.min(1, el.clientWidth / 1100)
+      cards.current.forEach((card, i) => {
+        if (!card) return
+        let a = (i - (CARDS.length - 1) / 2) * STEP + turn + dragDeg
+        a = ((((a + loop / 2) % loop) + loop) % loop) - loop / 2 // keep within one loop
+        const shown = Math.abs(a) < 62
+        const fan = a * (0.25 + 0.75 * spread)
+        card.style.transform = `translate(-50%, -50%) scale(${scale}) translateY(${RADIUS}px) rotate(${fan}deg) translateY(${-RADIUS}px)`
+        card.style.zIndex = String(200 - Math.round(Math.abs(a) * 2))
+        card.style.opacity = shown ? String(Math.min(1, (62 - Math.abs(a)) / 14)) : '0'
+        card.style.visibility = shown ? '' : 'hidden'
+      })
+    }
+    const schedule = () => {
+      raf ||= requestAnimationFrame(render)
+    }
+
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      drag = { x: e.clientX, deg: dragDeg, moved: false }
+    }
+    const onMove = (e: PointerEvent) => {
+      if (!drag) return
+      const dx = e.clientX - drag.x
+      if (!drag.moved && Math.abs(dx) > 6) {
+        drag.moved = true
+        el.setPointerCapture(e.pointerId)
+      }
+      if (!drag.moved) return
+      dragDeg = drag.deg + (dx / CARD_W) * STEP
+      schedule()
+    }
+    const onUp = () => {
+      if (drag?.moved) el.addEventListener('click', ev => (ev.preventDefault(), ev.stopPropagation()), { capture: true, once: true })
+      drag = null
+    }
+
+    render()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    el.addEventListener('pointerdown', onDown)
+    el.addEventListener('pointermove', onMove)
+    el.addEventListener('pointerup', onUp)
+    el.addEventListener('pointercancel', onUp)
     return () => {
-      ro.disconnect()
-      io.disconnect()
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      el.removeEventListener('pointerdown', onDown)
+      el.removeEventListener('pointermove', onMove)
+      el.removeEventListener('pointerup', onUp)
+      el.removeEventListener('pointercancel', onUp)
     }
   }, [])
 
   return (
-    <div ref={wrap} role="region" aria-label="Bluehost on LinkedIn" className="relative w-full overflow-hidden" style={{ height: STAGE_H * scale + 24 }}>
-      <div className="absolute left-1/2 top-3" style={{ width: STAGE_W, height: STAGE_H, transform: `translateX(-50%) scale(${scale})`, transformOrigin: 'top center' }}>
-        {FAN.map((c, i) => {
-          // closed: tucked behind the centre card
-          const dx = open ? 0 : CENTER.x + CENTER.w / 2 - (c.x + c.w / 2)
-          const delay = open ? Math.abs(i - 3) * 110 : 0
-          return (
-            <a
-              key={i}
-              href={LINKEDIN_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Bluehost post on LinkedIn"
-              className="group absolute block hover:!z-20 focus-visible:!z-20"
-              style={{
-                left: c.x,
-                top: c.y,
-                width: c.w,
-                height: c.h,
-                zIndex: c.z,
-                transform: `translateX(${dx}px) scale(${open ? 1 : 0.92})`,
-                opacity: open || i === 3 ? 1 : 0,
-                transition: `transform 900ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, opacity 500ms ease ${delay}ms`,
-              }}
-            >
-              <span className="block size-full overflow-hidden rounded-[12px] shadow-[0_10px_30px_rgba(0,42,102,0.16)] transition-[translate,scale,box-shadow] duration-300 ease-out group-hover:-translate-y-4 group-hover:scale-[1.05] group-hover:shadow-[0_26px_56px_rgba(0,42,102,0.3)] group-focus-visible:-translate-y-4 group-focus-visible:scale-[1.05]">
-                <img src={c.src} alt="" draggable={false} className="size-full object-cover" />
-              </span>
-            </a>
-          )
-        })}
-      </div>
+    <div
+      ref={stage}
+      role="region"
+      aria-label="Bluehost on LinkedIn"
+      className="relative h-[clamp(300px,42vw,520px)] w-full cursor-grab touch-pan-y select-none overflow-hidden active:cursor-grabbing [&_img]:pointer-events-none"
+    >
+      {CARDS.map((src, i) => (
+        <a
+          key={i}
+          ref={el => {
+            cards.current[i] = el
+          }}
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noreferrer"
+          draggable={false}
+          aria-label="Bluehost post on LinkedIn"
+          tabIndex={i < POSTS.length ? 0 : -1}
+          className="group absolute left-1/2 top-[56%] will-change-transform"
+          style={{ width: CARD_W, height: CARD_H }}
+        >
+          <span className="relative block size-full overflow-hidden rounded-[14px] shadow-[0_14px_36px_rgba(0,42,102,0.18)] transition-[translate,scale,box-shadow] duration-300 ease-out group-hover:-translate-y-5 group-hover:scale-[1.06] group-hover:shadow-[0_28px_60px_rgba(0,42,102,0.3)] group-focus-visible:-translate-y-5 group-focus-visible:scale-[1.06]">
+            <img src={src} alt="" className="size-full object-cover" />
+          </span>
+        </a>
+      ))}
     </div>
   )
 }

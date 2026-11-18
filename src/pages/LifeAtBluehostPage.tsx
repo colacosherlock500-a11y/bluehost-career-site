@@ -18,6 +18,7 @@ import { WhatWeDo } from '../components/sections/life/WhatWeDo'
 import { JoinCta } from '../components/sections/JoinCta'
 import { HostGatorLogo, LogoStrip } from '../components/sections/LogoStrip'
 import { BuildersBook } from '../components/sections/life/BuildersBook'
+import { PullUp } from '../components/ui/PullUp'
 import { PromiseCarousel } from '../components/sections/PromiseCarousel'
 import { Testimonials } from '../components/sections/Testimonials'
 import { Button } from '../components/ui/Button'
@@ -161,30 +162,37 @@ export default function LifeAtBluehostPage() {
         </div>
       </section>
 
-      <section className="px-4 py-[60px]">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-10">
-          <div className="grid items-end gap-6 lg:grid-cols-[1fr_460px]">
-            <div className="flex flex-col gap-5">
-              <p className="eyebrow">How we work</p>
-              <h2 className="h-section">How every one of us <span className="block text-bh-blue">contributes to our success</span></h2>
-            </div>
-            <p className="text-sm leading-[1.5]">Our values are shared across the Newfold Digital family of brands and lived every day by teams across Bluehost Group around the world.</p>
-          </div>
-          <img src={howWeWork} alt="Bluehost colleagues celebrating together" className="h-[429px] w-full rounded-2xl object-cover" />
-          <div className="grid gap-[30px] md:grid-cols-3">
-            {howWeWorkCards.map(c => (
-              <div key={c.title} className="flex flex-col gap-3 rounded-2xl p-6 text-white shadow-[0_20px_40px_rgba(25,108,223,0.18)]" style={{ background: c.bg }}>
-                <h3 className="text-[19px] font-semibold">{c.title}</h3>
-                <p className="text-sm leading-[1.55]">{c.body}</p>
+      {/* Our promise slides up over the frozen "How we work" section (Maryna's dev note, ref. jobs.uber.com) */}
+      <PullUp
+        under={
+          <section className="px-4 py-[60px]">
+            <div className="mx-auto flex max-w-[1200px] flex-col gap-10">
+              <div className="grid items-end gap-6 lg:grid-cols-[1fr_460px]">
+                <div className="flex flex-col gap-5">
+                  <p className="eyebrow">How we work</p>
+                  <h2 className="h-section">How every one of us <span className="block text-bh-blue">contributes to our success</span></h2>
+                </div>
+                <p className="text-sm leading-[1.5]">Our values are shared across the Newfold Digital family of brands and lived every day by teams across Bluehost Group around the world.</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <PromiseCarousel id="growth" />
-      <Benefits id="benefits" />
-      <AffinityGroups id="affinity-groups" />
+              <img src={howWeWork} alt="Bluehost colleagues celebrating together" className="h-[429px] w-full rounded-2xl object-cover" />
+              <div className="grid gap-[30px] md:grid-cols-3">
+                {howWeWorkCards.map(c => (
+                  <div key={c.title} className="flex flex-col gap-3 rounded-2xl p-6 text-white shadow-[0_20px_40px_rgba(25,108,223,0.18)]" style={{ background: c.bg }}>
+                    <h3 className="text-[19px] font-semibold">{c.title}</h3>
+                    <p className="text-sm leading-[1.55]">{c.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        }
+        className="bg-[#020c1f]"
+      >
+        <PromiseCarousel id="growth" />
+      </PullUp>
+      <PullUp under={<Benefits id="benefits" />}>
+        <AffinityGroups id="affinity-groups" />
+      </PullUp>
       <Awards id="awards" />
 
       {/* All colleague stories, in the same layout as the home page (HR feedback). */}
