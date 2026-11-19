@@ -107,15 +107,18 @@ export function GlobeSection({
   const stage = useRef<HTMLDivElement>(null)
   const globe = useRef<HTMLDivElement>(null)
   const [settled, setSettled] = useState(false)
-  // Uncontrolled use (home, team and location pages): pick a country right when the globe settles.
+  // Once the globe settles it shows the visitor's country (HR). Uncontrolled use (home, team and
+  // location pages) keeps the choice here; controlled use (Around the World) asks the page to
+  // select it, unless the visitor already picked one (e.g. ?country= in the link).
   const [own, setOwn] = useState<string | null>(null)
   const picked = useRef(false)
   usePullUp(section, stage, globe, s => {
     setSettled(s)
-    if (s && !picked.current && selected === undefined) {
-      picked.current = true
-      setOwn(initialCountry ?? visitorCountry())
-    }
+    if (!s || picked.current) return
+    picked.current = true
+    const slug = initialCountry ?? visitorCountry()
+    if (selected === undefined) setOwn(slug)
+    else if (!selected) onSelect?.(slug)
   })
   const t = useT()
   return (
