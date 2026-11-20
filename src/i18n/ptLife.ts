@@ -10,6 +10,8 @@ export const ptLife: Record<string, string> = {
   'Bluehost careers home': 'Página inicial de carreiras da Bluehost',
   Main: 'Principal',
   'Turn sound on': 'Ativar som',
+  'Pause animation': 'Pausar animação',
+  'Play animation': 'Reproduzir animação',
   'Turn sound off': 'Desativar som',
   'Bluehost on LinkedIn': 'Bluehost no LinkedIn',
   'Bluehost post on LinkedIn': 'Publicação da Bluehost no LinkedIn',

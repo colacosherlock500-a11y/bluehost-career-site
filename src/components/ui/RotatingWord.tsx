@@ -32,7 +32,7 @@ export function RotatingWord({ words = DEFAULT_WORDS, label, interval = 2400 }: 
   const width = widths[i]
   return (
     <span
-      className="relative -mx-[0.06em] -my-[0.28em] inline-block px-[0.06em] py-[0.28em] align-baseline overflow-hidden [clip-path:inset(0)] transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      className="relative -mx-[0.06em] -my-[0.28em] inline-block px-[0.06em] py-[0.28em] align-baseline [overflow-x:clip] [clip-path:inset(0)] transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
       style={width ? { width: `calc(${width}px + 0.12em)` } : undefined}
     >
       <span className="sr-only">{label ?? words.join(', ')}</span>
