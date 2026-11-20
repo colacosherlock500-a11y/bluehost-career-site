@@ -27,7 +27,7 @@ export function OpenRoles({ title = 'Open roles', filter = {}, limit = 3, allJob
           <h2 className="h-section">{title}</h2>
           <Button to={href} variant="outline">Discover all jobs</Button>
         </div>
-        <div className="grid gap-[33px] md:grid-cols-3">
+        <div className="grid gap-[33px] md:grid-cols-2 lg:grid-cols-3">
           {loading && Array.from({ length: limit }, (_, i) => <JobCardSkeleton key={i} />)}
           {!loading && jobs.map(job => <JobCard key={job.id} job={job} />)}
           {!loading && jobs.length === 0 && (
