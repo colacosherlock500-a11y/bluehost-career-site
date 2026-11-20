@@ -13,6 +13,10 @@ import { useT } from '../../../i18n/I18n'
  * tumbling at an easy pace while its outer layers twist like a puzzle cube, the white core
  * showing in the cut. A pause button stops it; reduced motion shows a still cube.
  *
+ * Every photo and video stays the right way up: whichever way its tile has turned, the cube
+ * keeps track of where "up" is on screen and turns the picture in quarter steps to match
+ * (a short eased spin, with a margin so it doesn't flip back and forth on the diagonal).
+ *
  * Built for steady rendering (the previous cube flickered): the 26 cubies move only when their
  * layer turns, nothing inside the 3D scene changes opacity, and every tile is a plain image
  * (or one of the six centre videos).
@@ -124,6 +128,44 @@ export function HeroCube() {
     const ro = new ResizeObserver(placeAll)
     ro.observe(el)
 
+    // ---- keep every picture upright on screen ----
+    const tiles = cubies.flatMap((c, i) =>
+      c.stickers.map((key, k) => ({
+        i,
+        face: new DOMMatrix(FACE_T[key] || 'none'),
+        media: cubieEls.current[i]?.children[k]?.querySelector<HTMLElement>('[data-media]') ?? null,
+        q: 0, // current quarter turn (0–3)
+        angle: 0, // cumulative degrees, so each change spins the short way
+      })),
+    )
+    let view = new DOMMatrix()
+    let twistM: DOMMatrix | null = null
+    let twistSet = new Set<number>()
+    const up = new DOMPoint(0, -1, 0, 0)
+    const right = new DOMPoint(1, 0, 0, 0)
+    const uprightAll = () => {
+      for (const t of tiles) {
+        if (!t.media) continue
+        let m = view
+        if (twistM && twistSet.has(t.i)) m = m.multiply(twistM)
+        m = m.multiply(cubies[t.i].rot).multiply(t.face)
+        const u = m.transformPoint(up)
+        const r = m.transformPoint(right)
+        // how far a picture turned by q quarter turns points up the screen (higher is better)
+        const score = (q: number) => -(Math.cos((q * Math.PI) / 2) * u.y + Math.sin((q * Math.PI) / 2) * r.y)
+        let best = t.q
+        for (let q = 0; q < 4; q++) if (score(q) > score(best)) best = q
+        if (best === t.q || score(best) < score(t.q) + 0.3) continue
+        const delta = (best - t.q + 4) % 4
+        t.angle += (delta === 3 ? -1 : delta) * 90
+        t.q = best
+        t.media.style.rotate = `${t.angle}deg`
+      }
+    }
+    const setView = (rx: number, ry: number, rz: number) => {
+      view = new DOMMatrix().rotateAxisAngleSelf(1, 0, 0, rx).rotateAxisAngleSelf(0, 1, 0, ry).rotateAxisAngleSelf(0, 0, 1, rz)
+    }
+
     // the face videos play only while the hero is on screen and the cube isn't paused
     const videos = [...el.querySelectorAll('video')]
     let onScreen = true
@@ -136,6 +178,9 @@ export function HeroCube() {
 
     if (reduce) {
       el.style.transform = 'rotateX(-24deg) rotateY(-35deg)'
+      setView(-24, -35, 0)
+      tiles.forEach(t => t.media && (t.media.style.transition = 'none'))
+      uprightAll()
       return () => {
         ro.disconnect()
         io.disconnect()
@@ -169,8 +214,11 @@ export function HeroCube() {
       if (!twist) return
       const p = clamp((now - twist.start) / TWIST_MS)
       const [ax, ay, az] = AXES[twist.axis]
-      const r = `rotate3d(${ax}, ${ay}, ${az}, ${90 * twist.dir * easeInOut(p)}deg)`
+      const deg = 90 * twist.dir * easeInOut(p)
+      const r = `rotate3d(${ax}, ${ay}, ${az}, ${deg}deg)`
       twist.members.forEach(i => place(i, r))
+      twistM = new DOMMatrix().rotateAxisAngleSelf(ax, ay, az, deg)
+      twistSet = new Set(twist.members)
       cutM.style.transform = `${r} ${twist.base}`
       if (p < 1) return
       const m = new DOMMatrix().rotateAxisAngleSelf(ax, ay, az, 90 * twist.dir)
@@ -183,6 +231,7 @@ export function HeroCube() {
       })
       cutM.style.display = 'none'
       cutS.style.display = 'none'
+      twistM = null
       lastTwist = twist
       twist = null
     }
@@ -204,12 +253,16 @@ export function HeroCube() {
       const scale = 5.2 - 4.2 * ie
       const rx = -24 + 34 * (1 - ie) + Math.sin(elapsed / 2600) * 9
       const y = Math.sin(elapsed / 2200) * 14 // floating in space
-      el.style.transform = `translateY(${y}px) scale(${scale}) rotateX(${rx}deg) rotateY(${-150 * (1 - ie) - 35 + ry}deg) rotateZ(${8 * (1 - ie)}deg)`
+      const yaw = -150 * (1 - ie) - 35 + ry
+      const roll = 8 * (1 - ie)
+      el.style.transform = `translateY(${y}px) scale(${scale}) rotateX(${rx}deg) rotateY(${yaw}deg) rotateZ(${roll}deg)`
+      setView(rx, yaw, roll)
       if (!twist && elapsed >= nextTwist) {
         startTwist(now)
         nextTwist = elapsed + TWIST_EVERY_MS
       }
       stepTwist(now)
+      uprightAll()
     }
     raf = requestAnimationFrame(frame)
     return () => {
@@ -244,12 +297,12 @@ export function HeroCube() {
                 <div key={key} className="absolute inset-0 p-[1.5px] [backface-visibility:hidden]" style={{ transform: `${FACE_T[key]} translateZ(calc(var(--cell, 110px) / 2))` }}>
                   <div className="size-full overflow-hidden rounded-[4px] bg-[#dfe7f3]">
                     {'video' in m && m.video ? (
-                      <video poster={m.video.poster} className="size-full object-cover" muted loop playsInline preload="auto">
+                      <video data-media poster={m.video.poster} className="size-full object-cover transition-[rotate] duration-500 ease-out" muted loop playsInline preload="auto">
                         {m.video.webm && <source src={m.video.webm} type="video/webm" />}
                         <source src={m.video.src} type="video/mp4" />
                       </video>
                     ) : (
-                      <img src={'image' in m ? m.image : ''} alt="" draggable={false} decoding="async" className="size-full object-cover" />
+                      <img data-media src={'image' in m ? m.image : ''} alt="" draggable={false} decoding="async" className="size-full object-cover transition-[rotate] duration-500 ease-out" />
                     )}
                   </div>
                 </div>
