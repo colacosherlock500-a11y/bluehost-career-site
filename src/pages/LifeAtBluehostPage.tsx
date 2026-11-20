@@ -103,10 +103,10 @@ export default function LifeAtBluehostPage() {
           </div>
           <ul className="grid grid-cols-2 gap-[22px]">
             {stats.map(([n, l]) => (
-              <li key={l} className="group relative flex aspect-[280/227] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-bh-300 bg-white/80 p-4 text-center backdrop-blur-sm transition-[translate,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:border-bh-blue hover:shadow-[0_22px_44px_rgba(25,108,223,0.22)]">
+              <li key={l} className="group relative flex min-h-[150px] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border-2 border-bh-300 bg-white/80 p-4 sm:aspect-[280/227] sm:min-h-0 text-center backdrop-blur-sm transition-[translate,box-shadow,border-color] duration-300 ease-out hover:-translate-y-2 hover:border-bh-blue hover:shadow-[0_22px_44px_rgba(25,108,223,0.22)]">
                 <span aria-hidden className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,#dcebff,transparent_70%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <span className="relative text-[clamp(40px,5vw,72px)] font-semibold leading-none text-bh-blue transition-[scale] duration-300 ease-out group-hover:scale-110">{n}</span>
-                <span className="relative text-base leading-[1.4]">{l}</span>
+                <span className="relative text-sm leading-[1.35] sm:text-base sm:leading-[1.4]">{l}</span>
               </li>
             ))}
           </ul>

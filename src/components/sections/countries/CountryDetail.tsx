@@ -85,7 +85,7 @@ export function CountryDetail({ country, headingLevel = 'h2' }: { country: Count
             ))}
           </p>
         </div>
-        <div className="flex items-center gap-[10px]">
+        <div className="flex flex-wrap items-center gap-x-[10px] gap-y-2">
           {country.values.map((v, i) => (
             <Fragment key={v}>
               {i > 0 && <span className="h-[28.5px] w-px bg-black" aria-hidden />}
