@@ -77,7 +77,12 @@ export function SocialCards() {
       // Pack of cards (HR): closed while the stage comes into view, then it opens card by card
       // in step with the scroll, fully fanned once the stage is near the top of the screen.
       // Driven by the scroll position alone, so scrolling back closes the pack again.
-      const p = reduce ? 1 : Math.min(1, Math.max(0, (vh * 0.72 - r.top) / (vh * 0.55)))
+      // Starts opening as the pack's top passes 85% of the screen and is fully open once the
+      // whole fan is on screen (and always by the bottom of the page, which is close by here).
+      const start = vh * 0.85
+      const end = Math.min(start - 150, vh - r.height - 24)
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4
+      const p = reduce || atBottom ? 1 : Math.min(1, Math.max(0, (start - r.top) / (start - end)))
       const scale = Math.min(1, el.clientWidth / 1100)
       cards.current.forEach((card, i) => {
         if (!card) return
