@@ -46,16 +46,26 @@ function SocialSpinner() {
 /*
  * LinkedIn posts as a pack of cards (HR): the pack is closed by default, and as the visitor
  * scrolls it opens into a fan of tall post cards on a wide arc (a wheel whose hub is far below),
- * middle cards first, in step with the scroll (scrolling back closes it). Once open it can be
- * dragged round; it loops, so posts keep coming round. Hover lifts a card forward.
- * Reduced motion: an open fan.
+ * middle cards first, in step with the scroll (scrolling back closes it). Open, the seven posts
+ * overlap like a hand of cards and the whole fan fits the width, so every card is in full view;
+ * it can be nudged sideways by dragging. Hover lifts a card forward. Reduced motion: open fan.
  */
 const CARD_W = 290
 const CARD_H = 396
 const RADIUS = 1500 // distance from a card's centre to the wheel's hub
-const STEP = 11.5 // degrees between neighbouring cards
-const POSTS = [liPost4, liPost5, liPost6, liPost7, liPost1, liPost2, liPost3]
-const CARDS = Array.from({ length: 14 }, (_, i) => POSTS[i % POSTS.length])
+const POSTS = [liPost1, liPost2, liPost3, liPost4, liPost5, liPost6, liPost7]
+const CARDS = POSTS
+/** Degrees between neighbouring cards: they overlap like a hand of cards, more on small screens. */
+const stepFor = (width: number) => (width < 700 ? 3.2 : width < 1100 ? 6 : 8)
+/** Width of the open fan at full size, and how far its outer cards sink below the middle one. */
+function fanSize(step: number) {
+  const m = (((CARDS.length - 1) / 2) * step * Math.PI) / 180
+  return {
+    w: 2 * RADIUS * Math.sin(m) + CARD_W * Math.cos(m) + CARD_H * Math.sin(m),
+    drop: RADIUS * (1 - Math.cos(m)) + (CARD_W / 2) * Math.sin(m) + (CARD_H / 2) * (1 - Math.cos(m)),
+  }
+}
+const LIFT = 28 // room above the cards for the hover lift
 
 export function SocialCards() {
   const stage = useRef<HTMLDivElement>(null)
@@ -65,7 +75,6 @@ export function SocialCards() {
     const el = stage.current
     if (!el) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const loop = CARDS.length * STEP
     let dragDeg = 0
     let drag: { x: number; deg: number; moved: boolean } | null = null
     let raf = 0
@@ -83,26 +92,31 @@ export function SocialCards() {
       const end = Math.min(start - 150, vh - r.height - 24)
       const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4
       const p = reduce || atBottom ? 1 : Math.min(1, Math.max(0, (start - r.top) / (start - end)))
-      const scale = Math.min(1, el.clientWidth / 1100)
+      // the whole open fan fits the width, and the stage is tall enough for its lowest corners
+      const STEP = stepFor(el.clientWidth)
+      const MAX_A = ((CARDS.length - 1) / 2) * STEP
+      const fan = fanSize(STEP)
+      const scale = Math.min(1, (el.clientWidth - 24) / fan.w)
+      const height = Math.round((LIFT + CARD_H + fan.drop) * scale + 24)
+      if (el.style.height !== `${height}px`) el.style.height = `${height}px`
+      const cy = (LIFT + CARD_H / 2) * scale
       cards.current.forEach((card, i) => {
         if (!card) return
-        let a = (i - (CARDS.length - 1) / 2) * STEP + dragDeg
-        a = ((((a + loop / 2) % loop) + loop) % loop) - loop / 2 // keep within one loop
-        const shown = Math.abs(a) < 62
+        const base = (i - (CARDS.length - 1) / 2) * STEP
+        const a = base + dragDeg
         // cards nearest the middle leave the pack first, the outer ones follow
-        const lag = (Math.abs(a) / 62) * 0.35
+        const lag = (Math.abs(base) / MAX_A) * 0.35
         const t = Math.min(1, Math.max(0, (p - lag) / (1 - lag)))
         const e = t * t * (3 - 2 * t)
         const closed = 1 - e
         // a squared-up deck: each card a hair off the one below, slightly askew
-        const rank = Math.round(Math.abs(a) / STEP)
-        const dx = (a < 0 ? -1 : 1) * rank * 1.6 * closed
+        const rank = Math.round(Math.abs(base) / STEP)
+        const dx = (base < 0 ? -1 : 1) * rank * 1.6 * closed
         const dy = -rank * 1.2 * closed
         const tilt = (((i * 37) % 7) - 3) * 0.9 * closed
+        card.style.top = `${cy}px`
         card.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${scale}) translateY(${RADIUS}px) rotate(${a * e + tilt}deg) translateY(${-RADIUS}px)`
-        card.style.zIndex = String(200 - Math.round(Math.abs(a) * 2))
-        card.style.opacity = shown ? String(Math.min(1, (62 - Math.abs(a)) / 14)) : '0'
-        card.style.visibility = shown ? '' : 'hidden'
+        card.style.zIndex = String(200 - Math.round(Math.abs(base) * 2))
       })
     }
     const schedule = () => {
@@ -121,12 +135,24 @@ export function SocialCards() {
         el.setPointerCapture(e.pointerId)
       }
       if (!drag.moved) return
-      dragDeg = drag.deg + (dx / CARD_W) * STEP
+      // a gentle nudge: the fan can swing a little either way, never off screen
+      const step = stepFor(el.clientWidth)
+      dragDeg = Math.max(-step, Math.min(step, drag.deg + (dx / CARD_W) * step))
       schedule()
     }
     const onUp = () => {
       if (drag?.moved) el.addEventListener('click', ev => (ev.preventDefault(), ev.stopPropagation()), { capture: true, once: true })
       drag = null
+      // swing back to the centred fan
+      const from = dragDeg
+      const t0 = performance.now()
+      const back = (now: number) => {
+        const k = Math.min(1, (now - t0) / 450)
+        dragDeg = from * (1 - (1 - (1 - k) ** 3))
+        render()
+        if (k < 1 && !drag) requestAnimationFrame(back)
+      }
+      if (from) requestAnimationFrame(back)
     }
 
     render()
@@ -152,7 +178,7 @@ export function SocialCards() {
       ref={stage}
       role="region"
       aria-label="Bluehost on LinkedIn"
-      className="relative h-[clamp(300px,42vw,520px)] w-full cursor-grab touch-pan-y select-none overflow-hidden active:cursor-grabbing [&_img]:pointer-events-none"
+      className="relative h-[clamp(300px,42vw,620px)] w-full cursor-grab touch-pan-y select-none overflow-hidden active:cursor-grabbing [&_img]:pointer-events-none"
     >
       {CARDS.map((src, i) => (
         <a
@@ -165,8 +191,7 @@ export function SocialCards() {
           rel="noreferrer"
           draggable={false}
           aria-label="Bluehost post on LinkedIn"
-          tabIndex={i < POSTS.length ? 0 : -1}
-          className="group absolute left-1/2 top-[56%] will-change-transform"
+          className="group absolute left-1/2 will-change-transform"
           style={{ width: CARD_W, height: CARD_H }}
         >
           <span className="relative block size-full overflow-hidden rounded-[14px] shadow-[0_14px_36px_rgba(0,42,102,0.18)] transition-[translate,scale,box-shadow] duration-300 ease-out group-hover:-translate-y-5 group-hover:scale-[1.06] group-hover:shadow-[0_28px_60px_rgba(0,42,102,0.3)] group-focus-visible:-translate-y-5 group-focus-visible:scale-[1.06]">
