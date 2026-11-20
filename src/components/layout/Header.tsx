@@ -54,7 +54,12 @@ export function Header({ theme = 'dark' }: { theme?: Theme }) {
   const location = useLocation()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    // only touch React state when the bar actually switches (scroll fires every frame)
+    let last: boolean | null = null
+    const onScroll = () => {
+      const now = window.scrollY > 40
+      if (now !== last) setScrolled((last = now))
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)

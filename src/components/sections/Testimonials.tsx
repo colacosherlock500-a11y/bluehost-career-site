@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react'
 import ring from '../../assets/img/common/avatar-ring.svg'
 import star from '../../assets/img/common/star.svg'
 import { SectionHeader } from '../ui/SectionHeader'
@@ -47,7 +47,7 @@ const BLOBS: [string, string][] = [
  * fades out and the text turns white. Photo cards: full-colour photo under a navy overlay
  * (darker at top and bottom behind the text), subtle zoom 1.0 → 1.04 on hover.
  */
-function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: boolean }) {
+const StoryCard = memo(function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: boolean }) {
   const tr = useT()
   // Tilt towards the pointer (3D) while hovered.
   const tilt = (e: React.PointerEvent<HTMLElement>) => {
@@ -98,7 +98,7 @@ function StoryCard({ t, index, shown }: { t: Testimonial; index: number; shown: 
       </blockquote>
     </figure>
   )
-}
+})
 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
 
@@ -127,13 +127,22 @@ const AUTOPLAY_MS = 4500
 export function Testimonials({ title, eyebrow = 'Our People', items = testimonials }: { title?: ReactNode; eyebrow?: string; items?: Testimonial[] }) {
   const t = useT()
   const track = useRef<HTMLDivElement>(null)
-  const [progress, setProgress] = useState({ start: 0, size: 1 })
+  // the progress bar is moved directly (no re-render per scroll frame); the arrows only
+  // re-render when they actually switch on or off
+  const bar = useRef<HTMLSpanElement>(null)
   const [edges, setEdges] = useState({ atStart: true, atEnd: false })
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null)
   const section = useRef<HTMLElement>(null)
   const [shown, setShown] = useState(false)
   const [onScreen, setOnScreen] = useState(false)
-  const [paused, setPaused] = useState(false)
+  // hover/focus pauses autoplay without re-rendering the section (cards slide under a resting
+  // pointer while the page scrolls, which would otherwise rebuild every card each time)
+  const paused = useRef(false)
+  const lastActivity = useRef(0)
+  const setPaused = (p: boolean) => {
+    paused.current = p
+    lastActivity.current = performance.now()
+  }
   useEffect(() => {
     const el = section.current
     if (!el) return
@@ -152,32 +161,47 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
   useEffect(() => {
     const el = track.current
     if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Smooth scrolling: card positions come from their layout offsets (which the flow
+    // transforms don't change), measured once and again only on resize, and every frame does
+    // all its reading before any writing, so the browser never has to redo layout mid-frame.
+    const cards = [...el.querySelectorAll<HTMLElement>('[data-flow]')]
+    let centres: number[] = []
+    let width = 0
+    const measure = () => {
+      width = el.clientWidth
+      centres = cards.map(c => c.offsetLeft + c.offsetWidth / 2)
+    }
+    measure()
     let raf = 0
     const render = () => {
       raf = 0
       const r = el.getBoundingClientRect()
       if (r.bottom < 0 || r.top > window.innerHeight) return
-      const mid = r.left + r.width / 2
+      const mid = el.scrollLeft + width / 2
       const page = (window.innerHeight - r.top) / (window.innerHeight + r.height) // 0 → 1 through the screen
-      el.querySelectorAll<HTMLElement>('[data-flow]').forEach((c, i) => {
-        const b = c.getBoundingClientRect()
-        const d = Math.max(-1, Math.min(1, (b.left + b.width / 2 - mid) / r.width)) // -0.5 … 0.5 on screen
+      const transforms = centres.map((cx, i) => {
+        const d = Math.max(-1, Math.min(1, (cx - mid) / width)) // -0.5 … 0.5 on screen
         const y = d * d * 150 + Math.sin(i * 1.15 + page * Math.PI * 3) * 14
-        c.style.transform = `translateY(${y.toFixed(1)}px) rotate(${(d * 7).toFixed(2)}deg) scale(${(1 - Math.abs(d) * 0.14).toFixed(3)})`
+        return `translateY(${y.toFixed(1)}px) rotate(${(d * 7).toFixed(2)}deg) scale(${(1 - Math.abs(d) * 0.14).toFixed(3)})`
       })
+      cards.forEach((c, i) => (c.style.transform = transforms[i]))
     }
     const schedule = () => {
       raf ||= requestAnimationFrame(render)
     }
+    const onResize = () => {
+      measure()
+      schedule()
+    }
     render()
     el.addEventListener('scroll', schedule, { passive: true })
     window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule)
+    window.addEventListener('resize', onResize)
     return () => {
       cancelAnimationFrame(raf)
       el.removeEventListener('scroll', schedule)
       window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
+      window.removeEventListener('resize', onResize)
     }
   }, [])
 
@@ -186,9 +210,16 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
     if (!el) return
     const max = el.scrollWidth - el.clientWidth
     const size = el.clientWidth / el.scrollWidth
-    setProgress({ start: max > 0 ? (el.scrollLeft / max) * (1 - size) : 0, size })
-    setEdges({ atStart: el.scrollLeft < 4, atEnd: el.scrollLeft > max - 4 })
+    const start = max > 0 ? (el.scrollLeft / max) * (1 - size) : 0
+    if (bar.current) {
+      bar.current.style.left = `${start * 100}%`
+      bar.current.style.width = `${size * 100}%`
+    }
+    const atStart = el.scrollLeft < 4
+    const atEnd = el.scrollLeft > max - 4
+    setEdges(e => (e.atStart === atStart && e.atEnd === atEnd ? e : { atStart, atEnd }))
   }
+
   useEffect(() => {
     sync()
     window.addEventListener('resize', sync)
@@ -206,15 +237,17 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
   }
 
   useEffect(() => {
-    if (!onScreen || paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!onScreen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    lastActivity.current = performance.now()
     const id = window.setInterval(() => {
       const el = track.current
-      if (!el) return
+      if (!el || paused.current || performance.now() - lastActivity.current < AUTOPLAY_MS) return
+      lastActivity.current = performance.now()
       if (el.scrollLeft > el.scrollWidth - el.clientWidth - 4) glide(el, 0)
       else move(1)
-    }, AUTOPLAY_MS)
+    }, 250)
     return () => window.clearInterval(id)
-  }, [onScreen, paused])
+  }, [onScreen])
 
   // Mouse drag (touch and trackpads scroll natively).
   const onPointerDown = (e: React.PointerEvent) => {
@@ -290,7 +323,7 @@ export function Testimonials({ title, eyebrow = 'Our People', items = testimonia
           </div>
           {/* position within the list */}
           <div className="relative h-[3px] w-[120px] overflow-hidden rounded-full bg-[#d8e4f5]" aria-hidden>
-            <span className="absolute inset-y-0 rounded-full bg-bh-blue" style={{ left: `${progress.start * 100}%`, width: `${progress.size * 100}%` }} />
+            <span ref={bar} className="absolute inset-y-0 left-0 w-full rounded-full bg-bh-blue" />
           </div>
         </div>
       </div>

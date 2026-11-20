@@ -280,7 +280,7 @@ export function HeroCube() {
   const cutPanel = 'absolute left-0 top-0 size-full rounded-[4px] bg-[#f4f7fc]'
   return (
     <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center [perspective:1400px]">
-      <div ref={root} className="relative aspect-square w-[min(330px,58vw)] will-change-transform [transform-style:preserve-3d]">
+      <div ref={root} className="relative aspect-square w-[min(380px,64vw)] will-change-transform [transform-style:preserve-3d]">
         <div ref={cutStill} className={cutPanel} style={{ display: 'none' }} />
         <div ref={cutMoving} className={cutPanel} style={{ display: 'none' }} />
         {cubies.map((c, i) => (
