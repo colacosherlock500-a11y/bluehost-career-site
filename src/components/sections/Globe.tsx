@@ -204,7 +204,7 @@ export function Globe({ selected: controlled, onSelect, showDetails = true, hint
 
         <svg
           viewBox={`0 0 ${size} ${size}`}
-          className="mx-auto w-full max-w-[460px] cursor-grab touch-none select-none active:cursor-grabbing"
+          className="mx-auto w-full max-w-[460px] cursor-grab touch-none select-none overflow-visible active:cursor-grabbing"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
