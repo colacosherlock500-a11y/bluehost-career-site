@@ -34,13 +34,13 @@ import spainRemote from '../assets/img/offices/spain-remote.jpg'
 import tenerife from '../assets/img/offices/tenerife.jpg'
 import ukRemote from '../assets/img/offices/uk-remote.jpg'
 import wijchen from '../assets/img/offices/wijchen.jpg'
-import blairPenney from '../assets/img/people/blair-penney.png'
+import blairPenney from '../assets/img/people/blair-penney.jpg'
 import douglasReis from '../assets/img/people/douglas-reis.jpg'
-import judith from '../assets/img/people/judith-terbeek-arts.png'
+import judith from '../assets/img/people/judith-terbeek-arts.jpg'
 import mariaMarcondes from '../assets/img/people/maria-marcondes.jpg'
-import nikhilSharma from '../assets/img/people/nikhil-sharma.png'
+import nikhilSharma from '../assets/img/people/nikhil-sharma.jpg'
 import saraKlosterman from '../assets/img/people/sara-klosterman.png'
-import ulises from '../assets/img/people/ulises-di-toro.png'
+import ulises from '../assets/img/people/ulises-di-toro.jpg'
 
 export interface Office {
   /** Card eyebrow, e.g. "office 1" or "remote". */
