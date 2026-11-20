@@ -1,188 +1,267 @@
 import { useEffect, useRef, useState } from 'react'
 import belong from '../../../assets/img/evp/belong.jpg'
-import build from '../../../assets/img/evp/build.jpg'
 import grow from '../../../assets/img/evp/grow.jpg'
 import oneTeam from '../../../assets/img/evp/one-team.jpg'
 import shine from '../../../assets/img/evp/shine.jpg'
 import lifeTeam from '../../../assets/img/home/life-team-photo.jpg'
-import aiBuilder from '../../../assets/img/life/ai-builder.jpg'
-import businessBuilder from '../../../assets/img/life/business-builder.jpg'
-import howWeWork from '../../../assets/img/life/how-we-work.jpg'
-import { teams } from '../../../data/teams'
-import { affinityGroups } from '../../../data/affinityGroups'
 import { useT } from '../../../i18n/I18n'
 
 /*
- * Home hero (review call, Nov 18): the cube from Nikki's reference video, without its
- * background. It comes in big, its 54 tiles flying in from all around and locking into a
- * cube as it shrinks and spins; then it stays in the hero and keeps moving, turning a quarter
- * at a time like a puzzle cube, with the tiles easing apart on every turn. A pause button
- * stops the motion. Reduced motion: a still cube in a three-quarter view.
+ * Home hero: the puzzle cube from the reference video ("logo 2", Maria). A 3×3×3 cube whose
+ * tiles carry our photos, with the six face centres playing short videos (events and customer
+ * stories). It starts so close it fills the screen, pulls back while turning, then keeps
+ * tumbling at an easy pace while its outer layers twist like a puzzle cube, the white core
+ * showing in the cut. A pause button stops it; reduced motion shows a still cube.
  *
- * MEDIA: the tiles use our own photos for now. Nikki is sending customer videos; add them to
- * TILES as { video: url } (they play muted and looped) and they take a tile each.
+ * Built for steady rendering (the previous cube flickered): the 26 cubies move only when their
+ * layer turns, nothing inside the 3D scene changes opacity, and every tile is a plain image
+ * (or one of the six centre videos).
+ *
+ * MEDIA: stills and loops were cut from the Austin recap, the AI Builder Tour (Brazil), the
+ * bakery customer story, the AI receptionist and AI Store spots, the AI All-Access post and the
+ * event photos HR sent. Add more to src/assets/img/cube and src/assets/video/cube.
  */
 
-type Tile = { image: string } | { video: string; poster?: string }
+const stills = Object.values(import.meta.glob<string>('../../../assets/img/cube/*.jpg', { eager: true, import: 'default' }))
+const videoFiles = import.meta.glob<string>('../../../assets/video/cube/*.mp4', { eager: true, import: 'default' })
+const webmFiles = import.meta.glob<string>('../../../assets/video/cube/*.webm', { eager: true, import: 'default' })
+const posters = import.meta.glob<string>('../../../assets/video/cube/*.jpg', { eager: true, import: 'default' })
+const VIDEOS = Object.entries(videoFiles).map(([path, src]) => ({ src, webm: webmFiles[path.replace(/\.mp4$/, '.webm')], poster: posters[path.replace(/\.mp4$/, '.jpg')] }))
+const IMAGES = [...stills, lifeTeam, belong, grow, shine, oneTeam]
 
-const pick = (names: string[]) => affinityGroups.filter(g => names.includes(g.name)).map(g => g.image)
-const TILES: Tile[] = [
-  businessBuilder,
-  belong,
-  aiBuilder,
-  ...teams.map(t => t.image),
-  build,
-  lifeTeam,
-  grow,
-  howWeWork,
-  shine,
-  oneTeam,
-  ...pick(['Parents', 'Gamers', 'Globetrotters', 'Foodies', 'Coders', 'Women in Newfold', 'Earth Allies', 'Pets', 'Speakers', 'Strides', 'Artist', 'Black', 'Hispanic/Latinos', 'FIT']),
-].map(src => ({ image: src }))
-
-const N = 3 // tiles per edge
-const FACES = [
-  'rotateY(0deg)',
-  'rotateY(90deg)',
-  'rotateY(180deg)',
-  'rotateY(-90deg)',
-  'rotateX(90deg)',
-  'rotateX(-90deg)',
+type Axis = 0 | 1 | 2
+type Vec = [number, number, number]
+const AXES: Vec[] = [
+  [1, 0, 0],
+  [0, 1, 0],
+  [0, 0, 1],
 ]
-const INTRO_MS = 3200
-const TURN_EVERY_MS = 3200
-const TURN_MS = 1100
+/** Sticker orientation for each outward direction (a sticker is built facing +z). */
+const FACE_T: Record<string, string> = {
+  '0,0,1': '',
+  '0,0,-1': 'rotateY(180deg)',
+  '1,0,0': 'rotateY(90deg)',
+  '-1,0,0': 'rotateY(-90deg)',
+  '0,1,0': 'rotateX(-90deg)',
+  '0,-1,0': 'rotateX(90deg)',
+}
+
+interface Cubie {
+  pos: Vec
+  rot: DOMMatrix
+  stickers: string[]
+}
+
+function makeCubies(): Cubie[] {
+  const list: Cubie[] = []
+  for (let x = -1; x <= 1; x++)
+    for (let y = -1; y <= 1; y++)
+      for (let z = -1; z <= 1; z++) {
+        if (!x && !y && !z) continue
+        const p: Vec = [x, y, z]
+        const stickers = p.flatMap((v, a) => {
+          if (!v) return []
+          const dir: Vec = [0, 0, 0]
+          dir[a] = v
+          return [dir.join(',')]
+        })
+        list.push({ pos: p, rot: new DOMMatrix(), stickers })
+      }
+  return list
+}
+
+const INTRO_MS = 4200
+const TWIST_EVERY_MS = 2600
+const TWIST_MS = 900
+const SPIN_DEG_PER_S = 9
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
 const easeOut = (t: number) => 1 - (1 - t) ** 3
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
 
-/** A stable pseudo-random number per tile, so the fly-in looks the same on every visit. */
-const rnd = (i: number, k: number) => {
-  const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453
-  return x - Math.floor(x)
-}
-
 export function HeroCube() {
   const t = useT()
-  const cube = useRef<HTMLDivElement>(null)
-  const tiles = useRef<(HTMLDivElement | null)[]>([])
+  const [cubies] = useState(makeCubies)
+  const root = useRef<HTMLDivElement>(null)
+  const cubieEls = useRef<(HTMLDivElement | null)[]>([])
+  const cutMoving = useRef<HTMLDivElement>(null)
+  const cutStill = useRef<HTMLDivElement>(null)
   const [paused, setPaused] = useState(false)
   const pausedRef = useRef(paused)
   pausedRef.current = paused
 
+  // Media for every sticker: videos on the six centres, photos everywhere else.
+  const [media] = useState(() => {
+    let img = 0
+    let vid = 0
+    return cubies.map(c =>
+      c.stickers.map(() => {
+        const isCentre = c.pos.filter(v => v !== 0).length === 1
+        if (isCentre && VIDEOS.length) return { video: VIDEOS[vid++ % VIDEOS.length] }
+        return { image: IMAGES[(img++ * 7) % IMAGES.length] }
+      }),
+    )
+  })
+
   useEffect(() => {
-    const el = cube.current
-    if (!el) return
+    const el = root.current
+    const cutM = cutMoving.current
+    const cutS = cutStill.current
+    if (!el || !cutM || !cutS) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const size = () => el.offsetWidth
-    const place = (intro: number, lift: number) => {
-      const s = size()
-      const cell = s / N
-      tiles.current.forEach((tile, i) => {
-        if (!tile) return
-        const f = Math.floor(i / (N * N))
-        const k = i % (N * N)
-        const x = ((k % N) - 1) * cell
-        const y = (Math.floor(k / N) - 1) * cell
-        // fly-in: each tile starts far out, scattered and tumbling, and lands a beat after the last
-        const d = clamp((intro - rnd(i, 1) * 0.35) / 0.65)
-        const e = easeOut(d)
-        const far = 1 - e
-        const ox = (rnd(i, 2) - 0.5) * s * 5 * far
-        const oy = (rnd(i, 3) - 0.5) * s * 4 * far
-        const oz = (600 + rnd(i, 4) * 1600) * far + lift * (8 + (k % 2) * 6)
-        const r = (rnd(i, 5) - 0.5) * 540 * far
-        tile.style.transform = `${FACES[f]} translateZ(${s / 2}px) translate3d(${x + ox}px, ${y + oy}px, ${oz}px) rotateX(${r}deg) rotateY(${r * 0.7}deg)`
-        tile.style.opacity = String(clamp(d * 3))
-      })
+    const cell = () => el.offsetWidth / 3
+    const place = (i: number, extra = '') => {
+      const c = cubies[i]
+      const s = cell()
+      const node = cubieEls.current[i]
+      if (node) node.style.transform = `${extra} translate3d(${c.pos[0] * s}px, ${c.pos[1] * s}px, ${c.pos[2] * s}px) ${c.rot.toString()}`
     }
+    const placeAll = () => {
+      el.style.setProperty('--cell', `${cell()}px`)
+      cubies.forEach((_, i) => place(i))
+    }
+    placeAll()
+    const ro = new ResizeObserver(placeAll)
+    ro.observe(el)
+
+    // the face videos play only while the hero is on screen and the cube isn't paused
+    const videos = [...el.querySelectorAll('video')]
+    let onScreen = true
+    const syncVideos = () => videos.forEach(v => (onScreen && !pausedRef.current && !reduce ? v.play().catch(() => {}) : v.pause()))
+    const io = new IntersectionObserver(([e]) => {
+      onScreen = e.isIntersecting
+      syncVideos()
+    })
+    io.observe(el.parentElement!)
 
     if (reduce) {
-      place(1, 0)
-      el.style.transform = 'rotateX(-22deg) rotateY(-32deg)'
-      return
+      el.style.transform = 'rotateX(-24deg) rotateY(-35deg)'
+      return () => {
+        ro.disconnect()
+        io.disconnect()
+      }
     }
 
-    // quarter turns around alternating axes, like a puzzle cube being played with
-    const axes: ['x' | 'y', number][] = [['y', -90], ['x', 90], ['y', -90], ['x', -90], ['y', 90], ['x', 90]]
-    let rx = -22
-    let ry = -32
-    let turnStart = -1
-    let turnIdx = 0
-    let from = { rx, ry }
+    // ---- layer twists ----
+    let twist: { axis: Axis; layer: number; dir: number; start: number; members: number[]; base: string } | null = null
+    let lastTwist: { axis: Axis; layer: number; dir: number } | null = null
+    const startTwist = (now: number) => {
+      let axis: Axis, layer: number, dir: number
+      do {
+        axis = Math.floor(Math.random() * 3) as Axis
+        layer = Math.random() < 0.5 ? -1 : 1
+        dir = Math.random() < 0.5 ? -1 : 1
+      } while (lastTwist && lastTwist.axis === axis && lastTwist.layer === layer && lastTwist.dir === -dir)
+      const members = cubies.map((c, i) => (c.pos[axis] === layer ? i : -1)).filter(i => i >= 0)
+      // the white core shows in the cut: one panel turns with the layer, one stays put
+      const s = cell()
+      const orient = axis === 0 ? 'rotateY(90deg)' : axis === 1 ? 'rotateX(90deg)' : ''
+      const at = (d: number) => {
+        const v = (layer * s) / 2 + d
+        return `translate3d(${axis === 0 ? v : 0}px, ${axis === 1 ? v : 0}px, ${axis === 2 ? v : 0}px) ${orient}`
+      }
+      cutS.style.transform = at(-layer * 0.6)
+      cutS.style.display = 'block'
+      cutM.style.display = 'block'
+      twist = { axis, layer, dir, start: now, members, base: at(layer * 0.6) }
+    }
+    const stepTwist = (now: number) => {
+      if (!twist) return
+      const p = clamp((now - twist.start) / TWIST_MS)
+      const [ax, ay, az] = AXES[twist.axis]
+      const r = `rotate3d(${ax}, ${ay}, ${az}, ${90 * twist.dir * easeInOut(p)}deg)`
+      twist.members.forEach(i => place(i, r))
+      cutM.style.transform = `${r} ${twist.base}`
+      if (p < 1) return
+      const m = new DOMMatrix().rotateAxisAngleSelf(ax, ay, az, 90 * twist.dir)
+      twist.members.forEach(i => {
+        const c = cubies[i]
+        const q = m.transformPoint(new DOMPoint(...c.pos))
+        c.pos = [Math.round(q.x), Math.round(q.y), Math.round(q.z)]
+        c.rot = m.multiply(c.rot)
+        place(i)
+      })
+      cutM.style.display = 'none'
+      cutS.style.display = 'none'
+      lastTwist = twist
+      twist = null
+    }
+
+    // ---- camera: in close, pull back while turning, then tumble gently ----
     let elapsed = 0
     let last = performance.now()
+    let nextTwist = 1800
+    let ry = 0
     let raf = 0
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame)
-      const dt = Math.min(64, now - last)
+      const dt = Math.min(50, now - last)
       last = now
-      if (pausedRef.current) return
+      if (pausedRef.current || !onScreen) return
       elapsed += dt
-      const intro = clamp(elapsed / INTRO_MS)
-      const ie = easeInOut(intro)
-      let lift = 0
-      if (intro >= 1) {
-        const since = elapsed - INTRO_MS
-        const n = Math.floor(since / TURN_EVERY_MS)
-        if (n + 1 > turnIdx) {
-          // start the next quarter turn
-          turnIdx = n + 1
-          turnStart = since
-          from = { rx, ry }
-        }
-        const p = clamp((since - turnStart) / TURN_MS)
-        const [axis, deg] = axes[(turnIdx - 1) % axes.length]
-        const tp = easeInOut(p)
-        if (axis === 'x') rx = from.rx + deg * tp
-        else ry = from.ry + deg * tp
-        lift = Math.sin(Math.PI * p) // tiles ease apart mid-turn
-        if (p >= 1) from = { rx, ry }
+      const ie = easeOut(clamp(elapsed / INTRO_MS))
+      ry += (SPIN_DEG_PER_S * dt) / 1000
+      const scale = 5.2 - 4.2 * ie
+      const rx = -24 + 34 * (1 - ie) + Math.sin(elapsed / 2600) * 9
+      const y = Math.sin(elapsed / 1900) * 7
+      el.style.transform = `translateY(${y}px) scale(${scale}) rotateX(${rx}deg) rotateY(${-150 * (1 - ie) - 35 + ry}deg) rotateZ(${8 * (1 - ie)}deg)`
+      if (!twist && elapsed >= nextTwist) {
+        startTwist(now)
+        nextTwist = elapsed + TWIST_EVERY_MS
       }
-      // comes in big and spinning, settles into a three-quarter view, then keeps drifting
-      const scale = 2.4 - 1.4 * ie
-      const spin = (1 - ie) * 300
-      const floatY = Math.sin(elapsed / 1400) * 8
-      el.style.transform = `translateY(${floatY}px) scale(${scale}) rotateX(${rx + (1 - ie) * 40}deg) rotateY(${ry - spin}deg)`
-      place(intro, lift)
+      stepTwist(now)
     }
     raf = requestAnimationFrame(frame)
-    return () => cancelAnimationFrame(raf)
-  }, [])
+    return () => {
+      cancelAnimationFrame(raf)
+      ro.disconnect()
+      io.disconnect()
+    }
+  }, [cubies])
 
+  // play / pause the videos with the button
+  useEffect(() => {
+    root.current?.querySelectorAll('video').forEach(v => (paused ? v.pause() : v.play().catch(() => {})))
+  }, [paused])
+
+  const cutPanel = 'absolute left-0 top-0 size-full rounded-[4px] bg-[#f4f7fc]'
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center [perspective:1600px]">
-      <div ref={cube} className="relative aspect-square w-[min(400px,64vw)] will-change-transform [transform-style:preserve-3d]">
-        {FACES.map((_, f) =>
-          Array.from({ length: N * N }, (_, k) => {
-            const i = f * N * N + k
-            const tile = TILES[(i * 7) % TILES.length]
-            return (
-              <div
-                key={i}
-                ref={el => {
-                  tiles.current[i] = el
-                }}
-                className="absolute left-1/2 top-1/2 -ml-[16.6667%] -mt-[16.6667%] size-[33.3333%] p-[3px] [backface-visibility:hidden]"
-                style={{ opacity: 0 }}
-              >
-                <div className="size-full overflow-hidden rounded-[6px] bg-[#0e3b79] shadow-[0_0_0_1px_rgba(255,255,255,0.18)]">
-                  {'video' in tile ? (
-                    <video src={tile.video} poster={tile.poster} className="size-full object-cover" autoPlay muted loop playsInline />
-                  ) : (
-                    <img src={tile.image} alt="" draggable={false} className="size-full object-cover" />
-                  )}
+    <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center [perspective:1400px]">
+      <div ref={root} className="relative aspect-square w-[min(330px,58vw)] will-change-transform [transform-style:preserve-3d]">
+        <div ref={cutStill} className={cutPanel} style={{ display: 'none' }} />
+        <div ref={cutMoving} className={cutPanel} style={{ display: 'none' }} />
+        {cubies.map((c, i) => (
+          <div
+            key={i}
+            ref={el => {
+              cubieEls.current[i] = el
+            }}
+            className="absolute left-1/3 top-1/3 size-1/3 [transform-style:preserve-3d]"
+          >
+            {c.stickers.map((key, k) => {
+              const m = media[i][k]
+              return (
+                <div key={key} className="absolute inset-0 p-[1.5px] [backface-visibility:hidden]" style={{ transform: `${FACE_T[key]} translateZ(calc(var(--cell, 110px) / 2))` }}>
+                  <div className="size-full overflow-hidden rounded-[4px] bg-[#dfe7f3]">
+                    {'video' in m && m.video ? (
+                      <video poster={m.video.poster} className="size-full object-cover" muted loop playsInline preload="auto">
+                        {m.video.webm && <source src={m.video.webm} type="video/webm" />}
+                        <source src={m.video.src} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <img src={'image' in m ? m.image : ''} alt="" draggable={false} decoding="async" className="size-full object-cover" />
+                    )}
+                  </div>
                 </div>
-              </div>
-            )
-          }),
-        )}
+              )
+            })}
+          </div>
+        ))}
       </div>
       <button
         type="button"
         onClick={() => setPaused(p => !p)}
-        className="pointer-events-auto absolute bottom-5 left-5 flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white motion-reduce:hidden"
+        className="pointer-events-auto absolute bottom-5 left-5 flex size-10 items-center justify-center rounded-full bg-[#1f3c73]/70 text-white backdrop-blur transition hover:bg-[#1f3c73]/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bh-blue motion-reduce:hidden"
         aria-label={paused ? t('Play animation') : t('Pause animation')}
       >
         {paused ? (

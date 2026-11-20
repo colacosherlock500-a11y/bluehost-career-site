@@ -139,11 +139,11 @@ export function GlobeSection({
       {/* the stage pins: the headline starts mid-screen and the globe rises behind it */}
       <div ref={section}>
         <div ref={stage} className="sticky mx-auto flex max-w-[1440px] flex-col items-center gap-6 overflow-hidden pb-8 pt-6 motion-reduce:static motion-reduce:gap-10 motion-reduce:pb-[60px]">
-          <div ref={head} className="relative z-[2] will-change-[translate]">
+          <div ref={head} className="relative z-[2]">
             <SectionHeader className="mx-auto" eyebrow={t(eyebrow)} title={typeof title === 'string' ? t(title) : title} body={<span className="text-base leading-[1.4] tracking-[-0.08px] text-bh-blue-950">{t(body)}</span>} />
           </div>
           <div className="relative z-[1] w-full">
-            <div ref={globe} className="w-full origin-[50%_0%] will-change-[scale,translate]">
+            <div ref={globe} className="w-full origin-[50%_0%]">
               <Globe
                 selected={selected !== undefined ? selected : own}
                 onSelect={slug => {

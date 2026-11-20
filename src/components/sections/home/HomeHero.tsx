@@ -9,9 +9,9 @@ export function HomeHero() {
   const { lang, t } = useI18n()
   return (
     <>
-      {/* The cube hero (review call): the globe video moved to Around the World only. */}
-      <section className="relative h-[640px] overflow-hidden bg-[radial-gradient(ellipse_at_50%_45%,#1f6fe0_0%,#0b3a8c_38%,#06204f_75%,#041637_100%)] md:h-[826px]">
-        <span aria-hidden className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.18)_1px,transparent_1.5px)] [background-size:28px_28px] [mask-image:radial-gradient(ellipse_at_50%_50%,black_20%,transparent_75%)]" />
+      {/* The cube hero (review call; look and motion after Maria's "logo 2" reference video).
+          The globe video stays on Around the World only. */}
+      <section className="hero-columns relative h-[640px] overflow-hidden md:h-[826px]">
         <h1 className="sr-only">{t('Careers at Bluehost')}</h1>
         <HeroCube />
       </section>

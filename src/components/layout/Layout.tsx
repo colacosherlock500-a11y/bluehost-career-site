@@ -4,7 +4,7 @@ import { ChatWidget } from './ChatWidget'
 import { Header } from './Header'
 
 /** Pages whose hero is dark (white nav text). Everything else gets the light nav. */
-const darkHeroRoutes = [/^\/$/, /^\/around-the-world$/, /^\/life-at-bluehost$/]
+const darkHeroRoutes = [/^\/around-the-world$/, /^\/life-at-bluehost$/]
 
 export function Layout() {
   const { pathname, hash } = useLocation()
