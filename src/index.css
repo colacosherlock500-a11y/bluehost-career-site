@@ -182,56 +182,48 @@ html[lang='pt-BR'] .capitalize {
 }
 
 /*
- * Home hero background: the deep Bluehost blue of the first cube hero, with the reference
- * video's ("logo 2") look kept soft: blurred columns of light of varied width, a gentle band
- * of light across the lower third with a few soft blocks in it, and a warm glow at the top
- * left. The light layers drift very slowly in opposite directions.
+ * Home hero background: a galaxy in the Bluehost blues. Behind the starfield canvas
+ * (GalaxyBackground): deep space blue, soft nebula clouds, a faint diagonal band of light
+ * like the Milky Way and a glow behind the cube. The clouds drift very slowly.
  */
-.hero-columns {
-  background-color: #06204f;
+.hero-galaxy {
+  background-color: #041637;
   background-image:
-    radial-gradient(ellipse 34% 46% at 8% 12%, rgba(255, 214, 176, 0.22), rgba(255, 214, 176, 0) 70%),
-    radial-gradient(ellipse 60% 55% at 50% 45%, #1f6fe0 0%, #0b3a8c 45%, rgba(6, 32, 79, 0) 100%),
-    linear-gradient(180deg, #072759 0%, #06204f 60%, #041637 100%);
+    radial-gradient(ellipse 34% 30% at 50% 46%, rgba(64, 140, 255, 0.45), rgba(64, 140, 255, 0) 70%),
+    radial-gradient(ellipse 70% 60% at 50% 45%, #0f4aa8 0%, #0a3480 35%, rgba(6, 32, 79, 0) 75%),
+    linear-gradient(180deg, #06245a 0%, #05204e 55%, #031331 100%);
 }
-.hero-columns::before,
-.hero-columns::after {
+.hero-galaxy::before,
+.hero-galaxy::after {
   content: '';
   position: absolute;
-  inset: 0 -8%;
+  inset: -10%;
   z-index: 0;
   pointer-events: none;
 }
-.hero-columns::before {
-  background: linear-gradient(90deg,
-    rgba(160, 200, 255, 0) 0%, rgba(160, 200, 255, 0.07) 6%, rgba(160, 200, 255, 0) 11%,
-    rgba(160, 200, 255, 0.05) 16%, rgba(160, 200, 255, 0.12) 22%, rgba(160, 200, 255, 0.03) 28%,
-    rgba(160, 200, 255, 0) 34%, rgba(160, 200, 255, 0.09) 41%, rgba(160, 200, 255, 0.02) 47%,
-    rgba(160, 200, 255, 0.06) 56%, rgba(160, 200, 255, 0.13) 63%, rgba(160, 200, 255, 0.02) 69%,
-    rgba(160, 200, 255, 0) 74%, rgba(160, 200, 255, 0.08) 81%, rgba(160, 200, 255, 0.15) 88%,
-    rgba(160, 200, 255, 0.04) 94%, rgba(160, 200, 255, 0) 100%);
-  filter: blur(6px);
-  animation: columnsDrift 48s ease-in-out infinite alternate;
-}
-.hero-columns::after {
-  inset: 54% -8% 0;
+.hero-galaxy::before {
   background:
-    linear-gradient(90deg,
-      rgba(150, 195, 255, 0) 0 6%, rgba(150, 195, 255, 0.16) 6% 19%, rgba(150, 195, 255, 0.04) 19% 27%,
-      rgba(150, 195, 255, 0.2) 27% 36%, rgba(150, 195, 255, 0) 36% 52%, rgba(150, 195, 255, 0.14) 52% 61%,
-      rgba(150, 195, 255, 0.05) 61% 70%, rgba(150, 195, 255, 0.18) 70% 84%, rgba(150, 195, 255, 0) 84% 100%) 0 18% / 100% 9% no-repeat,
-    linear-gradient(180deg, rgba(120, 175, 255, 0) 0%, rgba(120, 175, 255, 0.16) 22%, rgba(120, 175, 255, 0.05) 45%, rgba(4, 22, 55, 0) 100%);
-  filter: blur(3px);
-  animation: columnsDrift 36s ease-in-out infinite alternate-reverse;
+    radial-gradient(ellipse 30% 22% at 18% 28%, rgba(96, 160, 255, 0.28), rgba(96, 160, 255, 0) 70%),
+    radial-gradient(ellipse 26% 20% at 82% 66%, rgba(80, 200, 255, 0.2), rgba(80, 200, 255, 0) 70%),
+    radial-gradient(ellipse 22% 16% at 74% 22%, rgba(140, 150, 255, 0.18), rgba(140, 150, 255, 0) 70%),
+    radial-gradient(ellipse 24% 18% at 28% 78%, rgba(70, 120, 230, 0.22), rgba(70, 120, 230, 0) 70%);
+  filter: blur(20px);
+  animation: nebulaDrift 60s ease-in-out infinite alternate;
 }
-@keyframes columnsDrift {
-  from { translate: -3% 0; }
-  to { translate: 3% 0; }
+.hero-galaxy::after {
+  background: linear-gradient(160deg, rgba(150, 200, 255, 0) 30%, rgba(150, 200, 255, 0.1) 46%, rgba(190, 220, 255, 0.14) 50%, rgba(150, 200, 255, 0.08) 54%, rgba(150, 200, 255, 0) 70%);
+  filter: blur(12px);
+  animation: nebulaDrift 80s ease-in-out infinite alternate-reverse;
+}
+@keyframes nebulaDrift {
+  from { translate: -2% -1%; scale: 1; }
+  to { translate: 2% 1%; scale: 1.06; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-columns::before,
-  .hero-columns::after {
+  .hero-galaxy::before,
+  .hero-galaxy::after {
     animation: none;
   }
 }
+
 

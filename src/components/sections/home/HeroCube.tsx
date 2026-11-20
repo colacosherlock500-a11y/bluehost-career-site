@@ -203,7 +203,7 @@ export function HeroCube() {
       ry += (SPIN_DEG_PER_S * dt) / 1000
       const scale = 5.2 - 4.2 * ie
       const rx = -24 + 34 * (1 - ie) + Math.sin(elapsed / 2600) * 9
-      const y = Math.sin(elapsed / 1900) * 7
+      const y = Math.sin(elapsed / 2200) * 14 // floating in space
       el.style.transform = `translateY(${y}px) scale(${scale}) rotateX(${rx}deg) rotateY(${-150 * (1 - ie) - 35 + ry}deg) rotateZ(${8 * (1 - ie)}deg)`
       if (!twist && elapsed >= nextTwist) {
         startTwist(now)

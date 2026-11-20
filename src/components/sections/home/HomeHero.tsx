@@ -2,6 +2,7 @@ import eyebrowIcon from '../../../assets/img/common/eyebrow-icon.png'
 import { RotatingWord } from '../../ui/RotatingWord'
 import { JobSearchBar } from '../JobSearchBar'
 import { LogoStrip } from '../LogoStrip'
+import { GalaxyBackground } from './GalaxyBackground'
 import { HeroCube } from './HeroCube'
 import { useI18n } from '../../../i18n/I18n'
 
@@ -9,9 +10,10 @@ export function HomeHero() {
   const { lang, t } = useI18n()
   return (
     <>
-      {/* The cube hero (review call; look and motion after Maria's "logo 2" reference video).
+      {/* The cube hero (review call; cube motion after Maria's "logo 2" reference video; a galaxy behind it).
           The globe video stays on Around the World only. */}
-      <section className="hero-columns relative h-[640px] overflow-hidden md:h-[826px]">
+      <section className="hero-galaxy relative h-[640px] overflow-hidden md:h-[826px]">
+        <GalaxyBackground />
         <h1 className="sr-only">{t('Careers at Bluehost')}</h1>
         <HeroCube />
       </section>
