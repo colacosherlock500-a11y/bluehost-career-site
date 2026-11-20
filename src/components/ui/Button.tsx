@@ -39,7 +39,7 @@ interface ButtonProps {
 /** Pill-cornered CTA with the chevron arrow used throughout the Figma file. */
 export function Button({ children, variant = 'primary', to, href, onClick, type = 'button', arrow = true, size = 'md', className = '' }: ButtonProps) {
   const cls = [
-    'inline-flex items-center justify-center gap-1 rounded-[10px] font-medium capitalize leading-[1.4] whitespace-nowrap transition-colors',
+    'inline-flex max-w-full items-center justify-center gap-1 rounded-[10px] text-center font-medium capitalize leading-[1.4] transition-colors sm:whitespace-nowrap',
     size === 'md' ? 'min-w-[136px] py-[14px] pl-[18px] pr-4 text-base' : 'py-[11px] px-[14px] text-[15px]',
     styles[variant],
     className,
