@@ -34,7 +34,7 @@ export default function TeamPage() {
           </div>
         </div>
       </section>
-      <CareerPaths items={team.buildAreas.flat()} />
+      <CareerPaths items={team.buildAreas.flat()} team={team.slug} />
       <div id="open-roles" className="scroll-mt-24">
         <OpenRoles filter={{ team: team.slug }} />
       </div>

@@ -13,6 +13,10 @@ export const ptPlaces: Record<string, string> = {
   'Browse open roles across our teams, brands, and locations, and start building what comes next with us.':
     'Veja as vagas abertas em nossos times, marcas e locais, e comece a construir o que vem a seguir com a gente.',
   'Career paths': 'Trilhas de carreira',
+  'View roles': 'Ver vagas',
+  'No openings in': 'Nenhuma vaga em',
+  'right now.': 'no momento.',
+  'Here are all open roles in': 'Veja todas as vagas abertas em',
   'Where you can build with us': 'Onde você pode construir com a gente',
   'Where you can build with us:': 'Onde você pode construir com a gente:',
   'Open roles': 'Vagas abertas',

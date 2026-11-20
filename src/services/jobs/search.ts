@@ -12,6 +12,8 @@ function facet(jobs: Job[], key: (j: Job) => string[]): FacetCount[] {
   return [...map].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count)
 }
 
+const STOP = new Set(['and', 'with', 'from', 'your', 'the'])
+
 export function matchesJob(job: Job, p: JobSearchParams, teamName: (slug: string) => string = s => s.replace(/-/g, ' ')): boolean {
   if (p.team && job.team !== p.team) return false
   if (p.country && !job.locations.some(l => l.country === p.country)) return false
@@ -19,9 +21,12 @@ export function matchesJob(job: Job, p: JobSearchParams, teamName: (slug: string
   // No geo data yet, so `location` is a city text match and `radiusMiles` is ignored.
   if (p.location && !job.locations.some(l => l.city.toLowerCase().includes(p.location!.toLowerCase()))) return false
   if (p.keyword) {
-    const q = p.keyword.toLowerCase()
+    const q = p.keyword.toLowerCase().trim()
     const hay = `${job.title} ${teamName(job.team)} ${job.brand} ${job.locations.map(l => l.city).join(' ')}`.toLowerCase()
-    if (!hay.includes(q)) return false
+    // the whole phrase, or (for longer searches such as a career area, "Live Chat & Phone
+    // Support") any of its meaningful words
+    const words = q.split(/[^a-z0-9à-ÿ]+/).filter(w => w.length > 3 && !STOP.has(w))
+    if (!hay.includes(q) && !(words.length > 1 && words.some(w => hay.includes(w)))) return false
   }
   return true
 }

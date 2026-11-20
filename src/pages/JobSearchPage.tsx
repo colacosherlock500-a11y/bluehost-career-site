@@ -113,7 +113,7 @@ export default function JobSearchPage() {
   const [sp, setSp] = useSearchParams()
   const params = readParams(sp)
   const [form, setForm] = useState(params)
-  const { data, loading, error } = useJobSearch({ ...params, pageSize: PAGE_SIZE })
+  const { data, loading, error } = useJobSearch({ ...params, pageSize: PAGE_SIZE }, { teamFallback: true })
   const recent = useRecentlyViewedJobs(3)
 
   // Keep the form in sync when the URL changes (e.g. arriving from the home search bar).
@@ -253,6 +253,16 @@ export default function JobSearchPage() {
               <p className="text-[15px] text-night-sky">
                 {loading ? t('Searching…') : error ? t('We couldn’t load jobs right now. Please try again later.') : t(`${data?.total ?? 0} open role${data?.total === 1 ? '' : 's'}`)}
               </p>
+              {!loading && data?.teamFallback && (
+                <div className="rounded-2xl border border-bh-light-200 bg-[#f3f8ff] px-5 py-4 text-[15px] leading-[1.45]">
+                  <p className="font-semibold">
+                    {t('No openings in')} “{t(params.keyword ?? '')}” {t('right now.')}
+                  </p>
+                  <p className="text-night-sky">
+                    {t('Here are all open roles in')} {t(teams.find(x => x.slug === params.team)?.name ?? '')}.
+                  </p>
+                </div>
+              )}
               {loading && Array.from({ length: 4 }, (_, i) => <JobCardSkeleton key={i} />)}
               {!loading && data?.jobs.map(job => <JobListCard key={job.id} job={job} />)}
               {!loading && data && data.jobs.length === 0 && (

@@ -26,8 +26,19 @@ function useAsync<T>(load: () => Promise<T>, deps: unknown[]): AsyncState<T> {
 }
 
 /** Paged, filterable job search (Jobs search page, team/country "open roles" lists). */
-export function useJobSearch(params: JobSearchParams) {
-  return useAsync<JobSearchResult>(() => jobsProvider.searchJobs(params), [
+/**
+ * With `teamFallback`, a search for a team plus a keyword that finds nothing (e.g. a career
+ * area with no openings right now) returns all of that team's roles instead, flagged so the
+ * page can say so — a career path card never leads to a dead end.
+ */
+export function useJobSearch(params: JobSearchParams, { teamFallback = false } = {}) {
+  return useAsync<JobSearchResult & { teamFallback?: boolean }>(async () => {
+    const res = await jobsProvider.searchJobs(params)
+    if (!teamFallback || res.total > 0 || !params.team || !params.keyword) return res
+    const all = await jobsProvider.searchJobs({ ...params, keyword: '' })
+    return all.total > 0 ? { ...all, teamFallback: true } : res
+  }, [
+    teamFallback,
     params.keyword,
     params.country,
     params.team,
