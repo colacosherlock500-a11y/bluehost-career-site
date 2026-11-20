@@ -261,7 +261,7 @@ export function HeroCube() {
       <button
         type="button"
         onClick={() => setPaused(p => !p)}
-        className="pointer-events-auto absolute bottom-5 left-5 flex size-10 items-center justify-center rounded-full bg-[#1f3c73]/70 text-white backdrop-blur transition hover:bg-[#1f3c73]/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bh-blue motion-reduce:hidden"
+        className="pointer-events-auto absolute bottom-5 left-5 flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white motion-reduce:hidden"
         aria-label={paused ? t('Play animation') : t('Pause animation')}
       >
         {paused ? (

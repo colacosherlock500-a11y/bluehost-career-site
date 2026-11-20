@@ -182,17 +182,17 @@ html[lang='pt-BR'] .capitalize {
 }
 
 /*
- * Home hero background, after the cube reference video ("logo 2"): light blue-grey columns of
- * varied width and tone (lighter on the left), a band of blocks across the lower third with a
- * strip of small "pixel" blocks under it, and a warm sunlight glow from the left and right.
- * The column layers drift very slowly in opposite directions.
+ * Home hero background: the deep Bluehost blue of the first cube hero, with the reference
+ * video's ("logo 2") look kept soft: blurred columns of light of varied width, a gentle band
+ * of light across the lower third with a few soft blocks in it, and a warm glow at the top
+ * left. The light layers drift very slowly in opposite directions.
  */
 .hero-columns {
-  background-color: #e3e9f3;
+  background-color: #06204f;
   background-image:
-    radial-gradient(ellipse 38% 55% at 4% 22%, rgba(255, 238, 220, 0.95), rgba(255, 238, 220, 0) 70%),
-    radial-gradient(ellipse 14% 22% at 99% 44%, rgba(255, 236, 214, 0.95), rgba(255, 236, 214, 0) 70%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 45%);
+    radial-gradient(ellipse 34% 46% at 8% 12%, rgba(255, 214, 176, 0.22), rgba(255, 214, 176, 0) 70%),
+    radial-gradient(ellipse 60% 55% at 50% 45%, #1f6fe0 0%, #0b3a8c 45%, rgba(6, 32, 79, 0) 100%),
+    linear-gradient(180deg, #072759 0%, #06204f 60%, #041637 100%);
 }
 .hero-columns::before,
 .hero-columns::after {
@@ -203,30 +203,25 @@ html[lang='pt-BR'] .capitalize {
   pointer-events: none;
 }
 .hero-columns::before {
-  background:
-    linear-gradient(90deg,
-      rgba(255, 255, 255, 0.55) 0 7%, rgba(220, 229, 242, 0.4) 7% 13%, rgba(255, 255, 255, 0.5) 13% 17%,
-      rgba(196, 210, 232, 0.45) 17% 26%, rgba(214, 224, 240, 0.35) 26% 33%, rgba(176, 194, 224, 0.5) 33% 41%,
-      rgba(198, 211, 233, 0.4) 41% 47%, rgba(150, 172, 211, 0.55) 47% 55%, rgba(172, 190, 222, 0.45) 55% 60%,
-      rgba(124, 148, 196, 0.55) 60% 70%, rgba(148, 168, 208, 0.5) 70% 76%, rgba(104, 128, 182, 0.6) 76% 86%,
-      rgba(130, 152, 200, 0.55) 86% 92%, rgba(92, 116, 172, 0.65) 92% 100%);
+  background: linear-gradient(90deg,
+    rgba(160, 200, 255, 0) 0%, rgba(160, 200, 255, 0.07) 6%, rgba(160, 200, 255, 0) 11%,
+    rgba(160, 200, 255, 0.05) 16%, rgba(160, 200, 255, 0.12) 22%, rgba(160, 200, 255, 0.03) 28%,
+    rgba(160, 200, 255, 0) 34%, rgba(160, 200, 255, 0.09) 41%, rgba(160, 200, 255, 0.02) 47%,
+    rgba(160, 200, 255, 0.06) 56%, rgba(160, 200, 255, 0.13) 63%, rgba(160, 200, 255, 0.02) 69%,
+    rgba(160, 200, 255, 0) 74%, rgba(160, 200, 255, 0.08) 81%, rgba(160, 200, 255, 0.15) 88%,
+    rgba(160, 200, 255, 0.04) 94%, rgba(160, 200, 255, 0) 100%);
+  filter: blur(6px);
   animation: columnsDrift 48s ease-in-out infinite alternate;
 }
 .hero-columns::after {
-  inset: auto -8% 0;
-  height: 42%;
-  opacity: 0.8;
+  inset: 54% -8% 0;
   background:
     linear-gradient(90deg,
-      rgba(86, 110, 168, 0.75) 0 18%, rgba(240, 244, 250, 0.9) 18% 24%, rgba(110, 132, 186, 0.7) 24% 39%,
-      rgba(228, 235, 246, 0.85) 39% 53%, rgba(96, 120, 176, 0.75) 53% 64%, rgba(236, 241, 249, 0.9) 64% 72%,
-      rgba(84, 106, 164, 0.8) 72% 100%) 0 0 / 100% 12% no-repeat,
-    linear-gradient(90deg,
-      rgba(250, 251, 253, 0.95) 0 22%, rgba(150, 170, 210, 0.7) 22% 30%, rgba(232, 238, 247, 0.9) 30% 47%,
-      rgba(120, 142, 192, 0.75) 47% 52%, rgba(244, 247, 252, 0.95) 52% 76%, rgba(140, 160, 204, 0.7) 76% 100%) 0 22% / 100% 14% no-repeat,
-    repeating-linear-gradient(90deg,
-      rgba(110, 132, 186, 0.75) 0 2.2%, rgba(150, 170, 210, 0.7) 2.2% 4.1%, rgba(206, 217, 236, 0.85) 4.1% 5.6%,
-      rgba(236, 241, 249, 0.9) 5.6% 7.4%, rgba(92, 116, 172, 0.8) 7.4% 9.9%) 0 100% / 100% 18% no-repeat;
+      rgba(150, 195, 255, 0) 0 6%, rgba(150, 195, 255, 0.16) 6% 19%, rgba(150, 195, 255, 0.04) 19% 27%,
+      rgba(150, 195, 255, 0.2) 27% 36%, rgba(150, 195, 255, 0) 36% 52%, rgba(150, 195, 255, 0.14) 52% 61%,
+      rgba(150, 195, 255, 0.05) 61% 70%, rgba(150, 195, 255, 0.18) 70% 84%, rgba(150, 195, 255, 0) 84% 100%) 0 18% / 100% 9% no-repeat,
+    linear-gradient(180deg, rgba(120, 175, 255, 0) 0%, rgba(120, 175, 255, 0.16) 22%, rgba(120, 175, 255, 0.05) 45%, rgba(4, 22, 55, 0) 100%);
+  filter: blur(3px);
   animation: columnsDrift 36s ease-in-out infinite alternate-reverse;
 }
 @keyframes columnsDrift {
@@ -239,3 +234,4 @@ html[lang='pt-BR'] .capitalize {
     animation: none;
   }
 }
+
