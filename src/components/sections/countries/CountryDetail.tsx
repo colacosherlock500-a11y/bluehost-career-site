@@ -66,7 +66,7 @@ export function CountryDetail({ country, headingLevel = 'h2' }: { country: Count
   const Heading = headingLevel
   const teamLinks = country.teams.map(slug => getTeam(slug)).filter(Boolean)
   return (
-    <div className="grid w-full max-w-[1200px] items-center gap-10 lg:grid-cols-[640px_1fr] lg:pl-[21px]">
+    <div className="grid w-full max-w-[1200px] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(300px,460px)] lg:pl-[21px] xl:grid-cols-[640px_1fr]">
       <div className="flex flex-col gap-5">
         <div className="flex items-center gap-[10px]">
           <img src={country.flag} alt="" className="size-6" />
@@ -99,7 +99,7 @@ export function CountryDetail({ country, headingLevel = 'h2' }: { country: Count
         </div>
       </div>
       {country.quotes.length > 0 && (
-        <div className="flex flex-col items-center gap-5 lg:items-end">
+        <div className="flex min-w-0 flex-col items-center gap-5 lg:items-end">
           {country.quotes.map(q => (
             <QuoteCard key={q.name} quote={q} />
           ))}
