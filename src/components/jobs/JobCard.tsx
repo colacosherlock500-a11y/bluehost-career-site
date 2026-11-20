@@ -31,7 +31,7 @@ export function JobCard({ job }: { job: Job }) {
           <img src={pin} alt="" className="size-[17px]" />
           {jobLocationLabel(job)}
         </span>
-        <span className="flex shrink-0 items-center gap-1 text-base font-medium text-bh-blue">
+        <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-base font-medium text-bh-blue">
           {t('Apply')}
           <img src={arrowBlue} alt="" className="size-[19.76px] transition-transform group-hover:translate-x-0.5" />
         </span>

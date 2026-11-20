@@ -19,12 +19,12 @@ export function JobListCard({ job }: { job: Job }) {
       </p>
       <h3 className="text-[25px] font-semibold leading-[1.33] tracking-[-0.25px] group-hover:text-bh-blue">{job.title}</h3>
       <p className="text-[15px] leading-[1.4] tracking-[-0.15px] text-bh-blue-1100">{job.summary}</p>
-      <div className="flex items-center justify-between gap-3 pt-1">
-        <span className="flex items-center gap-2 text-[15px] leading-[1.3] tracking-[-0.15px] text-[#4e5c6e]">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-1">
+        <span className="flex min-w-0 items-center gap-2 text-[15px] leading-[1.3] tracking-[-0.15px] text-[#4e5c6e]">
           <img src={pin} alt="" className="size-[17px]" />
           {jobLocationLabel(job)}
         </span>
-        <span className="flex items-center gap-1 text-base font-medium text-bh-blue">
+        <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-base font-medium text-bh-blue">
           {t('Apply')}
           <img src={arrowBlue} alt="" className="size-[19.76px] transition-transform group-hover:translate-x-0.5" />
         </span>

@@ -10,7 +10,7 @@ export function Pagination({ page, totalPages, onChange }: { page: number; total
     else if (pages[pages.length - 1] !== '…') pages.push('…')
   }
   return (
-    <nav aria-label={t('Pagination')} className="flex items-center justify-center gap-[14px] text-[15px]">
+    <nav aria-label={t('Pagination')} className="flex flex-wrap items-center justify-center gap-x-[10px] gap-y-2 text-[15px] sm:gap-[14px]">
       <button disabled={page <= 1} onClick={() => onChange(page - 1)} className="text-[#4e5c6e] underline disabled:opacity-40">{t('Prev')}</button>
       {pages.map((p, i) =>
         p === '…' ? (
