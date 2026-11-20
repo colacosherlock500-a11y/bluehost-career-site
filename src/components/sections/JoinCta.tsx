@@ -44,10 +44,11 @@ function SocialSpinner() {
 }
 
 /*
- * LinkedIn posts fanned out on a curve (HR: "fanned out like before"): tall post cards sit on a wide arc
- * (a wheel whose hub is far below), each tilted along the curve. As the section scrolls in,
- * the cards fan out from a stack; scrolling on turns the wheel, and it can also be dragged.
- * It loops, so posts keep coming round. Hover lifts a card forward. Reduced motion: a still fan.
+ * LinkedIn posts as a pack of cards (HR): the pack is closed by default, and as the visitor
+ * scrolls it opens into a fan of tall post cards on a wide arc (a wheel whose hub is far below),
+ * middle cards first, in step with the scroll (scrolling back closes it). Once open it can be
+ * dragged round; it loops, so posts keep coming round. Hover lifts a card forward.
+ * Reduced motion: an open fan.
  */
 const CARD_W = 290
 const CARD_H = 396
@@ -73,18 +74,27 @@ export function SocialCards() {
       raf = 0
       const vh = window.innerHeight
       const r = el.getBoundingClientRect()
-      // 0 → 1 while the stage scrolls from the bottom of the screen to its middle: fan out
-      const spread = reduce ? 1 : Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.7)))
-      // then the wheel keeps turning with the scroll
-      const turn = reduce ? 0 : ((vh * 0.5 - (r.top + r.height / 2)) / vh) * 28
+      // Pack of cards (HR): closed while the stage comes into view, then it opens card by card
+      // in step with the scroll, fully fanned once the stage is near the top of the screen.
+      // Driven by the scroll position alone, so scrolling back closes the pack again.
+      const p = reduce ? 1 : Math.min(1, Math.max(0, (vh * 0.72 - r.top) / (vh * 0.55)))
       const scale = Math.min(1, el.clientWidth / 1100)
       cards.current.forEach((card, i) => {
         if (!card) return
-        let a = (i - (CARDS.length - 1) / 2) * STEP + turn + dragDeg
+        let a = (i - (CARDS.length - 1) / 2) * STEP + dragDeg
         a = ((((a + loop / 2) % loop) + loop) % loop) - loop / 2 // keep within one loop
         const shown = Math.abs(a) < 62
-        const fan = a * (0.25 + 0.75 * spread)
-        card.style.transform = `translate(-50%, -50%) scale(${scale}) translateY(${RADIUS}px) rotate(${fan}deg) translateY(${-RADIUS}px)`
+        // cards nearest the middle leave the pack first, the outer ones follow
+        const lag = (Math.abs(a) / 62) * 0.35
+        const t = Math.min(1, Math.max(0, (p - lag) / (1 - lag)))
+        const e = t * t * (3 - 2 * t)
+        const closed = 1 - e
+        // a squared-up deck: each card a hair off the one below, slightly askew
+        const rank = Math.round(Math.abs(a) / STEP)
+        const dx = (a < 0 ? -1 : 1) * rank * 1.6 * closed
+        const dy = -rank * 1.2 * closed
+        const tilt = (((i * 37) % 7) - 3) * 0.9 * closed
+        card.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${scale}) translateY(${RADIUS}px) rotate(${a * e + tilt}deg) translateY(${-RADIUS}px)`
         card.style.zIndex = String(200 - Math.round(Math.abs(a) * 2))
         card.style.opacity = shown ? String(Math.min(1, (62 - Math.abs(a)) / 14)) : '0'
         card.style.visibility = shown ? '' : 'hidden'
