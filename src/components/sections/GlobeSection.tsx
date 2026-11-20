@@ -17,8 +17,8 @@ const HEADER_H = 78
  * headline in the middle of the screen and the globe peeking over the bottom edge. As the
  * visitor scrolls, the globe rises behind the headline like a planet over the horizon,
  * shrinking to its resting size, then the headline glides up to its place above it.
- * Driven straight from the scroll position, so it reverses when scrolling back up.
- * Calls `onSettled(true)` once it has landed (and `false` if the visitor scrolls back).
+ * Driven straight from the scroll position; once landed it stays put.
+ * Calls `onSettled(true)` once it has landed.
  * Reduced motion: no pin, no animation.
  */
 function usePullUp(
@@ -42,6 +42,7 @@ function usePullUp(
     }
     let raf = 0
     let settled: boolean | null = null
+    let landed = false
     let top = HEADER_H
     let lift = 0 // how far the headline starts below its resting place (centred on screen)
     const layout = () => {
@@ -59,8 +60,11 @@ function usePullUp(
       raf = 0
       const vh = window.innerHeight
       const r = sec.getBoundingClientRect()
-      // 0 when the stage pins → 1 at the end of the pin
-      const p = Math.min(1, Math.max(0, (top - r.top) / (vh * PIN)))
+      // 0 when the stage pins → 1 at the end of the pin. Once the globe has landed it stays
+      // landed (no replay when scrolling back), so the country details below it never show
+      // mid-animation, pushed past the stage and cut off.
+      const p = landed ? 1 : Math.min(1, Math.max(0, (top - r.top) / (vh * PIN)))
+      if (p >= 0.995) landed = true
       const e = 1 - (1 - p) ** 2.2
       // the headline holds while the globe starts rising behind it, then moves up
       const eh = 1 - (1 - Math.min(1, Math.max(0, (p - 0.2) / 0.7))) ** 2
